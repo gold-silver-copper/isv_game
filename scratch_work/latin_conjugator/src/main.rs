@@ -37,6 +37,38 @@ pub struct CaseEndings {
     pub voc_pl:&'static str,
 }
 
+impl CaseEndings {
+
+    pub fn ending(&self, case:Case, number: Number) -> &str {
+
+        match number {
+            Number::Singular => {
+
+                match case {
+                    Case::Nom => self.nom_sg,
+                    Case::Acc => self.acc_sg,
+                    Case::Gen => self.gen_sg,
+                    Case::Dat => self.nom_sg,
+                    Case::Acc => self.nom_sg,
+                    Case::Abl => self.nom_sg,
+                    Case::Loc => self.nom_sg,
+                    Case::Voc => self.nom_sg,
+                    _ => todo!("singcase")
+
+
+                }
+
+
+
+            }
+            Number::Plural => {todo!("number plural")}
+        }
+
+    }
+
+
+}
+
 const TEST_ENDINGS: CaseEndings = CaseEndings {
       nom_sg: "nom_sg",
       acc_sg:"acc_sg",
@@ -59,8 +91,8 @@ const TEST_ENDINGS: CaseEndings = CaseEndings {
 // have a possesive func, but reflexive person?
 #[derive(Debug, PartialEq, Clone)]
 pub enum Number {
-    Sing,
-    Plur,
+    Singular,
+    Plural,
 }
 
 type Noun = (String,Gender);
@@ -80,6 +112,8 @@ impl Latin {
     pub fn noun(nominative: String , case: Case , number: Number ) -> Noun {
 
 
+
+
         ("hello".into(),Gender::Masculine)
 
 
@@ -96,4 +130,5 @@ impl Latin {
 fn main() {
     println!("Hello, world!");
     println!("meow: {:#?}", TEST_ENDINGS);
+    println!("desu: {:#?}", TEST_ENDINGS.ending(Case::Nom,Number::Singular));
 }
