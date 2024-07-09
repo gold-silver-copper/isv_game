@@ -273,19 +273,31 @@ impl Latin {
         }
         verbmap
     }
-    pub fn noun(&self, nominative: &str, case: Case, number: Number) -> Noun {
+    pub fn noun(&self, word: &str, case: Case, number: Number) -> Noun {
 
-        let record = self.noun_map.get(nominative).unwrap_or(&NounRecord::default());
+        let defik = NounRecord::default();
 
-       
+        let record = self.noun_map.get(word).unwrap_or(&defik);
+
+        let nominative = record.nominative.clone();
+        let genitive = record.genitive.clone();
+        let gender = record.gender.clone();
+        let mut declension = Declension::Irregular;
+
+        //(-ae, -i, -is, -ūs, -ei)
+
+        
+
+        let mut stem = genitive.clone();
+        match declension {
+            Declension::Second => {stem.pop();},
+            _ => {stem.pop();
+            stem.pop();}
+        }
 
 
-
-
-
-        let stem = nominative;
         let ending = TEST_ENDINGS.ending(case, number);
-        let gender = Latin::guess_gender(nominative);
+        
         let conjugated_noun = format!("{}{}", stem, ending);
         (conjugated_noun, gender)
     }
@@ -308,8 +320,18 @@ fn main() {
     let boop = Latin::last_n_chars("be", 3);
     println!("boopik : {:#?}", boop);
     let conji =  Latin::new();
-    let new_noun = conji.noun("gladius", Case::Acc, Number::Singular);
+    
+
+    let testik = conji.noun_map.clone();
+
+    for wot in testik {
+        println!("new_noun : {:#?}", wot);
+        let new_noun = conji.noun(&wot.0, Case::Acc, Number::Singular);
     println!("new_noun : {:#?}", new_noun);
+
+
+
+    }
 
  
 
