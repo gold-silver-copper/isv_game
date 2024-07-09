@@ -18,7 +18,7 @@ pub struct Latin {
 }
 
 
-#[derive(Debug, Deserialize,Clone)]
+#[derive(Debug, Deserialize,Clone, Default)]
 struct NounRecord {
     word: String,
     nominative: String,
@@ -37,6 +37,17 @@ pub enum Declension {
     Fifth,
     OneTwo,
     Irregular,
+}
+
+impl Default for Gender {
+    fn default() -> Gender {
+        Gender::Masculine
+    }
+}
+impl Default for Declension {
+    fn default() -> Declension {
+        Declension::First
+    }
 }
 
 //word,canonical,present_infinitive,perfect_active,supine,conjugation,irregular
@@ -262,7 +273,11 @@ impl Latin {
         }
         verbmap
     }
-    pub fn noun(nominative: &str, case: Case, number: Number) -> Noun {
+    pub fn noun(&self, nominative: &str, case: Case, number: Number) -> Noun {
+
+        let record = self.noun_map.get(nominative).unwrap_or(&NounRecord::default());
+
+       
 
 
 
@@ -292,12 +307,11 @@ fn main() {
     );
     let boop = Latin::last_n_chars("be", 3);
     println!("boopik : {:#?}", boop);
-    let new_noun = Latin::noun("gladius", Case::Acc, Number::Singular);
+    let conji =  Latin::new();
+    let new_noun = conji.noun("gladius", Case::Acc, Number::Singular);
     println!("new_noun : {:#?}", new_noun);
 
-    Latin::load_nouns_from_csv();
-    Latin::load_adjectives_from_csv();
-    Latin::load_verbs_from_csv();
+ 
 
-    Latin::new();
+   
 }
