@@ -263,6 +263,11 @@ impl Latin {
         verbmap
     }
     pub fn noun(nominative: &str, case: Case, number: Number) -> Noun {
+
+
+
+
+
         let stem = nominative;
         let ending = TEST_ENDINGS.ending(case, number);
         let gender = Latin::guess_gender(nominative);
