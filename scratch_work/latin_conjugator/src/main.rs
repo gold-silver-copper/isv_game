@@ -281,7 +281,7 @@ impl Latin {
 
         
 
-        let mut response = match gender {
+        match gender {
             Gender::Masculine => match number {
                 Number::Singular => match case {
                     Case::Nom => record.nom_sg_masc.clone(),
@@ -336,11 +336,7 @@ impl Latin {
                     _ => record.abl_pl_neut.clone(),
                 },
             },
-        };        
-
-     
-
-        response
+        }
     }
 
     pub fn last_n_chars(word: &str, n: usize) -> String {
@@ -357,10 +353,16 @@ fn main() {
     let conji = Latin::new();
 
     let testik = conji.noun_map.clone();
+    let testik2 = conji.adj_map.clone();
 
     for wot in testik {
         println!("new_noun : {:#?}", wot);
         let new_noun = conji.noun(&wot.0, &Case::Acc, &Number::Singular);
+        println!("new_noun : {:#?}", new_noun);
+    }
+    for wot in testik2 {
+        println!("new_noun : {:#?}", wot);
+        let new_noun = conji.adjective(&wot.0, &Case::Acc, &Number::Singular, &Gender::Feminine);
         println!("new_noun : {:#?}", new_noun);
     }
 }
