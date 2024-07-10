@@ -20,13 +20,25 @@ pub struct Latin {
 
 #[derive(Debug, Deserialize,Clone, Default)]
 struct NounRecord {
-    word: String,
-    nominative: String,
-    genitive: String,
+   pub  word: String,
+    pub nom_sg: String,
+pub gen_sg: String,
+pub dat_sg: String,
+pub acc_sg: String,
+pub abl_sg: String,
+pub voc_sg: String,
+pub loc_sg: String,
+pub nom_pl: String,
+pub gen_pl: String,
+pub dat_pl: String,
+pub acc_pl: String,
+pub abl_pl: String,
+pub voc_pl: String,
+pub loc_pl: String,
+
     #[serde(deserialize_with = "deserialize_gender")]
-    gender: Gender,
-    #[serde(deserialize_with = "deserialize_pluralia")]
-    pluralia_tantum: bool,
+   pub gender: Gender,
+   
 }
 #[derive(Debug, PartialEq, Clone)]
 pub enum Declension {
@@ -273,33 +285,54 @@ impl Latin {
         }
         verbmap
     }
-    pub fn noun(&self, word: &str, case: Case, number: Number) -> Noun {
+    pub fn noun(&self, word: &str, case: &Case, number: &Number) -> Noun {
 
         let defik = NounRecord::default();
 
         let record = self.noun_map.get(word).unwrap_or(&defik);
 
-        let nominative = record.nominative.clone();
-        let genitive = record.genitive.clone();
-        let gender = record.gender.clone();
-        let mut declension = Declension::Irregular;
+       let mut response =  match number {
+            Number::Singular => {
+                match case {
+                    Case::Nom => (record.nom_sg.clone(), record.gender.clone()),
+                    Case::Gen => (record.gen_sg.clone(), record.gender.clone()),
+                    Case::Dat => (record.dat_sg.clone(), record.gender.clone()),
+                    Case::Acc => (record.acc_sg.clone(), record.gender.clone()),
+                    Case::Abl => (record.abl_sg.clone(), record.gender.clone()),
+                    Case::Voc => (record.voc_sg.clone(), record.gender.clone()),
+                    Case::Loc => (record.loc_sg.clone(), record.gender.clone()),
+                }
+            },
+            Number::Plural => {
+                match case {
+                    Case::Nom => (record.nom_pl.clone(), record.gender.clone()),
+                    Case::Gen => (record.gen_pl.clone(), record.gender.clone()),
+                    Case::Dat => (record.dat_pl.clone(), record.gender.clone()),
+                    Case::Acc => (record.acc_pl.clone(), record.gender.clone()),
+                    Case::Abl => (record.abl_pl.clone(), record.gender.clone()),
+                    Case::Voc => (record.voc_pl.clone(), record.gender.clone()),
+                    Case::Loc => (record.loc_pl.clone(), record.gender.clone()),
+                }
+            },
+        };
 
-        //(-ae, -i, -is, -ūs, -ei)
-
-        
-
-        let mut stem = genitive.clone();
-        match declension {
-            Declension::Second => {stem.pop();},
-            _ => {stem.pop();
-            stem.pop();}
+        if case == &Case::Loc && (response.0 == "" || response.0 == "-") {
+            response.0 = format!("in {}", record.abl_sg.clone());
         }
 
 
-        let ending = TEST_ENDINGS.ending(case, number);
+        if  (response.0 == "" || response.0 == "-") {
+            response.0 = format!("{}''", record.word.clone());
+        }
+
+
+
+
+
+        response
         
-        let conjugated_noun = format!("{}{}", stem, ending);
-        (conjugated_noun, gender)
+
+       
     }
     pub fn guess_gender(nominative: &str) -> Gender {
         Gender::Feminine
@@ -326,7 +359,7 @@ fn main() {
 
     for wot in testik {
         println!("new_noun : {:#?}", wot);
-        let new_noun = conji.noun(&wot.0, Case::Acc, Number::Singular);
+        let new_noun = conji.noun(&wot.0, &Case::Acc, &Number::Singular);
     println!("new_noun : {:#?}", new_noun);
 
 
