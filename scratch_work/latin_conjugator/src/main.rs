@@ -33,27 +33,45 @@ struct NounRecord {
     #[serde(deserialize_with = "deserialize_gender")]
     pub gender: Gender,
 }
+
+
 #[derive(Debug, PartialEq, Clone)]
-pub enum Declension {
-    First,
-    Second,
-    Third,
-    Fourth,
-    Fifth,
-    OneTwo,
-    Irregular,
+pub enum Mood {
+    Indicative,
+    Subjunctive,
+    Imperative,
+    Infinitive,
+    Participle,
+    VerbalNoun,
+
 }
+
+#[derive(Debug, PartialEq, Clone)]
+pub enum Voice {
+    Active,
+    Passive
+
+}
+#[derive(Debug, PartialEq, Clone)]
+pub enum Tense {
+    Present,
+    Imperfect,
+    Future,
+    Perfect,
+    Pluperfect,
+    FuturePerfect,
+
+}
+
+
+
 
 impl Default for Gender {
     fn default() -> Gender {
         Gender::Masculine
     }
 }
-impl Default for Declension {
-    fn default() -> Declension {
-        Declension::First
-    }
-}
+
 
 //word,canonical,present_infinitive,perfect_active,supine,conjugation,irregular
 #[derive(Debug, Deserialize, Clone)]
@@ -63,11 +81,40 @@ struct VerbRecord {
     present_infinitive: String,
     perfect_active: String,
     supine: String,
+    indicative_active_present_singular_first: String,
+    indicative_active_present_singular_second: String,
+    indicative_active_present_singular_third: String,
+    indicative_active_present_plural_first: String,
+    indicative_active_present_plural_second: String,
+    indicative_active_present_plural_third: String,
+    indicative_active_imperfect_singular_first: String,
+    indicative_active_imperfect_singular_second: String,
+    indicative_active_imperfect_singular_third: String,
+    indicative_active_imperfect_plural_first: String,
+    indicative_active_imperfect_plural_second: String,
+    indicative_active_imperfect_plural_third: String,
+    indicative_active_future_singular_first: String,
+    indicative_active_future_singular_second: String,
+    indicative_active_future_singular_third: String,
+    indicative_active_future_plural_first: String,
+    indicative_active_future_plural_second: String,
+    indicative_active_future_plural_third: String,
+    indicative_active_perfect_singular_first: String,
+    indicative_active_perfect_singular_second: String,
+    indicative_active_perfect_singular_third: String,
+    indicative_active_perfect_plural_first: String,
+    indicative_active_perfect_plural_second: String,
+    indicative_active_perfect_plural_third: String,
+    indicative_active_pluperfect_singular_first: String,
+    indicative_active_pluperfect_singular_second: String,
+    indicative_active_pluperfect_singular_third: String,
+    indicative_active_pluperfect_plural_first: String,
+    indicative_active_pluperfect_plural_second: String,
+    indicative_active_pluperfect_plural_third: String,
+    
 
-    #[serde(deserialize_with = "deserialize_declension")]
-    conjugation: Declension,
-    #[serde(deserialize_with = "deserialize_pluralia")]
-    irregular: bool,
+
+ 
 }
 
 //word,feminine,neuter,comparative,superlative,adverb,declension,adj_stem
@@ -110,21 +157,7 @@ struct AdjectiveRecord {
     pub abl_pl_neut: String,
 }
 
-fn deserialize_declension<'de, D>(deserializer: D) -> Result<Declension, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let s: String = String::deserialize(deserializer)?;
-    match s.as_str() {
-        "1" => Ok(Declension::First),
-        "2" => Ok(Declension::Second),
-        "3" => Ok(Declension::Third),
-        "4" => Ok(Declension::Fourth),
-        "12" => Ok(Declension::OneTwo),
-        "i" => Ok(Declension::Irregular),
-        _ => Err(serde::de::Error::custom("unknown declension")),
-    }
-}
+
 
 fn deserialize_gender<'de, D>(deserializer: D) -> Result<Gender, D::Error>
 where
@@ -272,14 +305,16 @@ impl Latin {
         response
     }
 
-
-    pub fn adjective(&self, word: &str, case: &Case, number: &Number, gender: &Gender) -> Adjective {
+    pub fn adjective(
+        &self,
+        word: &str,
+        case: &Case,
+        number: &Number,
+        gender: &Gender,
+    ) -> Adjective {
         let defik = AdjectiveRecord::default();
 
         let record = self.adj_map.get(word).unwrap_or(&defik);
-
-
-        
 
         match gender {
             Gender::Masculine => match number {
