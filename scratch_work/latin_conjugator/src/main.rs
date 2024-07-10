@@ -318,6 +318,7 @@ impl Latin {
 
         if case == &Case::Loc && (response.0 == "" || response.0 == "-") {
             response.0 = format!("in {}", record.abl_sg.clone());
+            
         }
 
 
