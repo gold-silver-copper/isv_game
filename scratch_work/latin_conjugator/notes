@@ -1,3 +1,12 @@
+Formal description: RomeRL
+
+
+The game will be a 3d ascii roguelike in the style of old dwarf fortress. The game will need 3d for accurate modeling of aqueaducts and other aspects of roman engineering. The game will have an accurate metal smithing system based on real life ore compositions. It will act as an interactive encyclopedia of knowledge in various fields. It can include the name of all botanical plants.
+
+
+
+
+
 health: sanitas, salus, valetudo, vita
 
 money: denarius: 
@@ -26,6 +35,8 @@ Most Roman cities were shaped like a square. There were 4 main roads leading to 
 
 Way stations providing refreshments were maintained by the government at regular intervals along the roads.
 
+In the New Testament, the gospels refer to the denarius as a day's wage for a common laborer (Matthew 20:2,[24] John 12:5).[25] In the Book of Revelation, during the Third Seal: Black Horse, a choinix ("quart") of wheat and three quarts of barley were each valued at one denarius.[26] Bible scholar Robert H. Mounce says the price of the wheat and barley as described in the vision appears to be ten to twelve times their normal cost in ancient times.[27] Revelation thus describes a condition where basic goods are sold at greatly inflated prices. Thus, the black horse rider depicts times of deep scarcity or famine, but not of starvation. Apparently, a choinix of wheat was the daily ration of one adult. Thus, in the conditions pictured by Revelation 6, the normal income for a working-class family would buy enough food for only one person. The less costly barley would feed three people for one day's wages. 
+
 
 
 Giant statues are cool, colossus
@@ -43,3 +54,30 @@ On monuments, Auxilia are generally shown wearing mail, not cuirasses, and carry
 
 
 https://en.wikipedia.org/wiki/Category:Ancient_Roman_legionary_equipment
+https://en.wikipedia.org/wiki/Ancient_Roman_military_clothing
+https://en.wikipedia.org/wiki/Category:Roman-era_clothing
+
+
+Examples of items of Roman military personal armour included:
+
+    Galea or soldier's helmet. Variant forms included the Coolus helmet, Montefortino helmet, and Imperial helmet.
+    Greaves, to protect the legs.
+    Lorica (armour), including:
+        Lorica hamata (mail armour)
+        Lorica manica (arm guards)
+        Lorica plumata (a form of scale armour resembling feathers)
+        Lorica segmentata (segmented armour)
+        Lorica squamata (scale armour)
+        Lorica musculata (muscle armour)
+    Pteruges, perhaps mostly for senior ranks, formed a defensive skirt of leather or multi-layered fabric (linen) strips or lappets worn dependant from the waists of cuirasses
+
+Other garments and equipment included:
+
+    A tunic
+    The baldric, a belt worn over one shoulder that is typically used to carry a weapon (usually a sword) or other implement such as a bugle or drum
+    The balteus, the standard belt worn by the Roman legionary. It was probably used to tuck clothing into or to hold weapons.
+    Braccae (trousers), popular among Roman legionaries stationed in cooler climates to the north of southern Italy
+    Caligae, heavy-soled military shoes or sandals which were worn by Roman legionary soldiers and auxiliaries throughout the history of the Roman Republic and Empire.
+    The focale, a scarf worn by the Roman legionary to protect the neck from chafing caused by constant contact with the soldier's armor
+    The loculus, a satchel, carried by legionaries as a part of their sarcina (marching pack)
+    The paludamentum, a cloak or cape fastened at one shoulder, worn by military commanders and (less often) by their troops. Ordinary soldiers wore a sagum instead of a paludamentum.

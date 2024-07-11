@@ -25,17 +25,14 @@ fn main() {
     .add_systems(Update, ui_example_system)
     .add_systems(Startup, setup)
     .init_resource::<Masterik>()
+  
 
     .init_resource::<BevyTerminal<RataguiBackend>>()
     .run();
 }
 
 
-fn ui_example_system(mut contexts: EguiContexts) {
-    egui::Window::new("Hello").show(contexts.ctx_mut(), |ui| {
-        ui.label("world");
-    });
-}
+
 
 fn setup(
     mut commands: Commands,
@@ -68,7 +65,7 @@ pub struct BevyTerminal<RataguiBackend: ratatui::backend::Backend> {
 impl Default for BevyTerminal<RataguiBackend> {
     fn default() -> Self {
         let mut backend1 = RataguiBackend::new(20, 20);
-        backend1.set_font_size(14);
+        backend1.set_font_size(16);
         let mut terminal1 = Terminal::new(backend1).unwrap();
 
         BevyTerminal {
@@ -96,4 +93,53 @@ impl Default for Masterik {
          
         }
     }
+}
+
+fn ui_example_system(
+    mut contexts: EguiContexts,
+    mut termres: ResMut<BevyTerminal<RataguiBackend>>,
+    masterok: Res<Masterik>,
+  
+) {
+  
+
+    //draws info to ratatui terminal
+    draw_info_menu(&mut termres.terminal_info, &masterok);
+
+    let mut frame = egui::Frame::default()
+        .inner_margin(4.0)
+        .outer_margin(0.0)
+        .fill(egui::Color32::BLACK);
+
+    //limit panel to certain size that is guaranteed to fit text
+    egui::SidePanel::right("my_left_panel")
+        .frame(frame)
+        .min_width(322.0)
+        .max_width(322.0)
+        .show(contexts.ctx_mut(), |ui| {
+            ui.add(termres.terminal_info.backend_mut());
+        });
+}
+
+
+
+fn draw_info_menu(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik) {
+    terminal
+        .draw(|frame| {
+            let area = frame.size();
+
+            let mut lines = (Text::from(vec![
+                Line::from(format!("meoiw: {} ", 6)),
+                Line::from(" "),
+            
+            ]));
+
+            frame.render_widget(
+                Paragraph::new(lines)
+                    .on_black()
+                    .block(Block::new().title("Salve").gray().borders(Borders::ALL)),
+                area,
+            );
+        })
+        .expect("epic fail");
 }
