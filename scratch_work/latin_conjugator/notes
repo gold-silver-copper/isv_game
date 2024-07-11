@@ -5,7 +5,10 @@ The game will be a 3d ascii roguelike in the style of old dwarf fortress. The ga
 
 
 
+Technical notes: For spawning items, read through csv, add component for each tag.
 
+
+Cultural Notes:
 
 health: sanitas, salus, valetudo, vita
 
@@ -52,10 +55,18 @@ While heavy, intricate armour was not uncommon (cataphracts), the Romans perfect
 
 On monuments, Auxilia are generally shown wearing mail, not cuirasses, and carrying oval shields. Roman depictions of legionaries, such as those found on Trajan's column often depict them wearing the lorica segmentata.[9] On this basis, it has been supposed that lorica segmentata was exclusively used by legionaries and praetorians.
 
+https://en.wikipedia.org/wiki/Category:Ancient_Rome
+https://en.wikipedia.org/wiki/Category:Culture_of_ancient_Rome
 
+https://en.wikipedia.org/wiki/Category:Ancient_Roman_military_equipment
 https://en.wikipedia.org/wiki/Category:Ancient_Roman_legionary_equipment
+https://en.wikipedia.org/wiki/Category:Roman_armour
 https://en.wikipedia.org/wiki/Ancient_Roman_military_clothing
 https://en.wikipedia.org/wiki/Category:Roman-era_clothing
+https://en.wikipedia.org/wiki/Category:Byzantine_clothing
+https://en.wikipedia.org/wiki/Category:Roman_Catholic_vestments
+https://en.wikipedia.org/wiki/Category:Historical_footwear
+
 
 
 Examples of items of Roman military personal armour included:
@@ -81,3 +92,16 @@ Other garments and equipment included:
     The focale, a scarf worn by the Roman legionary to protect the neck from chafing caused by constant contact with the soldier's armor
     The loculus, a satchel, carried by legionaries as a part of their sarcina (marching pack)
     The paludamentum, a cloak or cape fastened at one shoulder, worn by military commanders and (less often) by their troops. Ordinary soldiers wore a sagum instead of a paludamentum.
+
+
+
+    The toga was considered Rome's "national costume," privileged to Roman citizens but for day-to-day activities most Romans preferred more casual, practical and comfortable clothing; the tunic, in various forms, was the basic garment for all classes, both sexes and most occupations. It was usually made of linen, and was augmented as necessary with underwear, or with various kinds of cold-or-wet weather wear, such as knee-breeches for men, and cloaks, coats and hats. 
+
+    In colder parts of the empire, full length trousers were worn. Most urban Romans wore shoes, slippers, boots or sandals of various types; in the countryside, some wore clogs. 
+
+
+    The stola (Classical Latin: [ˈst̪ɔ.ɫ̪a]) (pl. stolae) was the traditional garment of Roman women, corresponding to the toga that was worn by men.[1] It was also called vestis longa in Latin literary sources,[2] pointing to its length.[3]
+
+    The pallium was a Roman cloak. It was similar in form to the palla, which had been worn by respectable Roman women since the mid-Republican era.[1] It was a rectangular length of cloth,[2] as was the himation in ancient Greece. It was usually made from wool[3] or flax, but for the higher classes it could be made of silk with the use of gold threads[4] and embroideries.
+
+The garment varied in fineness, colour and ornament. It could be white, purple red (purpurea from murex), black,[5] yellow, blue, pale green, etc. 
