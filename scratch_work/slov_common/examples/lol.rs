@@ -21,20 +21,35 @@ struct Player;
 
 type XPosition = i64;
 type YPosition = i64;
-type ZPosition = i64;
+//type ZPosition = i64;
 
 #[derive(Component)]
 struct GamePosition {
     x: XPosition,
     y: YPosition,
-    z: ZPosition
+  //  z: ZPosition
 }
 
 #[derive(Component)]
 struct GameRenderable {
-    graphic: String,
+    display_char: String,
     fg_color: RatColor,
     bg_color: RatColor
+}
+
+impl GameRenderable {
+
+
+    pub fn new_human() -> GameRenderable {
+
+        GameRenderable {
+            display_char: "@".into(),
+            fg_color: RatColor::White,
+            bg_color: RatColor::Black,
+
+        }
+    }
+
 }
 
 fn main() {
@@ -173,10 +188,18 @@ fn local_world_process(mut masterok: ResMut<Masterik>) {
     }
 }
 
-fn create_local_account(mut masterok: ResMut<Masterik>) {
-    let local_info = masterok.client_world.make_account();
-    masterok.player_account_id = local_info.0;
-    masterok.player_entity_id = local_info.1;
+fn create_local_account(mut commands: Commands) {
+     // create a new entity
+     commands.spawn((
+        // Initialize all your components and bundles here
+        Player,
+        GamePosition {
+           x:5,
+           y:5
+        },
+        GameRenderable::new_human()
+        // ...
+    ));
 }
 
 
@@ -326,87 +349,7 @@ fn draw_ascii_game(
 }
 
 fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik) {
-    let player_data_copy = masterok
-        .client_world
-        .entity_map
-        .get(&masterok.player_entity_id)
-        .unwrap()
-        .clone();
-    if let EntityType::Human = player_data_copy {
-        let local_player_loc = masterok
-            .client_world
-            .ent_loc_index
-            .get(&masterok.player_entity_id)
-            .unwrap_or(&(0, 0));
 
-        let visible_ents = masterok
-            .client_world
-            .get_visible_ents_from_ent(&masterok.player_entity_id);
-
-        let mut wep_string = String::new();
-        let mut local_items = String::new();
-        let mut inventory_string = String::new();
-
-        if let Some(current_voxel) = masterok.client_world.get_voxel_at(&local_player_loc) {
-            let floor_string = format! {"{}",&current_voxel.floor};
-
-            let funny_string = format! {" {},",floor_string.to_lowercase()};
-            local_items.push_str(&funny_string);
-        }
-
-        let mut visibility_string = String::from("");
-
-        if visible_ents.len() > 0 {
-            for eid in visible_ents {
-                let etik = masterok.client_world.entity_map.get(&eid).unwrap();
-            }
-        } else {
-            visibility_string.push_str(" ničego...");
-        }
-
-        //  let stats_string = format!{"Sila: {}  Bystrost́ {}  Råzum: {} ",veci.melee_weapon , veci.ranged_weapon};
-        //ty vidisz
-        //pod toboj
-        //u tebja jest v rukah nozz . Dla daljnogo boja imajesz luk derevny s zlotymi strelami.  Nedavno osnovany objekty je
-
-        let mut messages_clone = masterok.messages.clone();
-        messages_clone.reverse();
-
-        let mut messages_to_show = Vec::new();
-
-        messages_to_show.push(Line::from(""));
-        messages_to_show.push(Line::from(wep_string));
-        messages_to_show.push(Line::from("Věči...."));
-
-        messages_to_show.push(Line::from(inventory_string));
-
-        messages_to_show.push(Line::from("Pod tobojų... "));
-        messages_to_show.push(Line::from(local_items));
-        messages_to_show.push(Line::from("Ty vidiš.... "));
-
-        messages_to_show.push(Line::from(visibility_string));
-
-        messages_to_show.push(Line::from(""));
-
-        for massage in messages_clone {
-            messages_to_show.push(Line::from(massage));
-        }
-
-        terminal
-            .draw(|frame| {
-                let area = frame.size();
-
-                //neccesary beccause drawing is from the top
-
-                frame.render_widget(
-                    Paragraph::new(messages_to_show)
-                        .on_black()
-                        .block(Block::new().title("meowmeowm").borders(Borders::ALL)),
-                    area,
-                );
-            })
-            .expect("epic fail");
-    }
 }
 
 // Render to the terminal and to egui , both are immediate mode
