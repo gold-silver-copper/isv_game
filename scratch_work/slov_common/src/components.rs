@@ -44,3 +44,17 @@ impl GameRenderable {
         )
     }
 }
+
+
+//MAKE IT POSSIBLE TO SET PLAYER AI MODE FOR AUTO PLAYING
+#[derive(Clone, Debug, PartialEq, Component)]
+pub enum ActionComponent {
+    Wait,
+    Take(),
+    MeleeAttack(),
+    Drop(),
+    Give(),
+    Hit(),
+    Go(CardinalDirection),
+    Quit,
+}

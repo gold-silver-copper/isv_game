@@ -4,24 +4,24 @@ use crate::*;
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
 
-    pub small_rngik: SmallRng,
-
-    pub world_seed: u32,
+   
 }
 
 impl Default for GameMap {
     fn default() -> Self {
-        let rngik: u32 = 87243563;
+    
 
         Self {
-            small_rngik: SmallRng::seed_from_u64(rngik as u64),
+       
 
-            world_seed: rngik.clone(),
-
-            voxeltile_grid: GameMap::generate_test(rngik),
+            voxeltile_grid: GameMap::generate_test(100),
         }
     }
 }
+
+
+
+
 
 impl GameMap {
     pub fn new_test() -> GameMap {
@@ -30,14 +30,8 @@ impl GameMap {
         x
     }
 
-    // World initialization function.
-    pub fn init_world(&mut self) -> RTree<Voxel> {
-        let rngik = self.world_seed.clone();
-
-        let a = GameMap::generate_test(rngik);
-
-        a
-    }
+   
+ 
 
     pub fn generate_test(seed: u32) -> RTree<Voxel> {
         let hasher = noise::permutationtable::PermutationTable::new(seed);

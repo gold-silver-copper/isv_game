@@ -6,6 +6,7 @@ fn main() {
         .init_resource::<BevyTerminal<RataguiBackend>>()
         //Initialize the ratatui terminal
         .init_resource::<GameMap>()
+        .init_resource::<Masterok>()
         .add_plugins(EguiPlugin)
         // Systems that create Egui widgets should be run during the `CoreSet::Update` set,
         // or after the `EguiSet::BeginFrame` system (which belongs to the `CoreSet::PreUpdate` set).
