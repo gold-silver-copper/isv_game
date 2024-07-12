@@ -5,10 +5,6 @@ pub const LOCAL_RANGE: i64 = 2000;
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (String, RatColor, RatColor);
 
-#[derive(Clone, Debug)]
-pub struct GameDataPacket {
-    pub voxel_diffs: Vec<Voxel>,
-}
 
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
     let mut result = (0, 0);

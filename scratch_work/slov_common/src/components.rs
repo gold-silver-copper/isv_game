@@ -3,14 +3,12 @@ use crate::*;
 #[derive(Component)]
 pub struct Player;
 
-type XPosition = i64;
-type YPosition = i64;
-//type ZPosition = i64;
+
 
 #[derive(Component)]
 pub struct GamePosition {
-    pub x: XPosition,
-    pub y: YPosition,
+    pub x: CoordinateUnit,
+    pub y: CoordinateUnit,
     //  z: ZPosition
 }
 

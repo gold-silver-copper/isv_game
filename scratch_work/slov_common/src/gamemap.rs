@@ -24,12 +24,7 @@ impl Default for GameMap {
 
 
 impl GameMap {
-    pub fn new_test() -> GameMap {
-        let mut x = GameMap::default();
-
-        x
-    }
-
+  
    
  
 

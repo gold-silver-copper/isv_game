@@ -55,6 +55,20 @@ pub fn setup(mut commands: Commands) {
         GamePosition { x: 5, y: 5 },
         GameRenderable::new_human(), // ...
     ));
+
+
+
+    for boop in 1..200000 {
+        commands.spawn((
+            // Initialize all your components and bundles here
+           
+            GamePosition { x: boop*boop, y: boop*2 },
+            GameRenderable::new_human(), // ...
+        ));
+
+
+    }
+
 }
 
 pub fn set_custom_font(mut contexts: EguiContexts) {
