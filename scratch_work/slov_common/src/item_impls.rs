@@ -74,53 +74,11 @@ impl BushType {
 
 
 
-impl MeleeWeapon {
-    pub fn minimal_string(&self) -> String {
-        format! {"{}",self.weapon_type}
-    }
-}
-impl MeleeWeaponType {
-    pub fn weapon_range(&self) -> StatsUnit {
-        match self {
-            MeleeWeaponType::Kopje => 10,
-            //   MeleeWeaponType::Nož =>{100}
-            _ => 3,
-        }
-    }
-}
-
-
-impl ItemType {
-    pub fn to_displaychar(&self) -> String {
-        let item_str = self.minimal_string();
-
-        // let item_str = format!("{}", self.item_type);
-        let ch = item_str.chars().nth(0).unwrap().to_lowercase().to_string();
-        ch
-    }
-    pub fn to_color(&self) -> Color {
-        match &self {
-            ItemType::Melee(x) => x.material_type.to_color(),
-   
-        }
-    }
-    pub fn minimal_string(&self) -> String {
-        let item_str = match &self {
-            ItemType::Melee(x) => {
-                format!("{}", &x.weapon_type)
-            }
-  
-        };
-
-        item_str
-    }
-}
-
 impl Default for Human {
     fn default() -> Self {
         Self {
-            inventory: Vec::new(),
-            equipment: EquipmentComponent::new_hunter(),
+        
+       
             stats: StatsComponent::new_default(),
             cur_health: HealthComponent::new(),
             max_health: HealthComponent::new(),
@@ -165,7 +123,7 @@ impl EntityType {
     pub fn minimal_string(&self) -> String {
         match self {
             EntityType::Human(x) => x.name.name.clone(),
-            EntityType::Item(x) => x.minimal_string(),
+         
            
             EntityType::Mebelj(x) => x.minimal_string(),
             EntityType::Råstlina(x) => x.minimal_string(),
@@ -175,7 +133,7 @@ impl EntityType {
   
     pub fn to_displaychar(&self) -> String {
         match self {
-            EntityType::Item(x) => x.to_displaychar(),
+           
           
             EntityType::Human(_) => "𖣊".into(),
             EntityType::None => "?".into(),
@@ -187,7 +145,7 @@ impl EntityType {
 
     pub fn to_color(&self) -> Color {
         match self {
-            EntityType::Item(x) => x.to_color(),
+         
            
             EntityType::Human(_) => Color::White,
             EntityType::None => Color::Red,

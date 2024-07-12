@@ -149,8 +149,8 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
         let statiki = &player_data_into.stats;
         let healthik = &player_data_into.cur_health;
         let nameik = &player_data_into.name;
-        let veci = &player_data_into.equipment;
-        let mut player_inv = player_data_into.inventory.clone();
+     
+      
 
         let name_string = format! {"{}",nameik.name};
         let health_string =
@@ -162,26 +162,18 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
 
        
 
-        if let Some(mel_wep) = &veci.melee_weapon {
-            let mel_str = format! {"V rųkah {}", mel_wep.minimal_string().to_lowercase() };
-            wep_string.push_str(&mel_str);
-        } else {
-            wep_string.push_str("V rųkah ničto");
-        }
 
       
 
         if let Some(current_voxel) = masterok.client_world.get_voxel_at(&local_player_loc) {
             let floor_string = format! {"{}",&current_voxel.floor};
 
-            let items = masterok.client_world.get_items_at_point(&local_player_loc);
+        
 
             let funny_string = format! {" {},",floor_string.to_lowercase()};
             local_items.push_str(&funny_string);
 
-            for itemik in items {
-                local_items.push_str(&format!(" {},", itemik.1.minimal_string().to_lowercase()));
-            }
+          
         }
 
         let mut visibility_string = String::from("");
@@ -293,7 +285,7 @@ struct Masterik {
     client_world: MyWorld,
     is_logged_in: bool,
     button_entityid_map: HashMap<ItemKey, EntityID>,
-    button_itemstruct_map: HashMap<ItemKey, ItemType>,
+   
     list_cursor_index: usize,
     targeted_ent_id: EntityID,
 }
@@ -303,7 +295,7 @@ impl Masterik {
         self.list_cursor_index = 0;
         self.targeted_ent_id = 0;
         self.button_entityid_map.drain();
-        self.button_itemstruct_map.drain();
+      
     }
 }
 
@@ -319,7 +311,7 @@ impl Default for Masterik {
             list_cursor_index: 0,
             targeted_ent_id: 0,
             button_entityid_map: HashMap::new(),
-            button_itemstruct_map: HashMap::new(),
+          
         }
     }
 }
@@ -463,51 +455,7 @@ fn keyboard_input_system(
         if char_attack {
             ui_state.menu_open = MenuOpen::Attack;
         }
-    } else if ui_state.menu_open == MenuOpen::Take {
-        if char_take {
-            masterok.refresh_menus();
-            ui_state.menu_open = MenuOpen::None;
-        }
-
-        if char_one {
-            client_action =
-                ActionType::Take(masterok.button_entityid_map.get(&1).unwrap_or(&0).clone());
-        }
-    } else if ui_state.menu_open == MenuOpen::Attack {
-        if char_attack {
-            masterok.refresh_menus();
-            ui_state.menu_open = MenuOpen::None;
-        }
-
-        if cursor_down {
-            masterok.list_cursor_index += 1;
-        }
-        if cursor_up {
-            if masterok.list_cursor_index > 0 {
-                masterok.list_cursor_index -= 1;
-            }
-        }
-
-        if cursor_right {
-            client_action =
-                ActionType::MeleeAttack(masterok.targeted_ent_id);
-        }
-    } else if ui_state.menu_open == MenuOpen::Drop {
-        if char_drop {
-            masterok.refresh_menus();
-            ui_state.menu_open = MenuOpen::None;
-        }
-
-        if char_one {
-            client_action = ActionType::Drop(
-                masterok
-                    .button_itemstruct_map
-                    .get(&1)
-                    .unwrap()
-                    .clone(),
-            );
-        }
-    }
+    } 
 
     if char_quit {
         panic!("BYE");

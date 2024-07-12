@@ -26,25 +26,15 @@ pub enum PlantType {
 }
 
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct MeleeWeapon {
-    pub weapon_type: MeleeWeaponType,
-    pub material_type: SolidMaterial,
-}
 
 
 
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum ItemType {
-    Melee(MeleeWeapon),
-  
-}
 
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum EntityType {
     Human(Human),
-    Item(ItemType), //věć
+   
    
     Mebelj(Mebelj),
 

@@ -70,31 +70,4 @@ impl StatsComponent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct EquipmentComponent {
-    pub melee_weapon: Option<MeleeWeapon>,
 
- 
-}
-
-impl EquipmentComponent {
-    pub fn new_empty() -> EquipmentComponent {
-        EquipmentComponent {
-            melee_weapon: None,
-
-      
-        }
-    }
-    pub fn new_hunter() -> EquipmentComponent {
-        EquipmentComponent {
-            melee_weapon: Some(MeleeWeapon {
-                weapon_type: MeleeWeaponType::Nož,
-                material_type: SolidMaterial::Metal(MetalType::Bronza),
-            }),
-
-         
-        }
-    }
-}
-
-pub type InventoryComponent = Vec<ItemType>;

@@ -54,14 +54,7 @@ impl MyWorld {
 
     pub fn new_test() -> MyWorld {
         let mut x = MyWorld::default();
-       
-        x.new_entity(
-            &(81, 87),
-            &EntityType::Item(ItemType::Melee(MeleeWeapon {
-                weapon_type: MeleeWeaponType::Kopje,
-                material_type: SolidMaterial::Kamenj(StoneType::Kremenj),
-            })),
-        );
+    
         x
     }
 
@@ -78,9 +71,7 @@ impl MyWorld {
 
                 let success_type = match action {
                     ActionType::Go(loc) => Action::go(self, &eid, loc),
-                    ActionType::Take(obj) => Action::take(self, &eid, obj),
-                    ActionType::MeleeAttack(obj) => Action::melee_attack(self, &eid, obj),
-                    ActionType::Drop(itik) => Action::drop(self, &eid, itik),
+              
                     ActionType::Wait => SuccessType::Success,
 
                     _ => panic!("not implemented"),
@@ -215,20 +206,6 @@ impl MyWorld {
         }
     }
 
-    pub fn get_items_at_point(&self, point: &MyPoint) -> Vec<(EntityID, ItemType)> {
-        let mut item_vec = Vec::new();
-        let boop = self.entity_tree.locate_all_at_point(point);
-        for x in boop {
-            let ent_typ = self.entity_map.get(&x.entity_id);
-            if let Some(meow) = ent_typ {
-                match meow {
-                    EntityType::Item(wut) => item_vec.push((x.entity_id.clone(), wut.clone())),
-                    _ => (),
-                }
-            }
-        }
-        item_vec
-    }
 
     pub fn entity_blocks_movement_at(&self, point: &MyPoint) -> bool {
         let entsatpoint = self.entity_tree.locate_all_at_point(point);
@@ -242,7 +219,7 @@ impl MyWorld {
             match enttype {
                 EntityType::Human(_) => return true,
         
-                EntityType::Item(_) => (),
+              
                 _ => (),
             }
         }
@@ -275,9 +252,9 @@ impl MyWorld {
             subject_pronoun = nomik.minimal_string();
         }
         let meowik = match &act_packet.action {
-            ActionType::Drop(x) => format!(" brosati {}", x.minimal_string().to_lowercase()),
+          
             ActionType::Go(x) => format!("idti"),
-            ActionType::MeleeAttack(x) => format!(" udarjati {}", ""),
+           
             _ => format!(" jhxcvhas {}", ""),
         };
 
