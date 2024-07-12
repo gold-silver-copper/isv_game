@@ -1,74 +1,6 @@
 use crate::*;
 
-impl SolidMaterial {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            Self::Metal(x) => x.to_color(),
-            Self::Drěvo(x) => x.to_color(),
-            Self::Kamenj(x) => x.to_color(),
-        }
-    }
-}
 
-impl FabricMaterial {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            Self::Tkanina(x) => x.to_color(),
-           
-
-            Self::Lancuh(x) => x.to_color(),
-        }
-    }
-}
-
-impl WoodType {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            _ => Color::Rgb(139, 69, 19),
-        }
-    }
-}
-
-impl MetalType {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            _ => Color::Rgb(170, 169, 173),
-        }
-    }
-}
-
-impl StoneType {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            _ => Color::Rgb(118, 91, 70),
-        }
-    }
-}
-
-impl GrassType {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            _ => Color::Rgb(34, 139, 34),
-        }
-    }
-    pub fn to_displaychar(&self) -> String {
-        match &self {
-            Self::Trava => "'".into(),
-            Self::Kovylj => "\"".into(),
-            Self::Burjan => "/".into(),
-            Self::Kanabis => "\"".into(),
-            Self::Jasenėc => "\"".into(),
-        }
-    }
-}
-
-impl BushType {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            _ => Color::Rgb(228, 46, 103),
-        }
-    }
-}
 
 
 
@@ -87,37 +19,6 @@ impl Default for Human {
     }
 }
 
-impl PlantType {
-    pub fn to_displaychar(&self) -> String {
-        match self {
-            PlantType::Drěvo(x) => "t".into(),
-            PlantType::Kust(x) => "*".into(),
-            PlantType::Trava(x) => x.to_displaychar(),
-        }
-    }
-    pub fn minimal_string(&self) -> String {
-        match self {
-            PlantType::Drěvo(x) => {
-                format! {"{}",x}
-            }
-            PlantType::Kust(x) => {
-                format! {"{}",x}
-            }
-            PlantType::Trava(x) => {
-                format! {"{}",x}
-            }
-        }
-    }
-
-    pub fn to_color(&self) -> Color {
-        match self {
-            PlantType::Drěvo(x) => x.to_color(),
-            PlantType::Kust(x) => x.to_color(),
-
-            PlantType::Trava(x) => x.to_color(),
-        }
-    }
-}
 
 impl EntityType {
     pub fn minimal_string(&self) -> String {
@@ -125,9 +26,7 @@ impl EntityType {
             EntityType::Human(x) => x.name.name.clone(),
          
            
-            EntityType::Mebelj(x) => x.minimal_string(),
-            EntityType::Råstlina(x) => x.minimal_string(),
-            EntityType::None => String::new(),
+            
         }
     }
   
@@ -136,10 +35,7 @@ impl EntityType {
            
           
             EntityType::Human(_) => "𖣊".into(),
-            EntityType::None => "?".into(),
-
-            EntityType::Råstlina(x) => x.to_displaychar(),
-            EntityType::Mebelj(x) => x.to_displaychar(),
+       
         }
     }
 
@@ -148,10 +44,7 @@ impl EntityType {
          
            
             EntityType::Human(_) => Color::White,
-            EntityType::None => Color::Red,
-
-            EntityType::Mebelj(x) => x.to_color(),
-            EntityType::Råstlina(x) => x.to_color(),
+   
         }
     }
 
@@ -159,24 +52,6 @@ impl EntityType {
         let ent_char = self.to_displaychar();
         let ent_color = self.to_color();
         (ent_char, ent_color, Color::Black)
-    }
-}
-
-impl Mebelj {
-    pub fn minimal_string(&self) -> String {
-        format!("{}", self.mebelj_type)
-    }
-
-    pub fn to_displaychar(&self) -> String {
-        match &self.mebelj_type {
-            MebeljType::Stěna => "#".into(),
-            MebeljType::Dvėrj => "+".into(),
-            MebeljType::Vråta => "=".into(),
-            _ => todo!("implement mebelj"),
-        }
-    }
-    pub fn to_color(&self) -> Color {
-        self.material.to_color()
     }
 }
 

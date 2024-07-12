@@ -214,7 +214,7 @@ impl MyWorld {
             let enttype = self
                 .entity_map
                 .get(&entt.entity_id)
-                .unwrap_or(&EntityType::None);
+                .unwrap();
 
             match enttype {
                 EntityType::Human(_) => return true,
@@ -247,7 +247,7 @@ impl MyWorld {
             let nomik = self
                 .entity_map
                 .get(&act_packet.action_subject)
-                .unwrap_or(&EntityType::None);
+                .unwrap();
 
             subject_pronoun = nomik.minimal_string();
         }

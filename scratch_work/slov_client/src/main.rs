@@ -133,7 +133,7 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
         .client_world
         .entity_map
         .get(&masterok.player_entity_id)
-        .unwrap_or(&EntityType::None)
+        .unwrap()
         .clone();
     if let EntityType::Human(player_data_into) = player_data_copy {
         let local_player_loc = masterok
@@ -184,12 +184,8 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
                     .client_world
                     .entity_map
                     .get(&eid)
-                    .unwrap_or(&EntityType::None);
-                if etik != &EntityType::None {
-                    let stringik =
-                        format! {" {},", ISV::acc_sg( &etik.minimal_string().to_lowercase()) };
-                    visibility_string.push_str(&stringik);
-                }
+                    .unwrap();
+            
             }
         } else {
             visibility_string.push_str(" ničego...");
