@@ -2,9 +2,8 @@ use crate::*;
 // Create resource to hold the ratatui terminal
 #[derive(Resource)]
 pub struct BevyTerminal<RataguiBackend: ratatui::backend::Backend> {
-   pub  terminal_game: Terminal<RataguiBackend>,
+    pub terminal_game: Terminal<RataguiBackend>,
     pub terminal_info: Terminal<RataguiBackend>,
-   
 }
 
 // Implement default on the resource to initialize it
@@ -17,75 +16,35 @@ impl Default for BevyTerminal<RataguiBackend> {
         let mut backend2 = RataguiBackend::new(20, 20);
         backend2.set_font_size(12);
         let mut terminal2 = Terminal::new(backend2).unwrap();
-     
+
         BevyTerminal {
             terminal_game: terminal1,
             terminal_info: terminal2,
-           
         }
     }
 }
 
 #[derive(Resource)]
 pub struct Masterik {
-    pub client_pos: GamePosition,
-
-    pub messages: Vec<String>,
+   
     pub client_world: MyWorld,
-    pub is_logged_in: bool,
-    pub button_entityid_map: HashMap<ItemKey, EntityID>,
 
-    pub list_cursor_index: usize,
-    pub targeted_ent_id: EntityID,
+
 }
 
-impl Masterik {
-    pub fn refresh_menus(&mut self) {
-        self.list_cursor_index = 0;
-        self.targeted_ent_id = 0;
-        self.button_entityid_map.drain();
-    }
-}
+
 
 impl Default for Masterik {
-  fn default() -> Self {
-        Self {
-            client_pos: GamePosition::new(),
-
-            messages: Vec::new(),
-            client_world: MyWorld::new_test(),
-            is_logged_in: false,
-            list_cursor_index: 0,
-            targeted_ent_id: 0,
-            button_entityid_map: HashMap::new(),
-        }
-    }
-}
-
-#[derive(PartialEq)]
-pub enum MenuOpen {
-    None,
-    Take,
-    Drop,
-    Inventory,
-    Stats,
-    CursorInteract,
-    PlayerLocationInteract,
-    Attack,
-}
-
-#[derive(Resource)]
-pub struct UIState {
-   pub menu_open: MenuOpen,
-}
-
-impl Default for UIState {
     fn default() -> Self {
         Self {
-            menu_open: MenuOpen::None,
+        
+            client_world: MyWorld::new_test(),
+         
         }
     }
 }
+
+
 
 pub fn setup(mut commands: Commands) {
     // create a new entity

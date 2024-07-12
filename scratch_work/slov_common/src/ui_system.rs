@@ -1,19 +1,29 @@
 use crate::*;
 pub fn draw_ascii_game(
-   
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
     masterok: Res<Masterik>,
+    player_position: Query<(Entity, &GamePosition), With<Player>>,
+    render_query: Query<(&GamePosition, &GameRenderable)>,
 ) {
+    let (pid, client_pos) = player_position.single();
 
-   
     let client_world = &masterok.client_world;
-    let client_pos = &masterok.client_pos;
-    termres.terminal_game
+
+    let mut ent_vec = Vec::new();
+
+    for tupik in render_query.iter() {
+        ent_vec.push(tupik);
+    }
+
+    termres
+        .terminal_game
         .draw(|frame| {
             let area = frame.size();
             let client_render =
-                client_world.create_client_render_packet_for_entity(client_pos, &area);
-            let client_graphics = client_render.spans_to_render;
+                client_world.create_client_render_packet_for_entity(client_pos, &area, ent_vec);
+
+            let client_graphics = client_render.voxel_grid;
+
             let mut render_lines = Vec::new();
             let needed_height = area.height as i16;
 
@@ -49,10 +59,8 @@ pub fn ui_example_system(
     mut contexts: EguiContexts,
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
     mut masterok: ResMut<Masterik>,
-    ui_status: Res<UIState>,
-    query_position: Query<(Entity, &GamePosition)>,
+ 
 ) {
-  
     draw_ascii_info(&mut termres.terminal_info, &masterok);
     let mut gameframe = egui::Frame::default()
         .inner_margin(10.0)

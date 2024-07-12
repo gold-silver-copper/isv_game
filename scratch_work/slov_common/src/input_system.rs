@@ -2,7 +2,7 @@ use crate::*;
 pub fn keyboard_input_system(
     input: Res<ButtonInput<KeyCode>>,
     mut masterok: ResMut<Masterik>,
-    mut ui_state: ResMut<UIState>,
+   
 ) {
     let char_up = input.any_pressed([KeyCode::KeyW]);
     let char_down = input.any_pressed([KeyCode::KeyS]);

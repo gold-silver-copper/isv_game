@@ -44,17 +44,13 @@ pub fn locate_square(e_pos: &MyPoint, w_radius: i64, h_radius: i64) -> AABB<MyPo
 
 #[derive(Debug)]
 pub struct RenderPacket {
-    pub spans_to_render: Vec<Vec<GraphicTriple>>,
-
-    pub messages_to_render: Vec<PlayerMessage>,
+    pub voxel_grid: Vec<Vec<GraphicTriple>>,
 }
 
 impl RenderPacket {
     pub fn new() -> Self {
         RenderPacket {
-            spans_to_render: Vec::new(),
-
-            messages_to_render: Vec::new(),
+            voxel_grid: Vec::new(),
         }
     }
 }

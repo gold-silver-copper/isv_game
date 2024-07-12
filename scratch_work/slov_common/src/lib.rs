@@ -22,9 +22,9 @@ pub use bevy_resources::*;
 mod input_system;
 pub use input_system::*;
 mod ui_system;
-pub use ui_system::*;
 use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
+pub use ui_system::*;
 
 pub use noise::*;
 pub use ratatui::style::Color as RatColor;

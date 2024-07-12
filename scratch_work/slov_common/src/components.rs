@@ -40,7 +40,7 @@ impl GameRenderable {
         (
             self.display_char.clone(),
             self.fg_color.clone(),
-            RatColor::Black,
+            RatColor::White,
         )
     }
 }

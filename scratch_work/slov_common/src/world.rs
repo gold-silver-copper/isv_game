@@ -98,6 +98,7 @@ impl MyWorld {
         &self,
         ent_pos_comp: &GamePosition,
         render_rect: &Rect,
+        ent_vec: std::vec::Vec<(&components::GamePosition, &components::GameRenderable)>,
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
@@ -130,34 +131,33 @@ impl MyWorld {
                 }
             }
 
-            /*
+            //merge grids
 
-              //merge grids
+            for (ent_pos, ent_renderable) in ent_vec {
+                let ent_relative = (
+                    ent_pos.x - bottom_left_of_game_screen.0,
+                    ent_pos.y - bottom_left_of_game_screen.1,
+                );
+                let graphic = ent_renderable.to_graphictriple();
 
-              for (ent_relative, ent_graphic) in ent_vec {
-                  if (0 < ent_relative.1)
-                      && (ent_relative.1 < render_height as i64)
-                      && (0 < ent_relative.0)
-                      && (ent_relative.0 < render_width as i64)
-                  {
-                      if voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0
-                          != String::from("@")
-                      {
-                          voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0 =
-                              ent_graphic.0;
-                          voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].1 =
-                              ent_graphic.1;
-                      }
-                  }
-              }
-
-
-            */
+                if (0 < ent_relative.1)
+                    && (ent_relative.1 < render_height as i64)
+                    && (0 < ent_relative.0)
+                    && (ent_relative.0 < render_width as i64)
+                {
+                    if voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0
+                        != String::from("@")
+                    {
+                        voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0 =
+                            graphic.0.clone();
+                        voxel_grid[ent_relative.1 as usize][ent_relative.1 as usize].1 =
+                            graphic.1.clone();
+                    }
+                }
+            }
 
             RenderPacket {
-                spans_to_render: voxel_grid,
-
-                messages_to_render: Vec::new(),
+                voxel_grid: voxel_grid,
             }
         }
     }
