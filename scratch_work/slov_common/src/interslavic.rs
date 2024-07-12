@@ -185,15 +185,13 @@ impl ISV {
     }
     pub fn acc_sg(word: &str) -> String {
         let word_gender = ISV::guess_gender(word);
-       
+
         let word_stem_is_soft = ISV::stem_of_word_is_soft(word);
         let word_stem = ISV::get_stem(word);
 
         match word_gender {
             Gender::Masculine => {
-              
-                    return format!("{}{}", word_stem, "");
-                
+                return format!("{}{}", word_stem, "");
             }
             Gender::Feminine => {
                 if ISV::is_ost_class(word) {
@@ -213,7 +211,7 @@ impl ISV {
     }
     pub fn gen_sg(word: &str) -> String {
         let word_gender = ISV::guess_gender(word);
-      
+
         let word_stem_is_soft = ISV::stem_of_word_is_soft(word);
         let word_stem = ISV::get_stem(word);
 
@@ -238,7 +236,7 @@ impl ISV {
     }
     pub fn dat_sg(word: &str) -> String {
         let word_gender = ISV::guess_gender(word);
-      
+
         let word_stem_is_soft = ISV::stem_of_word_is_soft(word);
         let word_stem = ISV::get_stem(word);
 
@@ -263,7 +261,7 @@ impl ISV {
     }
     pub fn ins_sg(word: &str) -> String {
         let word_gender = ISV::guess_gender(word);
-      
+
         let word_stem_is_soft = ISV::stem_of_word_is_soft(word);
         let word_stem = ISV::get_stem(word);
 
@@ -296,7 +294,7 @@ impl ISV {
     }
     pub fn loc_sg(word: &str) -> String {
         let word_gender = ISV::guess_gender(word);
-      
+
         let word_stem_is_soft = ISV::stem_of_word_is_soft(word);
         let word_stem = ISV::get_stem(word);
 
@@ -319,6 +317,4 @@ impl ISV {
             }
         }
     }
-
-  
 }

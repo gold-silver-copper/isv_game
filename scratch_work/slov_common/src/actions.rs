@@ -3,7 +3,7 @@ use crate::*;
 #[derive(Clone, Debug, PartialEq)]
 pub enum ActionType {
     Wait,
- 
+
     Go(LocativeID),
     Quit,
 }
@@ -54,9 +54,4 @@ impl Action {
             }
         }
     }
-
- 
-
-
-
 }

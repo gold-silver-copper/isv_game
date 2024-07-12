@@ -1,17 +1,17 @@
 use bevy::{input::keyboard::Key, prelude::*, render::view::visibility};
 
+use crate::egui::{FontData, FontDefinitions, FontFamily};
 use bevy_egui::{
     egui::{self, Frame},
     EguiContexts, EguiPlugin,
 };
-use crate::egui::{FontDefinitions,FontData,FontFamily};
+use egui_ratatui::RataguiBackend;
 use ratatui::{
     layout::Rect,
     prelude::{Line, Stylize, Terminal},
     text::Text,
     widgets::{Block, Borders, Paragraph, Wrap, *},
 };
-use egui_ratatui::RataguiBackend;
 use slov_common::*;
 
 fn main() {
@@ -45,47 +45,49 @@ fn ui_example_system(
     );
 
     draw_ascii_info(&mut termres.terminal_info, &masterok);
+    let mut gameframe = egui::Frame::default()
+        .inner_margin(10.0)
+        .outer_margin(0.0)
+        .fill(egui::Color32::BLACK);
+
+        let mut infoframe = egui::Frame::default()
+        .inner_margin(0.0)
+        .outer_margin(0.0)
+        .fill(egui::Color32::BLACK);
 
     egui::CentralPanel::default()
         .frame(Frame::none())
         .show(contexts.ctx_mut(), |ui| {
             let av_height = ui.available_height().clamp(100., 1500.);
-            let av_width = ui.available_width().clamp(100., 1500.);
-
+            
             egui::SidePanel::right("containeeee")
-                .min_width(260.)
-                .max_width(260.)
-                .frame(Frame::none())
+            .min_width(260.)
+            .max_width(260.)
+            .frame(infoframe)
+            .show_inside(ui, |ui| {
+           
+                        ui.add(termres.terminal_info.backend_mut());
+                   
+            });
+            ui.separator();
+            let av_width = ui.available_width().clamp(100., 1500.);
+            egui::SidePanel::left("gameik")
+            .min_width(av_width)
+            .max_width(av_width)
+                .frame(gameframe)
                 .show_inside(ui, |ui| {
-                    let mut menu_panel_string = String::new();
-                
-                    if menu_panel_string != "" {
-                        egui::TopBottomPanel::top(menu_panel_string)
-                            .min_height(200.)
-                            .max_height(200.)
-                            .frame(Frame::none())
-                            .show_inside(ui, |ui| {
-                                ui.add(termres.terminal_menu.backend_mut());
-                            });
-                    }
-
-                    egui::TopBottomPanel::bottom("info")
-                        .min_height(ui.available_height().clamp(100., 1500.))
-                        .max_height(ui.available_height().clamp(100., 1500.))
-                        .frame(Frame::none())
-                        .show_inside(ui, |ui| {
-                            ui.add(termres.terminal_info.backend_mut());
-                        });
-                });
-
-            let remain_height = ui.available_height().clamp(100., 1500.);
-            egui::TopBottomPanel::top("game")
-                .min_height(remain_height)
-                .max_height(remain_height)
-                .frame(Frame::none())
-                .show_inside(ui, |ui| {
+                  
                     ui.add(termres.terminal_game.backend_mut());
                 });
+          
+          
+
+       
+          
+
+       
+
+          
         });
 }
 
@@ -121,7 +123,6 @@ fn draw_ascii_game(
             frame.render_widget(
                 Paragraph::new(Text::from(render_lines))
                     .on_black()
-
                     .block(Block::new()),
                 area,
             );
@@ -147,41 +148,22 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
             .client_world
             .get_visible_ents_from_ent(&masterok.player_entity_id);
 
-    
-     
-      
-
-   
         let mut wep_string = String::new();
         let mut local_items = String::new();
         let mut inventory_string = String::new();
 
-       
-
-
-      
-
         if let Some(current_voxel) = masterok.client_world.get_voxel_at(&local_player_loc) {
             let floor_string = format! {"{}",&current_voxel.floor};
 
-        
-
             let funny_string = format! {" {},",floor_string.to_lowercase()};
             local_items.push_str(&funny_string);
-
-          
         }
 
         let mut visibility_string = String::from("");
 
         if visible_ents.len() > 0 {
             for eid in visible_ents {
-                let etik = masterok
-                    .client_world
-                    .entity_map
-                    .get(&eid)
-                    .unwrap();
-            
+                let etik = masterok.client_world.entity_map.get(&eid).unwrap();
             }
         } else {
             visibility_string.push_str(" ničego...");
@@ -196,7 +178,7 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
         messages_clone.reverse();
 
         let mut messages_to_show = Vec::new();
-      
+
         messages_to_show.push(Line::from(""));
         messages_to_show.push(Line::from(wep_string));
         messages_to_show.push(Line::from("Věči...."));
@@ -231,12 +213,6 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
             .expect("epic fail");
     }
 }
-
-
-
-
-
-
 
 // Create resource to hold the ratatui terminal
 #[derive(Resource)]
@@ -276,7 +252,7 @@ struct Masterik {
     client_world: MyWorld,
     is_logged_in: bool,
     button_entityid_map: HashMap<ItemKey, EntityID>,
-   
+
     list_cursor_index: usize,
     targeted_ent_id: EntityID,
 }
@@ -286,7 +262,6 @@ impl Masterik {
         self.list_cursor_index = 0;
         self.targeted_ent_id = 0;
         self.button_entityid_map.drain();
-      
     }
 }
 
@@ -302,7 +277,6 @@ impl Default for Masterik {
             list_cursor_index: 0,
             targeted_ent_id: 0,
             button_entityid_map: HashMap::new(),
-          
         }
     }
 }
@@ -362,29 +336,31 @@ fn create_local_account(mut masterok: ResMut<Masterik>) {
     masterok.player_entity_id = local_info.1;
 }
 
-
-
 fn set_custom_font(mut contexts: EguiContexts) {
-
-
     let mut fonts = FontDefinitions::default();
 
-// Install my own font (maybe supporting non-latin characters):
-fonts.font_data.insert("my_font".to_owned(),
-   FontData::from_static(include_bytes!("../../assets/fonts/hiero_mono.ttf"))); // .ttf and .otf supported
+    // Install my own font (maybe supporting non-latin characters):
+    fonts.font_data.insert(
+        "my_font".to_owned(),
+        FontData::from_static(include_bytes!("../../assets/fonts/hiero_mono.ttf")),
+    ); // .ttf and .otf supported
 
-// Put my font first (highest priority):
-fonts.families.get_mut(&FontFamily::Proportional).unwrap()
-    .insert(0, "my_font".to_owned());
+    // Put my font first (highest priority):
+    fonts
+        .families
+        .get_mut(&FontFamily::Proportional)
+        .unwrap()
+        .insert(0, "my_font".to_owned());
 
-// Put my font as last fallback for monospace:
-fonts.families.get_mut(&FontFamily::Monospace).unwrap()
-.insert(0, "my_font".to_owned());
+    // Put my font as last fallback for monospace:
+    fonts
+        .families
+        .get_mut(&FontFamily::Monospace)
+        .unwrap()
+        .insert(0, "my_font".to_owned());
 
     contexts.ctx_mut().set_fonts(fonts);
 }
-
-
 
 fn keyboard_input_system(
     input: Res<ButtonInput<KeyCode>>,
@@ -446,7 +422,7 @@ fn keyboard_input_system(
         if char_attack {
             ui_state.menu_open = MenuOpen::Attack;
         }
-    } 
+    }
 
     if char_quit {
         panic!("BYE");

@@ -9,7 +9,6 @@ pub struct MyWorld {
     pub server_stuff: ServerStuff,
     pub turn_counter: u32,
     pub small_rngik: SmallRng,
-  
 
     pub world_seed: u32,
     pub entity_counter: u64,
@@ -25,7 +24,6 @@ impl Default for MyWorld {
             server_stuff: ServerStuff::default(),
             turn_counter: 0,
             small_rngik: SmallRng::seed_from_u64(rngik as u64),
-            
 
             world_seed: rngik.clone(),
             entity_counter: 1,
@@ -54,7 +52,7 @@ impl MyWorld {
 
     pub fn new_test() -> MyWorld {
         let mut x = MyWorld::default();
-    
+
         x
     }
 
@@ -71,7 +69,7 @@ impl MyWorld {
 
                 let success_type = match action {
                     ActionType::Go(loc) => Action::go(self, &eid, loc),
-              
+
                     ActionType::Wait => SuccessType::Success,
 
                     _ => panic!("not implemented"),
@@ -206,20 +204,15 @@ impl MyWorld {
         }
     }
 
-
     pub fn entity_blocks_movement_at(&self, point: &MyPoint) -> bool {
         let entsatpoint = self.entity_tree.locate_all_at_point(point);
 
         for entt in entsatpoint {
-            let enttype = self
-                .entity_map
-                .get(&entt.entity_id)
-                .unwrap();
+            let enttype = self.entity_map.get(&entt.entity_id).unwrap();
 
             match enttype {
                 EntityType::Human => return true,
-        
-              
+
                 _ => (),
             }
         }
@@ -244,17 +237,13 @@ impl MyWorld {
         */
         let mut subject_pronoun = String::from("Ty");
         if local_player_id != &act_packet.action_subject {
-            let nomik = self
-                .entity_map
-                .get(&act_packet.action_subject)
-                .unwrap();
+            let nomik = self.entity_map.get(&act_packet.action_subject).unwrap();
 
             subject_pronoun = nomik.minimal_string();
         }
         let meowik = match &act_packet.action {
-          
             ActionType::Go(x) => format!("idti"),
-           
+
             _ => format!(" jhxcvhas {}", ""),
         };
 

@@ -35,9 +35,9 @@ fn main() {
 
     println!("{}", ISV::ins_sg("jelenj"));
 
-   let x = load_csv_data();
+    let x = load_csv_data();
 
-   println!("{:?}",x);
+    println!("{:?}", x);
 
     /*
 
