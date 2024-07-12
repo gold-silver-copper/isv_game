@@ -17,15 +17,7 @@ pub type PlayerMessage = String;
 
 #[derive(Clone, Debug)]
 pub struct GameDataPacket {
-    pub entity_info: Vec<EntityPacket>,
     pub voxel_diffs: Vec<Voxel>,
-  
-}
-#[derive(Clone, Debug)]
-pub struct EntityPacket {
-    pub entity_pos: MyPoint,
-    pub entity_type: EntityType,
-    pub entity_id: EntityID,
 }
 
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
@@ -38,7 +30,8 @@ pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
 
 ///NOTICE THIS ARRAY IS INDEXED Y FIRST FOR PERFORMANCE
 pub fn create_2d_array(render_width: usize, render_height: usize) -> Vec<Vec<GraphicTriple>> {
-    let grid = vec![vec![(" ".into(), RatColor::White, RatColor::Black); render_width]; render_height];
+    let grid =
+        vec![vec![(" ".into(), RatColor::White, RatColor::Black); render_width]; render_height];
     grid
 }
 
@@ -90,4 +83,3 @@ impl CardinalDirection {
         }
     }
 }
-

@@ -1,8 +1,4 @@
-
 use slov_common::*;
-
-
-
 
 fn main() {
     App::new()
@@ -15,14 +11,11 @@ fn main() {
         // Systems that create Egui widgets should be run during the `CoreSet::Update` set,
         // or after the `EguiSet::BeginFrame` system (which belongs to the `CoreSet::PreUpdate` set).
         .add_systems(Update, ui_example_system)
-        
         .add_systems(PostUpdate, keyboard_input_system)
         .add_systems(Startup, create_local_account)
         .add_systems(PostStartup, set_custom_font)
         .run();
 }
-
-
 
 // Create resource to hold the ratatui terminal
 #[derive(Resource)]
@@ -55,7 +48,7 @@ impl Default for BevyTerminal<RataguiBackend> {
 
 #[derive(Resource)]
 struct Masterik {
-   client_pos: GamePosition,
+    client_pos: GamePosition,
 
     messages: Vec<String>,
     client_world: MyWorld,
@@ -114,22 +107,15 @@ impl Default for UIState {
     }
 }
 
-
-
 fn create_local_account(mut commands: Commands) {
-     // create a new entity
-     commands.spawn((
+    // create a new entity
+    commands.spawn((
         // Initialize all your components and bundles here
         Player,
-        GamePosition {
-           x:5,
-           y:5
-        },
-        GameRenderable::new_human()
-        // ...
+        GamePosition { x: 5, y: 5 },
+        GameRenderable::new_human(), // ...
     ));
 }
-
 
 fn keyboard_input_system(
     input: Res<ButtonInput<KeyCode>>,
@@ -165,37 +151,23 @@ fn keyboard_input_system(
     let char_backspace = input.any_pressed([KeyCode::Backspace, KeyCode::Delete]);
     let char_quit = input.any_just_pressed([KeyCode::KeyQ]);
 
-   
-    
-
     if char_up {
-       // client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::North));
+        // client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::North));
     }
     if char_down {
-     //   client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::South));
+        //   client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::South));
     }
     if char_left {
-    //    client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::West));
+        //    client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::West));
     }
     if char_right {
-     //   client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::East));
+        //   client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::East));
     }
-
- 
 
     if char_quit {
         panic!("BYE");
     }
- 
 }
-
-
-
-
-
-
-
-
 
 fn set_custom_font(mut contexts: EguiContexts) {
     let mut fonts = FontDefinitions::default();
@@ -222,7 +194,6 @@ fn set_custom_font(mut contexts: EguiContexts) {
 
     contexts.ctx_mut().set_fonts(fonts);
 }
-
 
 fn draw_ascii_game(
     terminal: &mut Terminal<RataguiBackend>,
@@ -263,9 +234,7 @@ fn draw_ascii_game(
         .expect("epic fail");
 }
 
-fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik) {
-
-}
+fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik) {}
 
 // Render to the terminal and to egui , both are immediate mode
 fn ui_example_system(
@@ -286,7 +255,7 @@ fn ui_example_system(
         .outer_margin(0.0)
         .fill(egui::Color32::BLACK);
 
-        let mut infoframe = egui::Frame::default()
+    let mut infoframe = egui::Frame::default()
         .inner_margin(0.0)
         .outer_margin(0.0)
         .fill(egui::Color32::BLACK);
@@ -295,34 +264,22 @@ fn ui_example_system(
         .frame(Frame::none())
         .show(contexts.ctx_mut(), |ui| {
             let av_height = ui.available_height().clamp(100., 1500.);
-            
+
             egui::SidePanel::right("containeeee")
-            .min_width(260.)
-            .max_width(260.)
-            .frame(infoframe)
-            .show_inside(ui, |ui| {
-           
-                        ui.add(termres.terminal_info.backend_mut());
-                   
-            });
+                .min_width(260.)
+                .max_width(260.)
+                .frame(infoframe)
+                .show_inside(ui, |ui| {
+                    ui.add(termres.terminal_info.backend_mut());
+                });
             ui.separator();
             let av_width = ui.available_width().clamp(100., 1500.);
             egui::SidePanel::left("gameik")
-            .min_width(av_width)
-            .max_width(av_width)
+                .min_width(av_width)
+                .max_width(av_width)
                 .frame(gameframe)
                 .show_inside(ui, |ui| {
-                  
                     ui.add(termres.terminal_game.backend_mut());
                 });
-          
-          
-
-       
-          
-
-       
-
-          
         });
 }

@@ -4,14 +4,9 @@ use crate::*;
 pub struct MyWorld {
     pub voxeltile_grid: RTree<Voxel>,
 
-
-
-   
     pub small_rngik: SmallRng,
 
-
     pub world_seed: u32,
- 
 }
 
 impl Default for MyWorld {
@@ -19,28 +14,21 @@ impl Default for MyWorld {
         let rngik: u32 = 87243563;
 
         Self {
-        
-            
-          
             small_rngik: SmallRng::seed_from_u64(rngik as u64),
 
             world_seed: rngik.clone(),
-         
+
             voxeltile_grid: MyWorld::generate_test(rngik),
         }
     }
 }
 
 impl MyWorld {
- 
-
     pub fn new_test() -> MyWorld {
         let mut x = MyWorld::default();
 
         x
     }
-
-  
 
     // World initialization function.
     pub fn init_world(&mut self) -> RTree<Voxel> {
@@ -106,35 +94,27 @@ impl MyWorld {
         }
     }
 
-
-
-
     pub fn create_client_render_packet_for_entity(
         &self,
         ent_pos_comp: &GamePosition,
         render_rect: &Rect,
     ) -> RenderPacket {
-       {
+        {
             let render_width = render_rect.width;
             let render_height = render_rect.height;
             let w_radius = render_width / 2;
             let h_radius = render_height / 2;
 
-
-            let e_pos =  (ent_pos_comp.x.clone() , ent_pos_comp.y.clone());
+            let e_pos = (ent_pos_comp.x.clone(), ent_pos_comp.y.clone());
 
             let same_z = locate_square(&e_pos, w_radius as i64, h_radius as i64);
 
             let local_voxels = self.voxeltile_grid.locate_in_envelope(&same_z);
 
-
             let bottom_left_of_game_screen = (e_pos.0 - w_radius as i64, e_pos.1 - h_radius as i64);
 
             // THIS GRID IS INDEXD Y FIRST
             let mut voxel_grid = create_2d_array(render_width.into(), render_height.into());
-
-
-       
 
             for lv in local_voxels {
                 let relative_point_x = lv.voxel_pos.0 - bottom_left_of_game_screen.0;
@@ -150,42 +130,35 @@ impl MyWorld {
                 }
             }
 
-         /*
-         
-            //merge grids
+            /*
 
-            for (ent_relative, ent_graphic) in ent_vec {
-                if (0 < ent_relative.1)
-                    && (ent_relative.1 < render_height as i64)
-                    && (0 < ent_relative.0)
-                    && (ent_relative.0 < render_width as i64)
-                {
-                    if voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0
-                        != String::from("@")
-                    {
-                        voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0 =
-                            ent_graphic.0;
-                        voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].1 =
-                            ent_graphic.1;
-                    }
-                }
-            }
+              //merge grids
 
-         
-          */
-          
+              for (ent_relative, ent_graphic) in ent_vec {
+                  if (0 < ent_relative.1)
+                      && (ent_relative.1 < render_height as i64)
+                      && (0 < ent_relative.0)
+                      && (ent_relative.0 < render_width as i64)
+                  {
+                      if voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0
+                          != String::from("@")
+                      {
+                          voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0 =
+                              ent_graphic.0;
+                          voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].1 =
+                              ent_graphic.1;
+                      }
+                  }
+              }
+
+
+            */
 
             RenderPacket {
                 spans_to_render: voxel_grid,
 
                 messages_to_render: Vec::new(),
             }
-        } 
+        }
     }
-
-  
-
- 
-
-
 }
