@@ -121,7 +121,8 @@ fn draw_ascii_game(
             frame.render_widget(
                 Paragraph::new(Text::from(render_lines))
                     .on_black()
-                    .block(Block::new().title("Igra").borders(Borders::ALL)),
+
+                    .block(Block::new()),
                 area,
             );
         })
@@ -135,7 +136,7 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
         .get(&masterok.player_entity_id)
         .unwrap()
         .clone();
-    if let EntityType::Human(player_data_into) = player_data_copy {
+    if let EntityType::Human = player_data_copy {
         let local_player_loc = masterok
             .client_world
             .ent_loc_index
@@ -146,16 +147,11 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
             .client_world
             .get_visible_ents_from_ent(&masterok.player_entity_id);
 
-        let statiki = &player_data_into.stats;
-        let healthik = &player_data_into.cur_health;
-        let nameik = &player_data_into.name;
+    
      
       
 
-        let name_string = format! {"{}",nameik.name};
-        let health_string =
-            format! {"Zdråvje: {}  Dyhańje {}",healthik.health , healthik.stamina_air };
-        let stats_string = format! {"Sila: {}  Bystrost́ {}  Råzum: {} ",statiki.sila , statiki.bystrost , statiki.razum };
+   
         let mut wep_string = String::new();
         let mut local_items = String::new();
         let mut inventory_string = String::new();
@@ -200,8 +196,7 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
         messages_clone.reverse();
 
         let mut messages_to_show = Vec::new();
-        messages_to_show.push(Line::from(health_string));
-        messages_to_show.push(Line::from(stats_string));
+      
         messages_to_show.push(Line::from(""));
         messages_to_show.push(Line::from(wep_string));
         messages_to_show.push(Line::from("Věči...."));
@@ -229,7 +224,7 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
                 frame.render_widget(
                     Paragraph::new(messages_to_show)
                         .on_black()
-                        .block(Block::new().title(name_string).borders(Borders::ALL)),
+                        .block(Block::new().title("meowmeowm").borders(Borders::ALL)),
                     area,
                 );
             })

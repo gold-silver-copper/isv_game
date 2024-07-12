@@ -6,24 +6,11 @@ use crate::*;
 
 
 
-impl Default for Human {
-    fn default() -> Self {
-        Self {
-        
-       
-            stats: StatsComponent::new_default(),
-            cur_health: HealthComponent::new(),
-            max_health: HealthComponent::new(),
-            name: NameComponent::new(),
-        }
-    }
-}
-
 
 impl EntityType {
     pub fn minimal_string(&self) -> String {
         match self {
-            EntityType::Human(x) => x.name.name.clone(),
+            EntityType::Human => "person".into(),
          
            
             
@@ -34,7 +21,7 @@ impl EntityType {
         match self {
            
           
-            EntityType::Human(_) => "𖣊".into(),
+            EntityType::Human => "@".into(),
        
         }
     }
@@ -43,7 +30,7 @@ impl EntityType {
         match self {
          
            
-            EntityType::Human(_) => Color::White,
+            EntityType::Human => Color::White,
    
         }
     }

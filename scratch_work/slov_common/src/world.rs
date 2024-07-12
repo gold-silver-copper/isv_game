@@ -90,7 +90,7 @@ impl MyWorld {
     //z must be above 0 for movement
     pub fn make_account(&mut self) -> (AccountID, EntityID, MyPoint) {
         let pp = (80, 80);
-        let eid = self.new_entity(&pp, &EntityType::Human(Human::default()));
+        let eid = self.new_entity(&pp, &EntityType::Human);
 
         //increment then use value for creating account , send account and entity id to Human
         self.server_stuff.account_counter += 17;
@@ -217,7 +217,7 @@ impl MyWorld {
                 .unwrap();
 
             match enttype {
-                EntityType::Human(_) => return true,
+                EntityType::Human => return true,
         
               
                 _ => (),
