@@ -2,6 +2,7 @@ use crate::*;
 pub fn keyboard_input_system(
     input: Res<ButtonInput<KeyCode>>,
     mut masterok: ResMut<Masterik>,
+    mut player_position: Query<( &mut GamePosition), With<Player>>,
    
 ) {
     let char_up = input.any_pressed([KeyCode::KeyW]);
@@ -33,17 +34,19 @@ pub fn keyboard_input_system(
     let char_backspace = input.any_pressed([KeyCode::Backspace, KeyCode::Delete]);
     let char_quit = input.any_just_pressed([KeyCode::KeyQ]);
 
+    let mut p_pos = player_position.single_mut();
+
     if char_up {
-        // client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::North));
+        p_pos.y += 1;
     }
     if char_down {
-        //   client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::South));
+        p_pos.y -= 1;
     }
     if char_left {
-        //    client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::West));
+        p_pos.x -= 1;
     }
     if char_right {
-        //   client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::East));
+        p_pos.x += 1;
     }
 
     if char_quit {

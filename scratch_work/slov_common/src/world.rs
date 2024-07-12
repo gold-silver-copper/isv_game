@@ -150,7 +150,7 @@ impl MyWorld {
                     {
                         voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0 =
                             graphic.0.clone();
-                        voxel_grid[ent_relative.1 as usize][ent_relative.1 as usize].1 =
+                        voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].1 =
                             graphic.1.clone();
                     }
                 }
