@@ -10,6 +10,7 @@ pub struct MyWorld {
     pub turn_counter: u32,
     pub small_rngik: SmallRng,
 
+    
     pub world_seed: u32,
     pub entity_counter: u64,
 }
