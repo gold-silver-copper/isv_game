@@ -20,49 +20,43 @@ impl Roof {
 }
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Floor {
- Water,
- Dirt,
- Sand,
- Grass,
+    Water,
+    Dirt,
+    Sand,
+    Grass,
 }
 
 impl Floor {
     pub fn to_color(&self) -> RatColor {
         match &self {
-        
             Self::Dirt => RatColor::Rgb(155, 118, 83),
             Self::Water => RatColor::Rgb(15, 94, 156),
-          
+
             Self::Grass => RatColor::Rgb(19, 109, 21),
-       
+
             Self::Sand => RatColor::Rgb(242, 210, 169),
-     
         }
     }
 
     pub fn to_displaychar(&self) -> String {
         match &self {
-           
             Self::Dirt => "%".into(),
             Self::Water => "~".into(),
-         
+
             Self::Grass => ";".into(),
-           
+
             Self::Sand => ".".into(),
-     
         }
     }
 
     pub fn to_front_color(&self) -> RatColor {
         match &self {
-        
             Self::Dirt => RatColor::Rgb(145, 118, 83),
             Self::Water => RatColor::Rgb(10, 84, 146),
-       
+
             Self::Grass => RatColor::Rgb(19, 99, 21),
-          
+
             Self::Sand => RatColor::Rgb(242, 200, 169),
-   
         }
     }
 }

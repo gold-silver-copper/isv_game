@@ -1,9 +1,8 @@
 use crate::*;
 pub fn keyboard_input_system(
     input: Res<ButtonInput<KeyCode>>,
- 
-    mut player_position: Query<( &mut GamePosition), With<Player>>,
-   
+    mut player_eid: Query<(Entity), With<Player>>,
+    mut commands: Commands,
 ) {
     let char_up = input.any_pressed([KeyCode::KeyW]);
     let char_down = input.any_pressed([KeyCode::KeyS]);
@@ -34,19 +33,27 @@ pub fn keyboard_input_system(
     let char_backspace = input.any_pressed([KeyCode::Backspace, KeyCode::Delete]);
     let char_quit = input.any_just_pressed([KeyCode::KeyQ]);
 
-    let mut p_pos = player_position.single_mut();
+    let mut p_eid = player_eid.single();
 
     if char_up {
-        p_pos.y += 1;
+        commands
+            .entity(p_eid)
+            .insert(ActionComponent::Go(CardinalDirection::North));
     }
     if char_down {
-        p_pos.y -= 1;
+        commands
+            .entity(p_eid)
+            .insert(ActionComponent::Go(CardinalDirection::South));
     }
     if char_left {
-        p_pos.x -= 1;
+        commands
+            .entity(p_eid)
+            .insert(ActionComponent::Go(CardinalDirection::West));
     }
     if char_right {
-        p_pos.x += 1;
+        commands
+            .entity(p_eid)
+            .insert(ActionComponent::Go(CardinalDirection::East));
     }
 
     if char_quit {

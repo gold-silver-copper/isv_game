@@ -24,9 +24,6 @@ impl Default for BevyTerminal<RataguiBackend> {
     }
 }
 
-
-
-
 pub fn setup(mut commands: Commands) {
     // create a new entity
     commands.spawn((
@@ -61,4 +58,45 @@ pub fn set_custom_font(mut contexts: EguiContexts) {
         .insert(0, "my_font".to_owned());
 
     contexts.ctx_mut().set_fonts(fonts);
+}
+
+//MAKE IT POSSIBLE TO SET PLAYER AI MODE FOR AUTO PLAYING
+#[derive(Clone, Debug, PartialEq, Component)]
+pub enum ActionComponent {
+    Wait,
+    Take(),
+    MeleeAttack(),
+    Drop(),
+    Give(),
+    Hit(),
+    Go(CardinalDirection),
+    Quit,
+}
+
+pub fn action_processor(mut player_position: Query<(&mut GamePosition, &ActionComponent)>) {
+    for (mut e_pos, e_action) in player_position.iter_mut() {
+        match e_action {
+            ActionComponent::Go(direction) => match direction {
+                CardinalDirection::North => {
+                    e_pos.y += 1;
+                }
+                CardinalDirection::South => {
+                    e_pos.y -= 1;
+                }
+                CardinalDirection::West => {
+                    e_pos.x -= 1;
+                }
+                CardinalDirection::East => {
+                    e_pos.x += 1;
+                }
+            },
+            _ => todo!("ACTION NOT IMPLEMENTED"),
+        }
+    }
+}
+
+pub fn action_remover(player_position: Query<(Entity, &ActionComponent)>, mut commands: Commands) {
+    for (eid, _) in player_position.iter() {
+        commands.entity(eid).remove::<ActionComponent>();
+    }
 }

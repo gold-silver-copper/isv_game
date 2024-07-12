@@ -1,12 +1,9 @@
 use crate::*;
 
-
-
 pub type CoordinateUnit = i64;
 pub const LOCAL_RANGE: i64 = 2000;
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (String, RatColor, RatColor);
-
 
 #[derive(Clone, Debug)]
 pub struct GameDataPacket {
@@ -48,12 +45,6 @@ impl RenderPacket {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub enum LocativeID {
-    Cardinal(CardinalDirection),
-    
-    Point(MyPoint),
-}
 #[derive(Clone, Debug, PartialEq)]
 pub enum CardinalDirection {
     North,

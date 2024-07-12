@@ -58,10 +58,10 @@ impl GameMap {
                 } else if val > -0.1 {
                     Floor::Dirt
                 } else if val > -0.2 {
-                    Floor::Sand 
-                } else  {
+                    Floor::Sand
+                } else {
                     Floor::Water
-                } ;
+                };
 
                 batchvec.push(Voxel {
                     floor: floor,

@@ -7,8 +7,6 @@ pub fn draw_ascii_game(
 ) {
     let (pid, client_pos) = player_position.single();
 
-   
-
     let mut ent_vec = Vec::new();
 
     for tupik in render_query.iter() {
@@ -52,25 +50,15 @@ pub fn draw_ascii_game(
         .expect("epic fail");
 }
 
-pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>,) {
-
-
-
+pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>) {
     let name_string = format! {"{}","hello"};
-
-
-
-
 
     let mut messages_to_show = Vec::new();
 
     messages_to_show.push(Line::from("Věči...."));
 
-
-   
-
     termres
-    .terminal_info
+        .terminal_info
         .draw(|frame| {
             let area = frame.size();
 
@@ -84,17 +72,13 @@ pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>,) {
             );
         })
         .expect("epic fail");
-
 }
 
 // Render to the terminal and to egui , both are immediate mode
 pub fn ui_example_system(
     mut contexts: EguiContexts,
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
-
- 
 ) {
- 
     let mut gameframe = egui::Frame::default()
         .inner_margin(10.0)
         .outer_margin(0.0)
@@ -117,7 +101,7 @@ pub fn ui_example_system(
                 .show_inside(ui, |ui| {
                     ui.add(termres.terminal_info.backend_mut());
                 });
-          
+
             let av_width = ui.available_width().clamp(100., 1500.);
             egui::SidePanel::left("gameik")
                 .min_width(av_width)
