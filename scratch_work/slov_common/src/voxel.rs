@@ -20,65 +20,49 @@ impl Roof {
 }
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Floor {
-    Vȯzduh, //air
-    Zemja,  //earth
-    Voda,   //water
-    Trava,  // grass
-    Burjan, //grass type
-    Kovylj, //grass type
-    Pěsȯk,  //sand
-    Mělj,   //sandbank
-    Il,     //clay
-    Glina,  //clay
-    Blåto,  //bog
+ Water,
+ Dirt,
+ Sand,
+ Grass,
 }
 
 impl Floor {
     pub fn to_color(&self) -> RatColor {
         match &self {
-            Self::Vȯzduh => RatColor::Rgb(239, 240, 235),
-            Self::Zemja => RatColor::Rgb(155, 118, 83),
-            Self::Voda => RatColor::Rgb(15, 94, 156),
-            Self::Trava => RatColor::Rgb(65, 152, 1),
-            Self::Burjan => RatColor::Rgb(19, 109, 21),
-            Self::Kovylj => RatColor::Rgb(30, 115, 40),
-            Self::Pěsȯk => RatColor::Rgb(242, 210, 169),
-            Self::Mělj => RatColor::Rgb(232, 200, 159),
-            Self::Il => RatColor::Rgb(135, 133, 131),
-            Self::Glina => RatColor::Rgb(145, 143, 141),
-            Self::Blåto => RatColor::Rgb(155, 153, 161),
+        
+            Self::Dirt => RatColor::Rgb(155, 118, 83),
+            Self::Water => RatColor::Rgb(15, 94, 156),
+          
+            Self::Grass => RatColor::Rgb(19, 109, 21),
+       
+            Self::Sand => RatColor::Rgb(242, 210, 169),
+     
         }
     }
 
     pub fn to_displaychar(&self) -> String {
         match &self {
-            Self::Vȯzduh => " ".into(),
-            Self::Zemja => "%".into(),
-            Self::Voda => "~".into(),
-            Self::Trava => ",".into(),
-            Self::Burjan => ";".into(),
-            Self::Kovylj => ":".into(),
-            Self::Pěsȯk => ".".into(),
-            Self::Mělj => ".".into(),
-            Self::Il => ".".into(),
-            Self::Glina => ".".into(),
-            Self::Blåto => ".".into(),
+           
+            Self::Dirt => "%".into(),
+            Self::Water => "~".into(),
+         
+            Self::Grass => ";".into(),
+           
+            Self::Sand => ".".into(),
+     
         }
     }
 
     pub fn to_front_color(&self) -> RatColor {
         match &self {
-            Self::Vȯzduh => RatColor::Rgb(229, 240, 235),
-            Self::Zemja => RatColor::Rgb(145, 118, 83),
-            Self::Voda => RatColor::Rgb(10, 84, 146),
-            Self::Trava => RatColor::Rgb(65, 142, 1),
-            Self::Burjan => RatColor::Rgb(19, 99, 21),
-            Self::Kovylj => RatColor::Rgb(30, 105, 40),
-            Self::Pěsȯk => RatColor::Rgb(242, 200, 169),
-            Self::Mělj => RatColor::Rgb(232, 190, 159),
-            Self::Il => RatColor::Rgb(135, 123, 131),
-            Self::Glina => RatColor::Rgb(145, 133, 141),
-            Self::Blåto => RatColor::Rgb(155, 143, 161),
+        
+            Self::Dirt => RatColor::Rgb(145, 118, 83),
+            Self::Water => RatColor::Rgb(10, 84, 146),
+       
+            Self::Grass => RatColor::Rgb(19, 99, 21),
+          
+            Self::Sand => RatColor::Rgb(242, 200, 169),
+   
         }
     }
 }

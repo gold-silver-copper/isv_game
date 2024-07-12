@@ -1,19 +1,12 @@
 use crate::*;
 
-pub type EntityID = u64;
-pub type ItemKey = u16;
-pub type AccountID = u64;
-pub type StatsUnit = i64;
+
+
 pub type CoordinateUnit = i64;
 pub const LOCAL_RANGE: i64 = 2000;
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (String, RatColor, RatColor);
 
-pub type NominativeID = EntityID;
-pub type AccusativeID = EntityID;
-pub type DativeID = EntityID;
-pub type InstrumentalID = EntityID;
-pub type PlayerMessage = String;
 
 #[derive(Clone, Debug)]
 pub struct GameDataPacket {
@@ -58,7 +51,7 @@ impl RenderPacket {
 #[derive(Clone, Debug, PartialEq)]
 pub enum LocativeID {
     Cardinal(CardinalDirection),
-    Entity(EntityID),
+    
     Point(MyPoint),
 }
 #[derive(Clone, Debug, PartialEq)]

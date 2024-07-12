@@ -13,6 +13,7 @@ fn main() {
         // or after the `EguiSet::BeginFrame` system (which belongs to the `CoreSet::PreUpdate` set).
         .add_systems(Update, ui_example_system)
         .add_systems(PreUpdate, draw_ascii_game)
+        .add_systems(PreUpdate, draw_ascii_info)
         .add_systems(PostUpdate, keyboard_input_system)
         .add_systems(Startup, setup)
         .add_systems(PostStartup, set_custom_font)
