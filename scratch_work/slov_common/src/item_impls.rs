@@ -13,15 +13,15 @@ impl EntityType {
         }
     }
 
-    pub fn to_color(&self) -> Color {
+    pub fn to_color(&self) -> RatColor {
         match self {
-            EntityType::Human => Color::White,
+            EntityType::Human => RatColor::White,
         }
     }
 
     pub fn to_graphictriple(&self) -> GraphicTriple {
         let ent_char = self.to_displaychar();
         let ent_color = self.to_color();
-        (ent_char, ent_color, Color::Black)
+        (ent_char, ent_color, RatColor::Black)
     }
 }

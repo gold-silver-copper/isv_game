@@ -36,7 +36,8 @@ use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
 
 pub use noise::*;
-pub use ratatui::style::{Color, Style, Stylize};
+pub use ratatui::style::{ Style, Stylize};
+pub use ratatui::style::Color as RatColor;
 pub use ratatui::text::Span;
 use ratatui::{layout::Rect, text::Line};
 pub use rstar::{Envelope, PointDistance, RTree, RTreeObject, SelectionFunction, AABB};

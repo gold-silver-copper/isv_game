@@ -12,9 +12,9 @@ pub enum Roof {
     Sky,
 }
 impl Roof {
-    pub fn to_color(&self) -> Color {
+    pub fn to_color(&self) -> RatColor {
         match &self {
-            Self::Sky => Color::Rgb(239, 240, 235),
+            Self::Sky => RatColor::Rgb(239, 240, 235),
         }
     }
 }
@@ -34,19 +34,19 @@ pub enum Floor {
 }
 
 impl Floor {
-    pub fn to_color(&self) -> Color {
+    pub fn to_color(&self) -> RatColor {
         match &self {
-            Self::Vȯzduh => Color::Rgb(239, 240, 235),
-            Self::Zemja => Color::Rgb(155, 118, 83),
-            Self::Voda => Color::Rgb(15, 94, 156),
-            Self::Trava => Color::Rgb(65, 152, 1),
-            Self::Burjan => Color::Rgb(19, 109, 21),
-            Self::Kovylj => Color::Rgb(30, 115, 40),
-            Self::Pěsȯk => Color::Rgb(242, 210, 169),
-            Self::Mělj => Color::Rgb(232, 200, 159),
-            Self::Il => Color::Rgb(135, 133, 131),
-            Self::Glina => Color::Rgb(145, 143, 141),
-            Self::Blåto => Color::Rgb(155, 153, 161),
+            Self::Vȯzduh => RatColor::Rgb(239, 240, 235),
+            Self::Zemja => RatColor::Rgb(155, 118, 83),
+            Self::Voda => RatColor::Rgb(15, 94, 156),
+            Self::Trava => RatColor::Rgb(65, 152, 1),
+            Self::Burjan => RatColor::Rgb(19, 109, 21),
+            Self::Kovylj => RatColor::Rgb(30, 115, 40),
+            Self::Pěsȯk => RatColor::Rgb(242, 210, 169),
+            Self::Mělj => RatColor::Rgb(232, 200, 159),
+            Self::Il => RatColor::Rgb(135, 133, 131),
+            Self::Glina => RatColor::Rgb(145, 143, 141),
+            Self::Blåto => RatColor::Rgb(155, 153, 161),
         }
     }
 
@@ -66,19 +66,19 @@ impl Floor {
         }
     }
 
-    pub fn to_front_color(&self) -> Color {
+    pub fn to_front_color(&self) -> RatColor {
         match &self {
-            Self::Vȯzduh => Color::Rgb(229, 240, 235),
-            Self::Zemja => Color::Rgb(145, 118, 83),
-            Self::Voda => Color::Rgb(10, 84, 146),
-            Self::Trava => Color::Rgb(65, 142, 1),
-            Self::Burjan => Color::Rgb(19, 99, 21),
-            Self::Kovylj => Color::Rgb(30, 105, 40),
-            Self::Pěsȯk => Color::Rgb(242, 200, 169),
-            Self::Mělj => Color::Rgb(232, 190, 159),
-            Self::Il => Color::Rgb(135, 123, 131),
-            Self::Glina => Color::Rgb(145, 133, 141),
-            Self::Blåto => Color::Rgb(155, 143, 161),
+            Self::Vȯzduh => RatColor::Rgb(229, 240, 235),
+            Self::Zemja => RatColor::Rgb(145, 118, 83),
+            Self::Voda => RatColor::Rgb(10, 84, 146),
+            Self::Trava => RatColor::Rgb(65, 142, 1),
+            Self::Burjan => RatColor::Rgb(19, 99, 21),
+            Self::Kovylj => RatColor::Rgb(30, 105, 40),
+            Self::Pěsȯk => RatColor::Rgb(242, 200, 169),
+            Self::Mělj => RatColor::Rgb(232, 190, 159),
+            Self::Il => RatColor::Rgb(135, 123, 131),
+            Self::Glina => RatColor::Rgb(145, 133, 141),
+            Self::Blåto => RatColor::Rgb(155, 143, 161),
         }
     }
 }
