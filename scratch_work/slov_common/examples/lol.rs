@@ -1,56 +1,8 @@
-use bevy::{input::keyboard::Key, prelude::*, render::view::visibility};
 
-use crate::egui::{FontData, FontDefinitions, FontFamily};
-use bevy_egui::{
-    egui::{self, Frame},
-    EguiContexts, EguiPlugin,
-};
-use egui_ratatui::RataguiBackend;
-use ratatui::{
-    layout::Rect,
-    prelude::{Line, Stylize, Terminal},
-    text::Text,
-    widgets::{Block, Borders, Paragraph, Wrap, *},
-};
 use slov_common::*;
 
 
 
-#[derive(Component)]
-struct Player;
-
-type XPosition = i64;
-type YPosition = i64;
-//type ZPosition = i64;
-
-#[derive(Component)]
-struct GamePosition {
-    x: XPosition,
-    y: YPosition,
-  //  z: ZPosition
-}
-
-#[derive(Component)]
-struct GameRenderable {
-    display_char: String,
-    fg_color: RatColor,
-    bg_color: RatColor
-}
-
-impl GameRenderable {
-
-
-    pub fn new_human() -> GameRenderable {
-
-        GameRenderable {
-            display_char: "@".into(),
-            fg_color: RatColor::White,
-            bg_color: RatColor::Black,
-
-        }
-    }
-
-}
 
 fn main() {
     App::new()
@@ -63,7 +15,7 @@ fn main() {
         // Systems that create Egui widgets should be run during the `CoreSet::Update` set,
         // or after the `EguiSet::BeginFrame` system (which belongs to the `CoreSet::PreUpdate` set).
         .add_systems(Update, ui_example_system)
-        .add_systems(PreUpdate, local_world_process)
+        
         .add_systems(PostUpdate, keyboard_input_system)
         .add_systems(Startup, create_local_account)
         .add_systems(PostStartup, set_custom_font)
@@ -103,8 +55,7 @@ impl Default for BevyTerminal<RataguiBackend> {
 
 #[derive(Resource)]
 struct Masterik {
-    player_entity_id: EntityID,
-    player_account_id: AccountID,
+   client_pos: GamePosition,
 
     messages: Vec<String>,
     client_world: MyWorld,
@@ -126,8 +77,7 @@ impl Masterik {
 impl Default for Masterik {
     fn default() -> Self {
         Self {
-            player_entity_id: 0,
-            player_account_id: 0,
+            client_pos: GamePosition::new(),
 
             messages: Vec::new(),
             client_world: MyWorld::new_test(),
@@ -164,29 +114,7 @@ impl Default for UIState {
     }
 }
 
-fn local_world_process(mut masterok: ResMut<Masterik>) {
-    masterok.client_world.interpret_and_execute();
-    let boop = masterok
-        .client_world
-        .create_game_data_packet_for_entity(&masterok.player_entity_id);
 
-    if let Some(meow) = boop {
-        //generate text messages from these action packets, then push them to the player message viewer
-        let packet_actions = meow.action_info;
-
-        for act in packet_actions {
-            let zzz = masterok
-                .client_world
-                .generate_isv_message(&act, &masterok.player_entity_id);
-            masterok.messages.push(zzz);
-        }
-
-        //TODO HANDLE ACTION MESSAGES
-
-        //      println!("parsed - {:#?}", packet_actions);
-        //    println!("current loc is {:#?}", lppos);
-    }
-}
 
 fn create_local_account(mut commands: Commands) {
      // create a new entity
@@ -238,7 +166,7 @@ fn keyboard_input_system(
     let char_quit = input.any_just_pressed([KeyCode::KeyQ]);
 
     let mut client_action = ActionType::Wait;
-    let client_id = masterok.player_account_id.clone();
+    
 
     if char_up {
         client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::North));
@@ -253,25 +181,12 @@ fn keyboard_input_system(
         client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::East));
     }
 
-    if ui_state.menu_open == MenuOpen::None {
-        if char_take {
-            ui_state.menu_open = MenuOpen::Take;
-        }
-        if char_drop {
-            ui_state.menu_open = MenuOpen::Drop;
-        }
-        if char_attack {
-            ui_state.menu_open = MenuOpen::Attack;
-        }
-    }
+ 
 
     if char_quit {
         panic!("BYE");
     }
-    if client_action != ActionType::Wait {
-        masterok.client_world.receive((client_action, client_id));
-        //  println!("{:#?}", masterok.client_world);
-    }
+ 
 }
 
 
@@ -312,13 +227,13 @@ fn set_custom_font(mut contexts: EguiContexts) {
 fn draw_ascii_game(
     terminal: &mut Terminal<RataguiBackend>,
     client_world: &MyWorld,
-    client_id: &EntityID,
+    client_pos: &GamePosition,
 ) {
     terminal
         .draw(|frame| {
             let area = frame.size();
             let client_render =
-                client_world.create_client_render_packet_for_entity(client_id, &area);
+                client_world.create_client_render_packet_for_entity(client_pos, &area);
             let client_graphics = client_render.spans_to_render;
             let mut render_lines = Vec::new();
             let needed_height = area.height as i16;
@@ -330,7 +245,7 @@ fn draw_ascii_game(
                         .map(|x| Span::from(&x.0).fg(x.1).bg(x.2))
                         .collect();
 
-                    let myline = Line::from(myspanvec);
+                    let myline = ratatui::text::Line::from(myspanvec);
 
                     render_lines.push(myline);
                 }
@@ -362,7 +277,7 @@ fn ui_example_system(
     draw_ascii_game(
         &mut termres.terminal_game,
         &masterok.client_world,
-        &masterok.player_entity_id,
+        &masterok.client_pos,
     );
 
     draw_ascii_info(&mut termres.terminal_info, &masterok);

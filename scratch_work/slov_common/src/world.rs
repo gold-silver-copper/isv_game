@@ -10,7 +10,7 @@ pub struct MyWorld {
     pub turn_counter: u32,
     pub small_rngik: SmallRng,
 
-    
+
     pub world_seed: u32,
     pub entity_counter: u64,
 }
@@ -298,15 +298,19 @@ impl MyWorld {
 
     pub fn create_client_render_packet_for_entity(
         &self,
-        ent: &EntityID,
+        ent_pos_comp: &GamePosition,
         render_rect: &Rect,
     ) -> RenderPacket {
-        if let Some(e_pos) = self.ent_loc_index.get(ent) {
+       {
             let render_width = render_rect.width;
             let render_height = render_rect.height;
             let w_radius = render_width / 2;
             let h_radius = render_height / 2;
-            let same_z = locate_square(e_pos, w_radius as i64, h_radius as i64);
+
+
+            let e_pos =  (ent_pos_comp.x.clone() , ent_pos_comp.y.clone());
+
+            let same_z = locate_square(&e_pos, w_radius as i64, h_radius as i64);
 
             let local_ents = self.entity_tree.locate_in_envelope(&same_z);
             let local_voxels = self.voxeltile_grid.locate_in_envelope(&same_z);
@@ -373,10 +377,7 @@ impl MyWorld {
 
                 messages_to_render: Vec::new(),
             }
-        } else {
-            // println!("DESSSSSS");
-            RenderPacket::new()
-        }
+        } 
     }
 
     pub fn create_game_data_packet_for_entity(&self, ent: &EntityID) -> Option<GameDataPacket> {
