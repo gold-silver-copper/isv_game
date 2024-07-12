@@ -17,6 +17,12 @@ pub use voxel::*;
 mod components;
 pub use components::*;
 
+mod bevy_resources;
+pub use bevy_resources::*;
+mod input_system;
+pub use input_system::*;
+mod ui_system;
+pub use ui_system::*;
 use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
 
