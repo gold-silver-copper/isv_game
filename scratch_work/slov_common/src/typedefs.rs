@@ -19,7 +19,7 @@ pub type PlayerMessage = String;
 pub struct GameDataPacket {
     pub entity_info: Vec<EntityPacket>,
     pub voxel_diffs: Vec<Voxel>,
-    pub action_info: Vec<ActionPacket>,
+  
 }
 #[derive(Clone, Debug)]
 pub struct EntityPacket {
@@ -91,11 +91,3 @@ impl CardinalDirection {
     }
 }
 
-pub fn remove_first_instance<T: PartialEq>(vec: &mut Vec<T>, item: &T) -> SuccessType {
-    if let Some(index) = vec.iter().position(|x| x == item) {
-        vec.remove(index);
-        SuccessType::Success
-    } else {
-        SuccessType::Failure
-    }
-}

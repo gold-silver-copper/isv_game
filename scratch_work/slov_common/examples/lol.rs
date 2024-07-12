@@ -165,20 +165,20 @@ fn keyboard_input_system(
     let char_backspace = input.any_pressed([KeyCode::Backspace, KeyCode::Delete]);
     let char_quit = input.any_just_pressed([KeyCode::KeyQ]);
 
-    let mut client_action = ActionType::Wait;
+   
     
 
     if char_up {
-        client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::North));
+       // client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::North));
     }
     if char_down {
-        client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::South));
+     //   client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::South));
     }
     if char_left {
-        client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::West));
+    //    client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::West));
     }
     if char_right {
-        client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::East));
+     //   client_action = ActionType::Go(LocativeID::Cardinal(CardinalDirection::East));
     }
 
  
