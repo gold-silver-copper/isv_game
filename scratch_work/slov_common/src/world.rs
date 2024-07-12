@@ -1,7 +1,7 @@
 use crate::*;
 
-#[derive(Clone, Debug)]
-pub struct MyWorld {
+#[derive(Clone, Debug, Resource)]
+pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
 
     pub small_rngik: SmallRng,
@@ -9,7 +9,7 @@ pub struct MyWorld {
     pub world_seed: u32,
 }
 
-impl Default for MyWorld {
+impl Default for GameMap {
     fn default() -> Self {
         let rngik: u32 = 87243563;
 
@@ -18,14 +18,14 @@ impl Default for MyWorld {
 
             world_seed: rngik.clone(),
 
-            voxeltile_grid: MyWorld::generate_test(rngik),
+            voxeltile_grid: GameMap::generate_test(rngik),
         }
     }
 }
 
-impl MyWorld {
-    pub fn new_test() -> MyWorld {
-        let mut x = MyWorld::default();
+impl GameMap {
+    pub fn new_test() -> GameMap {
+        let mut x = GameMap::default();
 
         x
     }
@@ -34,7 +34,7 @@ impl MyWorld {
     pub fn init_world(&mut self) -> RTree<Voxel> {
         let rngik = self.world_seed.clone();
 
-        let a = MyWorld::generate_test(rngik);
+        let a = GameMap::generate_test(rngik);
 
         a
     }

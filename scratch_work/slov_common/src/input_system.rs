@@ -1,7 +1,7 @@
 use crate::*;
 pub fn keyboard_input_system(
     input: Res<ButtonInput<KeyCode>>,
-    mut masterok: ResMut<Masterik>,
+ 
     mut player_position: Query<( &mut GamePosition), With<Player>>,
    
 ) {

@@ -1,13 +1,13 @@
 use crate::*;
 pub fn draw_ascii_game(
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
-    masterok: Res<Masterik>,
+    mapik: Res<GameMap>,
     player_position: Query<(Entity, &GamePosition), With<Player>>,
     render_query: Query<(&GamePosition, &GameRenderable)>,
 ) {
     let (pid, client_pos) = player_position.single();
 
-    let client_world = &masterok.client_world;
+   
 
     let mut ent_vec = Vec::new();
 
@@ -20,7 +20,7 @@ pub fn draw_ascii_game(
         .draw(|frame| {
             let area = frame.size();
             let client_render =
-                client_world.create_client_render_packet_for_entity(client_pos, &area, ent_vec);
+                mapik.create_client_render_packet_for_entity(client_pos, &area, ent_vec);
 
             let client_graphics = client_render.voxel_grid;
 
@@ -52,16 +52,16 @@ pub fn draw_ascii_game(
         .expect("epic fail");
 }
 
-pub fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik) {}
+pub fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>) {}
 
 // Render to the terminal and to egui , both are immediate mode
 pub fn ui_example_system(
     mut contexts: EguiContexts,
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
-    mut masterok: ResMut<Masterik>,
+
  
 ) {
-    draw_ascii_info(&mut termres.terminal_info, &masterok);
+    draw_ascii_info(&mut termres.terminal_info);
     let mut gameframe = egui::Frame::default()
         .inner_margin(10.0)
         .outer_margin(0.0)

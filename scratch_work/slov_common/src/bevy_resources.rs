@@ -24,25 +24,6 @@ impl Default for BevyTerminal<RataguiBackend> {
     }
 }
 
-#[derive(Resource)]
-pub struct Masterik {
-   
-    pub client_world: MyWorld,
-
-
-}
-
-
-
-impl Default for Masterik {
-    fn default() -> Self {
-        Self {
-        
-            client_world: MyWorld::new_test(),
-         
-        }
-    }
-}
 
 
 

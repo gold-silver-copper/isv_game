@@ -5,7 +5,8 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .init_resource::<BevyTerminal<RataguiBackend>>()
         //Initialize the ratatui terminal
-        .init_resource::<Masterik>()
+     
+        .init_resource::<GameMap>()
       
         .add_plugins(EguiPlugin)
         // Systems that create Egui widgets should be run during the `CoreSet::Update` set,
