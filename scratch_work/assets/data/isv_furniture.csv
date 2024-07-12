@@ -1,0 +1,10 @@
+id,isv,item_type,primary_material,move_block,vision_block,container,symbol
+wall,stěna,furniture,solid,y,y,,F
+table,stol,furniture,solid,y,,y,
+chair,stul,furniture,solid,,,,
+loot_chest,skrinja,furniture,solid,y,,y,
+loot_chest2,skrinka,furniture,solid,y,,y,
+door,dvėri,furniture,solid,y,y,,
+gate,vråta,furniture,solid,y,,,
+vase,vaza,furniture,solid,,,y,
+drawer_dresser,zasuvka,furniture,solid,y,y,y,

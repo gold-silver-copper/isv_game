@@ -1,0 +1,10 @@
+id,isv,item_type,primary_material,secondary_material,attack_types,symbol
+knife,nož,melee_weapon,solid,,stab slash,
+axe,sěkyra,melee_weapon,solid,wood,slash,
+stick_club,kyj,melee_weapon,solid,,blunt,
+sword,meč,melee_weapon,metal,solid,stab slash,
+spear,kopje,melee_weapon,solid,wood,stab ,
+chain,lancuh,melee_weapon,metal,,blunt,
+whip,bič,melee_weapon,flexible,,blunt,
+bow_arrow,lųk,ranged_weapon,wood,flexible,stab,
+sling_shot,prašča,ranged_weapon,flexible,,blunt,
