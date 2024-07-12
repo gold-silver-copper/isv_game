@@ -14,7 +14,7 @@ impl FabricMaterial {
     pub fn to_color(&self) -> Color {
         match &self {
             Self::Tkanina(x) => x.to_color(),
-            Self::Koža(x) => x.to_color(),
+           
 
             Self::Lancuh(x) => x.to_color(),
         }
@@ -70,84 +70,9 @@ impl BushType {
     }
 }
 
-impl MammalType {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            _ => Color::Rgb(210, 180, 140),
-        }
-    }
-}
 
-impl FishType {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            _ => Color::Rgb(102, 205, 170),
-        }
-    }
-}
 
-impl BirdType {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            _ => Color::Rgb(128, 128, 0),
-        }
-    }
-}
 
-impl LizardType {
-    pub fn to_color(&self) -> Color {
-        match &self {
-            _ => Color::Rgb(0, 128, 128),
-        }
-    }
-}
-
-impl AnimalType {
-    pub fn random_animaltype(small_rngik: &mut SmallRng) -> AnimalType {
-        let y: f64 = small_rngik.gen(); // generates a float between 0 and 1
-
-        if y < 0.5 {
-            AnimalType::Mammal(MammalType::random_mammal_type(small_rngik))
-        } else if y < 0.8 {
-            AnimalType::Bird(BirdType::random_bird_type(small_rngik))
-        } else {
-            AnimalType::Lizard(LizardType::random_lizard_type(small_rngik))
-        }
-    }
-
-    pub fn minimal_string(&self) -> String {
-        match &self {
-            AnimalType::Bird(x) => {
-                format!("{}", &x)
-            }
-            AnimalType::Mammal(x) => {
-                format!("{}", &x)
-            }
-            AnimalType::Lizard(x) => {
-                format!("{}", &x)
-            }
-            AnimalType::Fish(x) => {
-                format!("{}", &x)
-            }
-        }
-    }
-
-    pub fn to_displaychar(&self) -> String {
-        let item_str = self.minimal_string();
-
-        // let item_str = format!("{}", self.item_type);
-        let ch = item_str.chars().nth(0).unwrap().to_string();
-        ch
-    }
-    pub fn to_color(&self) -> Color {
-        match &self {
-            AnimalType::Bird(x) => x.to_color(),
-            AnimalType::Mammal(x) => x.to_color(),
-            AnimalType::Lizard(x) => x.to_color(),
-            AnimalType::Fish(x) => x.to_color(),
-        }
-    }
-}
 
 impl MeleeWeapon {
     pub fn minimal_string(&self) -> String {
@@ -241,23 +166,17 @@ impl EntityType {
         match self {
             EntityType::Human(x) => x.name.name.clone(),
             EntityType::Item(x) => x.minimal_string(),
-            EntityType::Monster(x) => x.animal_type.minimal_string(),
+           
             EntityType::Mebelj(x) => x.minimal_string(),
             EntityType::Råstlina(x) => x.minimal_string(),
             EntityType::None => String::new(),
         }
     }
-    pub fn random_animal(small_rngik: &mut SmallRng) -> EntityType {
-        EntityType::Monster(Animal {
-            animal_type: AnimalType::random_animaltype(small_rngik),
-            cur_health: HealthComponent::new(),
-            max_health: HealthComponent::new(),
-        })
-    }
+  
     pub fn to_displaychar(&self) -> String {
         match self {
             EntityType::Item(x) => x.to_displaychar(),
-            EntityType::Monster(x) => x.animal_type.to_displaychar(), //x.to_displaychar(),
+          
             EntityType::Human(_) => "𖣊".into(),
             EntityType::None => "?".into(),
 
@@ -269,7 +188,7 @@ impl EntityType {
     pub fn to_color(&self) -> Color {
         match self {
             EntityType::Item(x) => x.to_color(),
-            EntityType::Monster(x) => x.animal_type.to_color(),
+           
             EntityType::Human(_) => Color::White,
             EntityType::None => Color::Red,
 
@@ -303,37 +222,3 @@ impl Mebelj {
     }
 }
 
-impl MammalType {
-    pub fn random_mammal_type(small_rngik: &mut SmallRng) -> MammalType {
-        let y: f64 = small_rngik.gen(); // generates a float between 0 and 1
-        let funny_index = y * MammalType::COUNT as f64;
-
-        MammalType::from_repr(funny_index as usize).unwrap_or(MammalType::Jelenj)
-    }
-}
-impl FishType {
-    pub fn random_fish_type(small_rngik: &mut SmallRng) -> FishType {
-        let y: f64 = small_rngik.gen(); // generates a float between 0 and 1
-        let funny_index = y * FishType::COUNT as f64;
-
-        FishType::from_repr(funny_index as usize).unwrap_or(FishType::Karas)
-    }
-}
-
-impl BirdType {
-    pub fn random_bird_type(small_rngik: &mut SmallRng) -> BirdType {
-        let y: f64 = small_rngik.gen(); // generates a float between 0 and 1
-        let funny_index = y * BirdType::COUNT as f64;
-
-        BirdType::from_repr(funny_index as usize).unwrap_or(BirdType::Sova)
-    }
-}
-
-impl LizardType {
-    pub fn random_lizard_type(small_rngik: &mut SmallRng) -> LizardType {
-        let y: f64 = small_rngik.gen(); // generates a float between 0 and 1
-        let funny_index = y * LizardType::COUNT as f64;
-
-        LizardType::from_repr(funny_index as usize).unwrap_or(LizardType::Gad)
-    }
-}

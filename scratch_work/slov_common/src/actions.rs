@@ -74,7 +74,7 @@ impl Action {
                     1
                 }
             }
-            EntityType::Monster(_) => 3,
+           
             _ => 0,
         };
 

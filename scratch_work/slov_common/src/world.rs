@@ -54,12 +54,7 @@ impl MyWorld {
 
     pub fn new_test() -> MyWorld {
         let mut x = MyWorld::default();
-        let animik = EntityType::random_animal(&mut x.small_rngik);
-        x.new_entity(&(81, 88), &animik);
-        let animik = EntityType::random_animal(&mut x.small_rngik);
-        x.new_entity(&(82, 88), &animik);
-        let animik = EntityType::random_animal(&mut x.small_rngik);
-        x.new_entity(&(84, 88), &animik);
+       
         x.new_entity(
             &(81, 87),
             &EntityType::Item(ItemType::Melee(MeleeWeapon {
@@ -246,7 +241,7 @@ impl MyWorld {
 
             match enttype {
                 EntityType::Human(_) => return true,
-                EntityType::Monster(_) => return true,
+        
                 EntityType::Item(_) => (),
                 _ => (),
             }

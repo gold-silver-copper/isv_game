@@ -77,50 +77,6 @@ pub enum BushType {
     Bȯzina,
 }
 
-#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
-pub enum MammalType {
-    Los,
-    Jelenj,
-    Krava,
-    Pes,
-    Tigr,
-}
-
-#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
-pub enum FishType {
-    Losos,
-    Tunec,
-    Karas,
-}
-
-#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
-pub enum BirdType {
-    Sova,
-    Vrabec,
-    Vran,
-    Gavran,
-    Kos,
-    Gųsę,
-}
-
-#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
-pub enum LizardType {
-    Gad,
-    Jaščer,
-    Iguana,
-    Vųž,
-    Žȯlv,
-}
-
-#[derive(Clone, Debug, Display, PartialEq, EnumCount, FromRepr)]
-pub enum AnimalPartType {
-    Meat,
-    Feather,
-    Skin,
-    Hair,
-    Bone,
-}
-
 #[derive(Clone, Debug, Display, PartialEq, EnumCount, FromRepr)]
 pub enum ShoulderClothingType {
     Šal,

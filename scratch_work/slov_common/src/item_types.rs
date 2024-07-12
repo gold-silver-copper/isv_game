@@ -12,7 +12,7 @@ pub enum SolidMaterial {
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum FabricMaterial {
     //vlakno vivsa tkanina plet'
-    Koža(MammalType),
+   
     Tkanina(PlantType),
 
     Lancuh(MetalType),
@@ -25,19 +25,6 @@ pub enum PlantType {
     Kust(BushType),
 }
 
-#[derive(Clone, Debug, Display, PartialEq, EnumCount)]
-pub enum AnimalType {
-    Mammal(MammalType),
-    Fish(FishType),
-    Bird(BirdType),
-    Lizard(LizardType),
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct AnimalPart {
-    pub animal_type: AnimalType,
-    pub animal_part: AnimalPartType,
-}
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct MeleeWeapon {
@@ -58,7 +45,7 @@ pub enum ItemType {
 pub enum EntityType {
     Human(Human),
     Item(ItemType), //věć
-    Monster(Animal),
+   
     Mebelj(Mebelj),
 
     Råstlina(PlantType),
