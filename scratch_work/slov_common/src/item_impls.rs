@@ -164,17 +164,6 @@ impl MeleeWeaponType {
     }
 }
 
-impl RangedWeapon {
-    pub fn to_color(&self) -> Color {
-        match &self.weapon_type {
-            _ => self.tetiva_material.to_color(),
-        }
-    }
-
-    pub fn minimal_string(&self) -> String {
-        format! {"{}",self.weapon_type}
-    }
-}
 
 impl ItemType {
     pub fn to_displaychar(&self) -> String {
@@ -187,10 +176,7 @@ impl ItemType {
     pub fn to_color(&self) -> Color {
         match &self {
             ItemType::Melee(x) => x.material_type.to_color(),
-            ItemType::Ranged(x) => x.tetiva_material.to_color(),
-            ItemType::Clothing(x) => x.fabric_type.to_color(),
-
-            ItemType::None => Color::LightRed,
+   
         }
     }
     pub fn minimal_string(&self) -> String {
@@ -198,14 +184,7 @@ impl ItemType {
             ItemType::Melee(x) => {
                 format!("{}", &x.weapon_type)
             }
-            ItemType::Clothing(x) => {
-                format!("{}", &x.clothing_type)
-            }
-            ItemType::Ranged(x) => {
-                format!("{}", &x.weapon_type)
-            }
-
-            ItemType::None => "?".into(),
+  
         };
 
         item_str

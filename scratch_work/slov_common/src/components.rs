@@ -74,12 +74,7 @@ impl StatsComponent {
 pub struct EquipmentComponent {
     pub melee_weapon: Option<MeleeWeapon>,
 
-    pub ranged_weapon: Option<RangedWeapon>,
-
-    pub head: Option<ClothingItem>,
-    pub shoulders: Option<ClothingItem>,
-    pub torso: Option<ClothingItem>,
-    pub legs: Option<ClothingItem>,
+ 
 }
 
 impl EquipmentComponent {
@@ -87,12 +82,7 @@ impl EquipmentComponent {
         EquipmentComponent {
             melee_weapon: None,
 
-            ranged_weapon: None,
-
-            head: None,
-            shoulders: None,
-            torso: None,
-            legs: None,
+      
         }
     }
     pub fn new_hunter() -> EquipmentComponent {
@@ -102,20 +92,7 @@ impl EquipmentComponent {
                 material_type: SolidMaterial::Metal(MetalType::Bronza),
             }),
 
-            ranged_weapon: Some(RangedWeapon {
-                weapon_type: RangedWeaponType::Lųk,
-                tetiva_material: FabricMaterial::Koža(MammalType::Jelenj),
-                rema_material: WoodType::Jasenj,
-                ammo_material: SolidMaterial::Metal(MetalType::Bronza),
-            }),
-
-            head: Some(ClothingItem {
-                clothing_type: ClothingType::Head(HeadClothingType::Kapuc),
-                fabric_type: FabricMaterial::Tkanina(PlantType::Trava(GrassType::Jasenėc)),
-            }),
-            shoulders: None,
-            torso: None,
-            legs: None,
+         
         }
     }
 }

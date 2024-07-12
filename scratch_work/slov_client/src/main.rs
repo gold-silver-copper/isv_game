@@ -58,16 +58,7 @@ fn ui_example_system(
                 .frame(Frame::none())
                 .show_inside(ui, |ui| {
                     let mut menu_panel_string = String::new();
-                    if ui_status.menu_open == MenuOpen::Take {
-                        draw_take_menu(&mut termres.terminal_menu, &mut masterok);
-                        menu_panel_string = "take".into();
-                    } else if ui_status.menu_open == MenuOpen::Drop {
-                        draw_drop_menu(&mut termres.terminal_menu, &mut masterok);
-                        menu_panel_string = "drop".into();
-                    } else if ui_status.menu_open == MenuOpen::Attack {
-                        draw_attack_menu(&mut termres.terminal_menu, &mut masterok);
-                        menu_panel_string = "attack".into();
-                    }
+                
                     if menu_panel_string != "" {
                         egui::TopBottomPanel::top(menu_panel_string)
                             .min_height(200.)
@@ -169,18 +160,7 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
         let mut local_items = String::new();
         let mut inventory_string = String::new();
 
-        for funnumb in 1..9 {
-            let ctotik = player_inv.pop().unwrap_or(ItemType::None);
-            let ctotik_string = format! {" {},",ctotik.minimal_string().to_lowercase()};
-
-            if (ctotik == ItemType::None) && (funnumb == 1) {
-                inventory_string.push_str(" ničto...");
-            }
-
-            if ctotik != ItemType::None {
-                inventory_string.push_str(&ctotik_string);
-            }
-        }
+       
 
         if let Some(mel_wep) = &veci.melee_weapon {
             let mel_str = format! {"V rųkah {}", mel_wep.minimal_string().to_lowercase() };
@@ -189,11 +169,7 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
             wep_string.push_str("V rųkah ničto");
         }
 
-        if let Some(ran_wep) = &veci.ranged_weapon {
-            let ran_str =
-                format! {", za daleky boj je {}", ran_wep.minimal_string().to_lowercase() };
-            wep_string.push_str(&ran_str);
-        }
+      
 
         if let Some(current_voxel) = masterok.client_world.get_voxel_at(&local_player_loc) {
             let floor_string = format! {"{}",&current_voxel.floor};
@@ -273,132 +249,11 @@ fn draw_ascii_info(terminal: &mut Terminal<RataguiBackend>, masterok: &Masterik)
     }
 }
 
-fn draw_attack_menu(terminal: &mut Terminal<RataguiBackend>, masterok: &mut Masterik) {
-    let mut items = masterok
-        .client_world
-        .get_visible_ents_from_ent(&masterok.player_entity_id);
-  
-    let chosen_item = items.get(&masterok.list_cursor_index % items.len()).unwrap_or(&0);
-    masterok.targeted_ent_id = chosen_item.clone();
-    let mut listitemvec = Vec::new();
 
-    let ciotik = masterok
-        .client_world
-        .entity_map
-        .get(&chosen_item)
-        .unwrap_or(&EntityType::None);
-    let target_string = format!("currently targeting {}", ciotik.minimal_string());
 
-    listitemvec.push(Line::from("Select further / closer with I / K"));
-    listitemvec.push(Line::from(target_string));
 
-    terminal
-        .draw(|frame| {
-            let area = frame.size();
 
-            //neccesary beccause drawing is from the top
 
-            frame.render_widget(
-                List::new(listitemvec).on_gray().block(
-                    Block::new()
-                        .title("press number to choose item to pick up")
-                        .blue()
-                        .borders(Borders::ALL),
-                ),
-                area,
-            );
-        })
-        .expect("epic fail");
-}
-
-fn draw_take_menu(terminal: &mut Terminal<RataguiBackend>, masterok: &mut Masterik) {
-    let ent_loc = masterok
-        .client_world
-        .ent_loc_index
-        .get(&masterok.player_entity_id)
-        .unwrap_or(&(0, 0));
-    let mut items = masterok.client_world.get_items_at_point(ent_loc);
-    let mut listitemvec = Vec::new();
-
-    for numb in 1..9 {
-        let meowmeow = items.pop();
-        let meownyaa: (u64, ItemType) = meowmeow.unwrap_or((0, ItemType::None));
-
-        if meownyaa.1 != ItemType::None {
-            masterok
-                .button_entityid_map
-                .insert(numb.clone(), meownyaa.0.clone());
-
-            let item_str = format!("{}    {}", numb, &meownyaa.1.minimal_string());
-            let litem: ListItem = item_str.into();
-            listitemvec.push(litem);
-        }
-    }
-
-    terminal
-        .draw(|frame| {
-            let area = frame.size();
-
-            //neccesary beccause drawing is from the top
-
-            frame.render_widget(
-                List::new(listitemvec).on_gray().block(
-                    Block::new()
-                        .title("press number to choose item to pick up")
-                        .blue()
-                        .borders(Borders::ALL),
-                ),
-                area,
-            );
-        })
-        .expect("epic fail");
-}
-
-fn draw_drop_menu(terminal: &mut Terminal<RataguiBackend>, masterok: &mut Masterik) {
-    let mut entik = masterok
-        .client_world
-        .entity_map
-        .get(&masterok.player_entity_id)
-        .unwrap_or(&EntityType::None);
-    let mut items = Vec::new();
-    let mut listitemvec = Vec::new();
-
-    match entik {
-        EntityType::Human(igrok) => {
-            items = igrok.inventory.clone();
-        }
-        _ => (),
-    }
-
-    for numb in 1..9 {
-        let itimik = items.pop().unwrap_or(ItemType::None);
-        if itimik != ItemType::None {
-            let item_str = format!("{}    {}", numb, &itimik.minimal_string());
-            let litem: ListItem = item_str.into();
-            listitemvec.push(litem);
-
-            masterok.button_itemstruct_map.insert(numb.clone(), itimik);
-        }
-    }
-
-    terminal
-        .draw(|frame| {
-            let area = frame.size();
-
-            //neccesary beccause drawing is from the top
-
-            frame.render_widget(
-                List::new(listitemvec).on_gray().block(
-                    Block::new()
-                        .title("nozmi nomer vybrati ot czego izbaviti se")
-                        .blue()
-                        .borders(Borders::ALL),
-                ),
-                area,
-            );
-        })
-        .expect("epic fail");
-}
 
 // Create resource to hold the ratatui terminal
 #[derive(Resource)]
@@ -648,7 +503,7 @@ fn keyboard_input_system(
                 masterok
                     .button_itemstruct_map
                     .get(&1)
-                    .unwrap_or(&ItemType::None)
+                    .unwrap()
                     .clone(),
             );
         }

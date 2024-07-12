@@ -45,39 +45,13 @@ pub struct MeleeWeapon {
     pub material_type: SolidMaterial,
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct RangedWeapon {
-    pub weapon_type: RangedWeaponType,
 
-    pub tetiva_material: FabricMaterial,
-    pub rema_material: WoodType,
-
-    pub ammo_material: SolidMaterial,
-}
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum ItemType {
     Melee(MeleeWeapon),
-    Ranged(RangedWeapon),
-    Clothing(ClothingItem),
-
-    None,
+  
 }
-
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum ClothingType {
-    Head(HeadClothingType),
-    Shoulder(ShoulderClothingType),
-    Torso(TorsoClothingType),
-    Legs(LegsClothingType),
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct ClothingItem {
-    pub clothing_type: ClothingType,
-    pub fabric_type: FabricMaterial,
-}
-
 
 
 #[derive(Clone, Debug, Display, PartialEq)]
