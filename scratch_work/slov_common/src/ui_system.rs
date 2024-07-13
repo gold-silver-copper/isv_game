@@ -36,7 +36,7 @@ pub fn draw_ascii_game(
                 for y in (0..needed_height) {
                     let myspanvec: Vec<_> = client_graphics[y as usize]
                         .iter()
-                        .map(|x| Span::from(x.0).fg(x.1).bg(x.2))
+                        .map(|x| Span::from(&x.0).fg(x.1).bg(x.2))
                         .collect();
 
                     let myline = ratatui::text::Line::from(myspanvec);

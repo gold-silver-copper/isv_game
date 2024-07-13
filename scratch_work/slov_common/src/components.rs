@@ -5,7 +5,7 @@ pub struct Player;
 
 
 pub type MyPoint = ( CoordinateUnit, CoordinateUnit);
-pub type GraphicTriple = (&'static str,RatColor,RatColor);
+pub type GraphicTriple = (String,RatColor,RatColor);
 
 
 #[derive(Component)]
@@ -14,7 +14,6 @@ pub struct PointComponent(pub MyPoint);
 #[derive(Component)]
 pub struct GraphicComponent(pub GraphicTriple);
 
-pub const HUMAN_GRAPHIC: GraphicComponent = GraphicComponent(("@",RatColor::White,RatColor::Black));
 
 
 

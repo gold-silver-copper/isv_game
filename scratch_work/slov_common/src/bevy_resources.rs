@@ -29,6 +29,7 @@ pub struct Masterok {
    
 
     pub small_rngik: SmallRng,
+    pub csv_type_store: CSVTypeStore,
 
     pub world_seed: u32,
 }
@@ -39,6 +40,7 @@ impl Default for Masterok {
 
         Self {
             small_rngik: SmallRng::seed_from_u64(rngik as u64),
+            csv_type_store: CSVTypeStore::default(),
 
             world_seed: rngik.clone(),
 
@@ -53,7 +55,7 @@ pub fn setup(mut commands: Commands) {
         // Initialize all your components and bundles here
         Player,
         PointComponent((5,5)),
-        HUMAN_GRAPHIC, // ...
+        GraphicComponent((String::from("@"),RatColor::White,RatColor::Black)), // ...
     ));
 
 
@@ -63,7 +65,7 @@ pub fn setup(mut commands: Commands) {
             // Initialize all your components and bundles here
            
             PointComponent((boop*2,boop*3)),
-            HUMAN_GRAPHIC, // ...
+            GraphicComponent((String::from("@"),RatColor::White,RatColor::Black)), // ...
         ));
 
 

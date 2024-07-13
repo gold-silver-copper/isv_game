@@ -38,14 +38,14 @@ impl Floor {
         }
     }
 
-    pub fn to_displaychar(&self) -> &'static str {
+    pub fn to_displaychar(&self) -> String {
         match &self {
-            Self::Dirt => "%",
-            Self::Water => "~",
+            Self::Dirt => "%".into(),
+            Self::Water => "~".into(),
 
-            Self::Grass => ";",
+            Self::Grass => ";".into(),
 
-            Self::Sand => ".",
+            Self::Sand => ".".into(),
         }
     }
 
