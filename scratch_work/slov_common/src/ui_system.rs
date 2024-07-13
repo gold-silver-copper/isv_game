@@ -1,7 +1,7 @@
 use crate::*;
 pub fn draw_ascii_game(
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
-    mapik: Res<GameMap>,
+    masterok: Res<Masterok>,
     player_position: Query<(Entity, &PointComponent), With<Player>>,
     render_query: Query<(&PointComponent, &GraphicComponent)>,
 ) {
@@ -25,7 +25,7 @@ pub fn draw_ascii_game(
         .draw(|frame| {
             let area = frame.size();
             let client_render =
-                mapik.create_client_render_packet_for_entity(&client_pos.0, &area, ent_vec);
+                masterok.game_map.create_client_render_packet_for_entity(&client_pos.0, &area, ent_vec);
 
             let client_graphics = client_render.voxel_grid;
 

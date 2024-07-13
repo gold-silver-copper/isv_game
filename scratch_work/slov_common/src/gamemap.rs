@@ -1,6 +1,6 @@
 use crate::*;
 
-#[derive(Clone, Debug, Resource)]
+#[derive(Clone, Debug)]
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
 

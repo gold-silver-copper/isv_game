@@ -30,6 +30,7 @@ pub struct Masterok {
 
     pub small_rngik: SmallRng,
     pub csv_type_store: CSVTypeStore,
+    pub game_map: GameMap,
 
     pub world_seed: u32,
 }
@@ -41,6 +42,7 @@ impl Default for Masterok {
         Self {
             small_rngik: SmallRng::seed_from_u64(rngik as u64),
             csv_type_store: CSVTypeStore::default(),
+            game_map: GameMap::default(),
 
             world_seed: rngik.clone(),
 
