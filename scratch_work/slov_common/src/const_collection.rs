@@ -11,20 +11,26 @@ dirt,brěst,solid, ,"166,112,78","166,112,78"
 water,jasenj,liquid,~,"","4"
 sand,lipa,granular, ,"233,225,194","233,225,194"
 grass,jablånj,solid, ,"21,114,65","21,114,65"
+eartt
+    fg_color: RatColor::Rgb(145, 118, 83),
+    bg_color: RatColor::Rgb(155, 118, 83),
+
+water
+     fg_color: RatColor::Rgb(35, 137, 218),
+    bg_color: RatColor::Rgb(45, 117, 228),
+
 */
 pub const DIRT_FLOOR: Floor = Floor {
     name: "lutum",
     symbol: "%",
-    fg_color: RatColor::Rgb(145, 118, 83),
-    bg_color: RatColor::Rgb(155, 118, 83),
-    floor_type: FloorType::Dirt,
+
+    floor_type: FloorType::Earth(EarthType::Dirt),
 };
 pub const WATER_FLOOR: Floor = Floor {
     name: "aqua",
     symbol: "~",
-    fg_color: RatColor::Rgb(35, 137, 218),
-    bg_color: RatColor::Rgb(45, 117, 228),
-    floor_type: FloorType::Water,
+   
+    floor_type: FloorType::Liquid(LiquidType::Water),
 };
 
 pub const WILLOW_TREE: Tree = Tree {

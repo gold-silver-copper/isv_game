@@ -49,9 +49,88 @@ impl PointDistance for Voxel {
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum FloorType {
-    Water,
-    Dirt,
+    Liquid(LiquidType),
+    Earth(EarthType),
 }
+
+impl FloorType {
+    pub fn fg_color(&self) -> RatColor{
+        match self {
+            FloorType::Liquid(liq) => {liq.fg_color()},
+            FloorType::Earth(ear) => {ear.fg_color()},
+
+        }
+    }
+    pub fn bg_color(&self) -> RatColor{
+        match self {
+            FloorType::Liquid(liq) => {liq.bg_color()},
+            FloorType::Earth(ear) => {ear.bg_color()},
+
+        }
+    }
+
+}
+
+#[derive(Clone, Debug, Display, PartialEq)]
+pub enum LiquidType {
+   Water,
+   Lava,
+   Beer
+
+}
+
+
+
+impl LiquidType {
+    pub fn fg_color(&self) -> RatColor{
+        match self {
+            LiquidType::Water =>  RatColor::Rgb(35, 137, 218),
+            LiquidType::Lava =>  RatColor::Rgb(135, 37, 118),
+            LiquidType::Beer =>  RatColor::Rgb(35, 37, 118),
+
+
+        }
+    }
+    pub fn bg_color(&self) -> RatColor{
+        match self {
+            LiquidType::Water =>  RatColor::Rgb(35, 137, 218),
+            LiquidType::Lava =>  RatColor::Rgb(135, 37, 118),
+            LiquidType::Beer =>  RatColor::Rgb(35, 37, 118),
+
+        }
+    }
+
+}
+
+impl EarthType {
+    pub fn fg_color(&self) -> RatColor{
+        match self {
+            EarthType::Dirt =>  RatColor::Rgb(145, 118, 83),
+            EarthType::Clay =>  RatColor::Rgb(145, 118, 83),
+            EarthType::Sand =>  RatColor::Rgb(145, 118, 83),
+
+
+        }
+    }
+    pub fn bg_color(&self) -> RatColor{
+        match self {
+            EarthType::Dirt =>  RatColor::Rgb(145, 118, 83),
+            EarthType::Clay =>  RatColor::Rgb(145, 118, 83),
+            EarthType::Sand => RatColor::Rgb(145, 118, 83),
+
+        }
+    }
+
+}
+
+#[derive(Clone, Debug, Display, PartialEq)]
+pub enum EarthType {
+   Dirt,
+   Clay,
+   Sand,
+
+}
+
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum RoofType {
    Tegula,
@@ -62,8 +141,6 @@ pub enum RoofType {
 pub struct Floor {
     pub name: &'static str,
     pub symbol: &'static str,
-    pub fg_color: RatColor,
-    pub bg_color: RatColor,
     pub floor_type: FloorType,
 }
 
@@ -80,9 +157,8 @@ impl Default for Floor {
         Self {
             name: "pavimentum",
             symbol: " ",
-            fg_color: RatColor::Gray,
-            bg_color: RatColor::Gray,
-            floor_type: FloorType::Dirt
+         
+            floor_type: FloorType::Earth(EarthType::Dirt)
         }
     }
 }
@@ -182,8 +258,8 @@ impl Floor {
     pub fn to_graphic_triple(&self) -> GraphicTriple {
         (
             self.symbol.into(),
-            self.fg_color.into(),
-            self.bg_color.into(),
+            self.floor_type.fg_color(),
+            self.floor_type.bg_color(),
         )
     }
 }
