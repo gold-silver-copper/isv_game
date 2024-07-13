@@ -52,21 +52,37 @@ pub struct Floor {
 #[derive(Clone, Debug, PartialEq)]
 pub enum SolidMaterial {
     Wood(Tree),
-    Stone,
-    Metal,
+    Stone(Mineral),
+    Metal(Alloy),
 }
 
 impl SolidMaterial {
     pub fn to_color(&self) -> RatColor {
         match self {
-            Self::Wood(tree) => tree.fg_color.clone(),
-            _ => todo!("IMPLEMENT COLORS FOR STONE AND METAL"),
+            Self::Wood(inner) => inner.fg_color.clone(),
+            Self::Stone(inner) => inner.fg_color.clone(),
+            Self::Metal(inner) => inner.fg_color.clone(),
+            _ => todo!("IMPLEMENT COLORS FOR MATERIAL"),
         }
     }
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Tree {
+    pub name: &'static str,
+    pub symbol: &'static str,
+    pub fg_color: RatColor,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct Mineral {
+    pub name: &'static str,
+    pub symbol: &'static str,
+    pub fg_color: RatColor,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct Alloy {
     pub name: &'static str,
     pub symbol: &'static str,
     pub fg_color: RatColor,
