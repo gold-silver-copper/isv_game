@@ -17,7 +17,7 @@ impl GameMap {
    
  
 
-    pub fn generate_test(seed: u32, csv_info: &CSVTypeStore) -> RTree<Voxel> {
+    pub fn generate_test(seed: u32) -> RTree<Voxel> {
         let hasher = noise::permutationtable::PermutationTable::new(seed);
         let boop = noise::utils::PlaneMapBuilder::new_fn(|point| {
             noise::core::open_simplex::open_simplex_2d(point.into(), &hasher)
@@ -73,7 +73,7 @@ impl GameMap {
         ent_pos_comp: &MyPoint,
         render_rect: &Rect,
         ent_vec: std::vec::Vec<(&MyPoint, &GraphicTriple)>,
-        csv_info: &CSVTypeStore
+       
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
@@ -101,7 +101,7 @@ impl GameMap {
                     && (0 < relative_point_x)
                     && (relative_point_x < render_width as i64)
                 {
-                    let boop = lv.to_graphic(csv_info);
+                    let boop = lv.to_graphic();
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;
                 }
             }

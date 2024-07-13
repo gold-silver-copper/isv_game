@@ -11,8 +11,8 @@ pub struct Voxel {
 
 
 impl Voxel {
-    pub fn to_graphic(&self,csv_info: &CSVTypeStore) -> GraphicTriple {
-        csv_info.voxel_graphic_from_id(&self.floor)
+    pub fn to_graphic(&self) -> GraphicTriple {
+       (".".into(),RatColor::White,RatColor::Black)
     
     }
 }

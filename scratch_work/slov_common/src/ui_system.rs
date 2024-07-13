@@ -25,7 +25,7 @@ pub fn draw_ascii_game(
         .draw(|frame| {
             let area = frame.size();
             let client_render =
-                masterok.game_map.create_client_render_packet_for_entity(&client_pos.0, &area, ent_vec, &masterok.csv_type_store);
+                masterok.game_map.create_client_render_packet_for_entity(&client_pos.0, &area, ent_vec);
 
             let client_graphics = client_render.voxel_grid;
 
