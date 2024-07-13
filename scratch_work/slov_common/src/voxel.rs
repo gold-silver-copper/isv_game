@@ -49,6 +49,21 @@ pub struct Floor {
     pub bg_color: RatColor,
     pub floor_type: FloorType,
 }
+
+impl Default for Floor {
+    fn default() -> Self {
+
+        Self {
+            name: "pavimentum",
+            symbol: " ",
+            fg_color: RatColor::Gray,
+            bg_color: RatColor::Gray,
+            floor_type: FloorType::Dirt
+        }
+    }
+}
+
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum SolidMaterial {
     Wood(Tree),
@@ -92,6 +107,7 @@ pub struct Alloy {
 pub enum FurnitureType {
     Wall(SolidMaterial),
     Door(SolidMaterial),
+    Trinket,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -102,11 +118,23 @@ pub struct Furniture {
     pub furniture_type: FurnitureType,
 }
 
+impl Default for Furniture {
+    fn default() -> Self {
+
+        Self {
+            name: "supellex",
+    symbol: "|",
+    furniture_type: FurnitureType::Trinket,
+        }
+    }
+}
+
 impl Furniture {
     pub fn to_color(&self) -> RatColor {
         match &self.furniture_type {
             FurnitureType::Wall(sm) => sm.to_color(),
             FurnitureType::Door(sm) => sm.to_color(),
+            _ => RatColor::White
         }
     }
 }
