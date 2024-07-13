@@ -25,7 +25,7 @@ pub fn draw_ascii_game(
         .draw(|frame| {
             let area = frame.size();
             let client_render =
-                masterok.game_map.create_client_render_packet_for_entity(&client_pos.0, &area, ent_vec);
+                masterok.game_map.create_client_render_packet_for_entity(&client_pos.0, &area, ent_vec, &masterok.csv_type_store);
 
             let client_graphics = client_render.voxel_grid;
 
@@ -85,6 +85,8 @@ pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>) {
 pub fn ui_example_system(
     mut contexts: EguiContexts,
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
+   
+
 ) {
     let mut gameframe = egui::Frame::default()
         .inner_margin(10.0)

@@ -31,18 +31,18 @@ impl GameMap {
         for x in 0..300 {
             for y in 0..300 {
                 let val = boop.get_value(x as usize, y as usize);
-                let graphic = if val > 0.0 {
-               csv_info.voxel_graphic_from_id("grass")
+                let floor = if val > 0.0 {
+               String::from("grass")
                 } else if val > -0.1 {
-                    csv_info.voxel_graphic_from_id("dirt")
+                    String::from("dirt")
                 } else if val > -0.2 {
-                    csv_info.voxel_graphic_from_id("sand")
+                    String::from("sand")
                 } else {
-                    csv_info.voxel_graphic_from_id("water")
+                    String::from("water")
                 };
 
                 batchvec.push(Voxel {
-                    voxel_floor_graphic: graphic,
+                    floor: floor,
                     voxel_pos: (x, y),
                 });
             }
@@ -73,6 +73,7 @@ impl GameMap {
         ent_pos_comp: &MyPoint,
         render_rect: &Rect,
         ent_vec: std::vec::Vec<(&MyPoint, &GraphicTriple)>,
+        csv_info: &CSVTypeStore
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
@@ -100,7 +101,7 @@ impl GameMap {
                     && (0 < relative_point_x)
                     && (relative_point_x < render_width as i64)
                 {
-                    let boop = lv.to_graphic();
+                    let boop = lv.to_graphic(csv_info);
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;
                 }
             }

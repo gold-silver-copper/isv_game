@@ -1,7 +1,7 @@
 use crate::*;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Voxel {
-    pub voxel_floor_graphic: GraphicTriple,
+    pub floor: String,
 
     pub voxel_pos: MyPoint,
 }
@@ -11,8 +11,9 @@ pub struct Voxel {
 
 
 impl Voxel {
-    pub fn to_graphic(&self) -> GraphicTriple {
-        self.voxel_floor_graphic.clone()
+    pub fn to_graphic(&self,csv_info: &CSVTypeStore) -> GraphicTriple {
+        csv_info.voxel_graphic_from_id(&self.floor)
+    
     }
 }
 
