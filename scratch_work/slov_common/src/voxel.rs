@@ -8,19 +8,24 @@ pub struct Voxel {
 }
 
 impl Voxel {
-    pub fn to_graphic(&self) -> GraphicTriple {
+    pub fn to_graphic(&self, with_roof: bool) -> GraphicTriple {
         let mut floor = self.floor.to_graphic_triple();
         let mut plus_furn: GraphicTriple = match &self.furniture {
             Some(furn) => (furn.symbol.into(), furn.to_color(), floor.2.clone()),
             None => floor,
         };
 
-        let mut plus_roof: GraphicTriple = match &self.roof {
-            Some(roof) => (roof.symbol.into(), roof.to_fg_color(), roof.to_bg_color()),
-            None => floor,
-        };
+        if with_roof {
+            let mut plus_roof: GraphicTriple = match &self.roof {
+                Some(roof) => (roof.symbol.into(), roof.to_fg_color(), roof.to_bg_color()),
+                None => plus_furn,
+            };
+    
+            plus_roof
+        }
+        else {plus_furn}
 
-        plus_furn
+     
     }
 }
 
@@ -66,9 +71,7 @@ pub struct Floor {
 pub struct Roof {
     pub name: &'static str,
     pub symbol: &'static str,
-    pub fg_color: RatColor,
-    pub bg_color: RatColor,
-    pub RoofType: RoofType,
+    pub roof_type: RoofType,
 }
 
 impl Default for Floor {
@@ -162,9 +165,14 @@ impl Furniture {
 
 impl Roof {
     pub fn to_fg_color(&self) -> RatColor {
-        match &self.roof {
-            FurnitureType::Wall(sm) => sm.to_color(),
-            FurnitureType::Door(sm) => sm.to_color(),
+        match &self.roof_type {
+           // RoofType::Wall(sm) => sm.to_color(),
+            _ => RatColor::Black
+        }
+    }
+    pub fn to_bg_color(&self) -> RatColor {
+        match &self.roof_type {
+           // RoofType::Wall(sm) => sm.to_color(),
             _ => RatColor::White
         }
     }

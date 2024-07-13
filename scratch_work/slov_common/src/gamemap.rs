@@ -91,7 +91,7 @@ impl GameMap {
                     && (0 < relative_point_x)
                     && (relative_point_x < render_width as i64)
                 {
-                    let boop = lv.to_graphic();
+                    let boop = lv.to_graphic(true);
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;
                 }
             }
