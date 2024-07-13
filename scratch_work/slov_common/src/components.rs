@@ -4,44 +4,19 @@ use crate::*;
 pub struct Player;
 
 
+pub type MyPoint = ( CoordinateUnit, CoordinateUnit);
+pub type GraphicTriple = (&'static str,RatColor,RatColor);
+
 
 #[derive(Component)]
-pub struct GamePosition {
-    pub x: CoordinateUnit,
-    pub y: CoordinateUnit,
-    //  z: ZPosition
-}
-
-impl GamePosition {
-    pub fn new() -> GamePosition {
-        GamePosition { x: 5, y: 5 }
-    }
-}
+pub struct PointComponent(pub MyPoint);
 
 #[derive(Component)]
-pub struct GameRenderable {
-    pub display_char: String,
-    pub fg_color: RatColor,
-    pub bg_color: RatColor,
-}
+pub struct GraphicComponent(pub GraphicTriple);
 
-impl GameRenderable {
-    pub fn new_human() -> GameRenderable {
-        GameRenderable {
-            display_char: "@".into(),
-            fg_color: RatColor::White,
-            bg_color: RatColor::Black,
-        }
-    }
+pub const HUMAN_GRAPHIC: GraphicComponent = GraphicComponent(("@",RatColor::White,RatColor::Black));
 
-    pub fn to_graphictriple(&self) -> GraphicTriple {
-        (
-            self.display_char.clone(),
-            self.fg_color.clone(),
-            RatColor::Black,
-        )
-    }
-}
+
 
 
 // for horse vehicle use horse chess piece as head  ∧ ♞

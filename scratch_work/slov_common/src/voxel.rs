@@ -38,14 +38,14 @@ impl Floor {
         }
     }
 
-    pub fn to_displaychar(&self) -> String {
+    pub fn to_displaychar(&self) -> &'static str {
         match &self {
-            Self::Dirt => "%".into(),
-            Self::Water => "~".into(),
+            Self::Dirt => "%",
+            Self::Water => "~",
 
-            Self::Grass => ";".into(),
+            Self::Grass => ";",
 
-            Self::Sand => ".".into(),
+            Self::Sand => ".",
         }
     }
 
@@ -63,7 +63,7 @@ impl Floor {
 
 impl Voxel {
     pub fn to_graphic(&self) -> GraphicTriple {
-        let voxel_character: String = self.floor.to_displaychar();
+        let voxel_character= self.floor.to_displaychar();
         let char_color = self.floor.to_front_color();
 
         let floor_color = self.floor.to_color();

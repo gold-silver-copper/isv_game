@@ -2,8 +2,9 @@ use crate::*;
 
 pub type CoordinateUnit = i64;
 pub const LOCAL_RANGE: i64 = 2000;
-pub type MyPoint = (CoordinateUnit, CoordinateUnit);
-pub type GraphicTriple = (String, RatColor, RatColor);
+
+
+
 
 
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {

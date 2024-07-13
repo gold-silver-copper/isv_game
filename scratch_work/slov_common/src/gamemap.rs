@@ -83,9 +83,9 @@ impl GameMap {
 
     pub fn create_client_render_packet_for_entity(
         &self,
-        ent_pos_comp: &GamePosition,
+        ent_pos_comp: &MyPoint,
         render_rect: &Rect,
-        ent_vec: std::vec::Vec<(&components::GamePosition, &components::GameRenderable)>,
+        ent_vec: std::vec::Vec<(&MyPoint, &GraphicTriple)>,
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
@@ -93,7 +93,7 @@ impl GameMap {
             let w_radius = render_width / 2;
             let h_radius = render_height / 2;
 
-            let e_pos = (ent_pos_comp.x.clone(), ent_pos_comp.y.clone());
+            let e_pos = (ent_pos_comp.0.clone(), ent_pos_comp.1.clone());
 
             let same_z = locate_square(&e_pos, w_radius as i64, h_radius as i64);
 
@@ -122,10 +122,10 @@ impl GameMap {
 
             for (ent_pos, ent_renderable) in ent_vec {
                 let ent_relative = (
-                    ent_pos.x - bottom_left_of_game_screen.0,
-                    ent_pos.y - bottom_left_of_game_screen.1,
+                    ent_pos.0 - bottom_left_of_game_screen.0,
+                    ent_pos.1 - bottom_left_of_game_screen.1,
                 );
-                let graphic = ent_renderable.to_graphictriple();
+                let graphic = ent_renderable.clone();
 
                 if (0 < ent_relative.1)
                     && (ent_relative.1 < render_height as i64)

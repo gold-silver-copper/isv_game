@@ -52,22 +52,22 @@ pub fn setup(mut commands: Commands) {
     commands.spawn((
         // Initialize all your components and bundles here
         Player,
-        GamePosition { x: 5, y: 5 },
-        GameRenderable::new_human(), // ...
+        PointComponent((5,5)),
+        HUMAN_GRAPHIC, // ...
     ));
 
 
 
-    for boop in 1..200000 {
+    for boop in 1..2000000 {
         commands.spawn((
             // Initialize all your components and bundles here
            
-            GamePosition { x: boop*boop, y: boop*2 },
-            GameRenderable::new_human(), // ...
+            PointComponent((boop*boop,boop*3)),
+            HUMAN_GRAPHIC, // ...
         ));
 
 
-    }
+    } 
 
 }
 

@@ -2,15 +2,15 @@ use crate::*;
 pub fn draw_ascii_game(
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
     mapik: Res<GameMap>,
-    player_position: Query<(Entity, &GamePosition), With<Player>>,
-    render_query: Query<(&GamePosition, &GameRenderable)>,
+    player_position: Query<(Entity, &PointComponent), With<Player>>,
+    render_query: Query<(&PointComponent, &GraphicComponent)>,
 ) {
     let (pid, client_pos) = player_position.single();
 
     let mut ent_vec = Vec::new();
 
-    for tupik in render_query.iter() {
-        ent_vec.push(tupik);
+    for (pc,gc) in render_query.iter() {
+        ent_vec.push((&pc.0,&gc.0));
     }
 
     termres
@@ -18,7 +18,7 @@ pub fn draw_ascii_game(
         .draw(|frame| {
             let area = frame.size();
             let client_render =
-                mapik.create_client_render_packet_for_entity(client_pos, &area, ent_vec);
+                mapik.create_client_render_packet_for_entity(&client_pos.0, &area, ent_vec);
 
             let client_graphics = client_render.voxel_grid;
 
@@ -29,7 +29,7 @@ pub fn draw_ascii_game(
                 for y in (0..needed_height) {
                     let myspanvec: Vec<_> = client_graphics[y as usize]
                         .iter()
-                        .map(|x| Span::from(&x.0).fg(x.1).bg(x.2))
+                        .map(|x| Span::from(x.0).fg(x.1).bg(x.2))
                         .collect();
 
                     let myline = ratatui::text::Line::from(myspanvec);
