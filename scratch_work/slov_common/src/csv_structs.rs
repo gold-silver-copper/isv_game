@@ -3,34 +3,6 @@ use crate::*;
 
 
 
-#[derive(Debug, Deserialize, Clone)]
-pub struct VoxelCSV {
-    pub voxel_id: String,
-    pub latin: String,
-    pub voxel_type: String,
-    pub symbol: String,
-    #[serde(deserialize_with = "deserialize_color")]
-    pub fg_color: RatColor,
-    #[serde(deserialize_with = "deserialize_color")]
-    pub bg_color: RatColor,
-}
-
-impl Default for VoxelCSV {
-
-    fn default() -> Self {
-
-        Self{
-            voxel_id: String::new(),
-            latin: String::new(),
-            voxel_type: String::new(),
-            symbol: String::new(),
-            fg_color: RatColor::White,
-            bg_color: RatColor::Black,
-
-        }
-    }
-}
-
 
 //id,isv,furn_tags,symbol
 
