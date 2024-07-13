@@ -1,6 +1,6 @@
 voxel_id,latin,voxel_type,symbol,fg_color,bg_color
-dirt,brěst,solid,,"166,112,78","166,112,78"
+dirt,brěst,solid, ,"166,112,78","166,112,78"
 water,jasenj,liquid,~,"35,137,218","45,117,228"
-sand,lipa,granular,,"233,225,194","233,225,194"
-grass,jablånj,solid,,"21,114,65","21,114,65"
-air,jablånj,gas,,"10,10,10","10,10,10"
+sand,lipa,granular, ,"233,225,194","233,225,194"
+grass,jablånj,solid, ,"21,114,65","21,114,65"
+air,jablånj,gas, ,"10,10,10","10,10,10"

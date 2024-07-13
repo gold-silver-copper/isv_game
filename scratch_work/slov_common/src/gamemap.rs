@@ -7,17 +7,6 @@ pub struct GameMap {
    
 }
 
-impl Default for GameMap {
-    fn default() -> Self {
-    
-
-        Self {
-       
-
-            voxeltile_grid: GameMap::generate_test(100),
-        }
-    }
-}
 
 
 
@@ -28,7 +17,7 @@ impl GameMap {
    
  
 
-    pub fn generate_test(seed: u32) -> RTree<Voxel> {
+    pub fn generate_test(seed: u32, csv_info: &CSVTypeStore) -> RTree<Voxel> {
         let hasher = noise::permutationtable::PermutationTable::new(seed);
         let boop = noise::utils::PlaneMapBuilder::new_fn(|point| {
             noise::core::open_simplex::open_simplex_2d(point.into(), &hasher)
@@ -43,17 +32,17 @@ impl GameMap {
             for y in 0..300 {
                 let val = boop.get_value(x as usize, y as usize);
                 let graphic = if val > 0.0 {
-               //     Floor::Grass
+               csv_info.voxel_graphic_from_id("grass")
                 } else if val > -0.1 {
-                 //   Floor::Dirt
+                    csv_info.voxel_graphic_from_id("dirt")
                 } else if val > -0.2 {
-                  //  Floor::Sand
+                    csv_info.voxel_graphic_from_id("sand")
                 } else {
-                 //   Floor::Water
+                    csv_info.voxel_graphic_from_id("water")
                 };
 
                 batchvec.push(Voxel {
-                    voxel_graphic: (String::from("."),RatColor::Magenta,RatColor::Black),
+                    voxel_graphic: graphic,
                     voxel_pos: (x, y),
                 });
             }

@@ -38,11 +38,13 @@ pub struct Masterok {
 impl Default for Masterok {
     fn default() -> Self {
         let rngik: u32 = 87243563;
+        let cst = CSVTypeStore::default();
+        let gm = GameMap::generate_test(100,&cst);
 
         Self {
             small_rngik: SmallRng::seed_from_u64(rngik as u64),
-            csv_type_store: CSVTypeStore::default(),
-            game_map: GameMap::default(),
+            csv_type_store: cst,
+            game_map: GameMap{voxeltile_grid:gm},
 
             world_seed: rngik.clone(),
 
