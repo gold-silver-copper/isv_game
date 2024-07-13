@@ -26,8 +26,6 @@ impl Default for BevyTerminal<RataguiBackend> {
 
 #[derive(Clone, Debug, Resource)]
 pub struct Masterok {
-   
-
     pub small_rngik: SmallRng,
 
     pub game_map: GameMap,
@@ -38,17 +36,15 @@ pub struct Masterok {
 impl Default for Masterok {
     fn default() -> Self {
         let rngik: u32 = 87243563;
-       
+
         let gm = GameMap::generate_test(100);
 
         Self {
             small_rngik: SmallRng::seed_from_u64(rngik as u64),
-            
-            game_map: GameMap{voxeltile_grid:gm},
+
+            game_map: GameMap { voxeltile_grid: gm },
 
             world_seed: rngik.clone(),
-
-        
         }
     }
 }
@@ -58,23 +54,17 @@ pub fn setup(mut commands: Commands) {
     commands.spawn((
         // Initialize all your components and bundles here
         Player,
-        PointComponent((5,5)),
-        GraphicComponent((String::from("@"),RatColor::White,RatColor::Black)), // ...
+        PointComponent((5, 5)),
+        GraphicComponent((String::from("@"), RatColor::White, RatColor::Black)), // ...
     ));
-
-
 
     for boop in 1..2000000 {
         commands.spawn((
             // Initialize all your components and bundles here
-           
-            PointComponent((boop*2,boop*3)),
-            GraphicComponent((String::from("@"),RatColor::White,RatColor::Black)), // ...
+            PointComponent((boop * 2, boop * 3)),
+            GraphicComponent((String::from("@"), RatColor::White, RatColor::Black)), // ...
         ));
-
-
-    } 
-
+    }
 }
 
 pub fn set_custom_font(mut contexts: EguiContexts) {

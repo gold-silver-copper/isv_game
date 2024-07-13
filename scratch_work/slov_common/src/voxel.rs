@@ -2,25 +2,19 @@ use crate::*;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Voxel {
     pub floor: Floor,
-pub furniture: Option<Furniture>,
+    pub furniture: Option<Furniture>,
     pub voxel_pos: MyPoint,
 }
 
-
-
-
-
 impl Voxel {
     pub fn to_graphic(&self) -> GraphicTriple {
-    
-    let mut floor = self.floor.to_graphic_triple();
-    let mut plus_furn: GraphicTriple = match &self.furniture {
-        Some(furn) => (furn.symbol.into(),furn.fg_color.clone(),floor.2.clone()),
-        None => floor
-    };
+        let mut floor = self.floor.to_graphic_triple();
+        let mut plus_furn: GraphicTriple = match &self.furniture {
+            Some(furn) => (furn.symbol.into(), furn.to_color(), floor.2.clone()),
+            None => floor,
+        };
 
-    plus_furn
-    
+        plus_furn
     }
 }
 
@@ -46,50 +40,67 @@ impl PointDistance for Voxel {
 pub enum FloorType {
     Water,
     Dirt,
- 
 }
-#[derive(Clone, Debug,  PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Floor {
     pub name: &'static str,
     pub symbol: &'static str,
     pub fg_color: RatColor,
     pub bg_color: RatColor,
-    pub floor_type: FloorType
+    pub floor_type: FloorType,
+}
+#[derive(Clone, Debug, PartialEq)]
+pub enum SolidMaterial {
+    Wood(Tree),
+    Stone,
+    Metal,
+}
+
+impl SolidMaterial {
+    pub fn to_color(&self) -> RatColor {
+        match self {
+            Self::Wood(tree) => tree.fg_color.clone(),
+            _ => todo!("IMPLEMENT COLORS FOR STONE AND METAL"),
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct Tree {
+    pub name: &'static str,
+    pub symbol: &'static str,
+    pub fg_color: RatColor,
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum FurnitureType {
-    Wall,
-    Door,
-
- 
+    Wall(SolidMaterial),
+    Door(SolidMaterial),
 }
 
-#[derive(Clone, Debug,  PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Furniture {
     pub name: &'static str,
     pub symbol: &'static str,
-    pub fg_color: RatColor,
-    
-    pub furniture_type: FurnitureType
+
+    pub furniture_type: FurnitureType,
 }
 
-pub const WALL_FURNITURE:Furniture = Furniture{name: "paries",symbol: "#", fg_color:RatColor::Rgb(5, 3, 2),furniture_type:FurnitureType::Wall};
-
-/*
-dirt,brěst,solid, ,"166,112,78","166,112,78"
-water,jasenj,liquid,~,"","4"
-sand,lipa,granular, ,"233,225,194","233,225,194"
-grass,jablånj,solid, ,"21,114,65","21,114,65"
-*/
-pub const DIRT_FLOOR: Floor = Floor{name: "lutum", symbol: "%",fg_color: RatColor::Rgb(145, 118, 83),bg_color: RatColor::Rgb(155, 118, 83), floor_type:FloorType::Dirt};
-pub const WATER_FLOOR: Floor = Floor{name: "aqua", symbol: "~",fg_color: RatColor::Rgb(35,137,218),bg_color: RatColor::Rgb(45,117,228), floor_type:FloorType::Water};
-
-
+impl Furniture {
+    pub fn to_color(&self) -> RatColor {
+        match &self.furniture_type {
+            FurnitureType::Wall(sm) => sm.to_color(),
+            FurnitureType::Door(sm) => sm.to_color(),
+        }
+    }
+}
 
 impl Floor {
-    pub fn to_graphic_triple(&self) -> GraphicTriple{
-
-        (self.symbol.into(),self.fg_color.into(),self.bg_color.into())
+    pub fn to_graphic_triple(&self) -> GraphicTriple {
+        (
+            self.symbol.into(),
+            self.fg_color.into(),
+            self.bg_color.into(),
+        )
     }
 }

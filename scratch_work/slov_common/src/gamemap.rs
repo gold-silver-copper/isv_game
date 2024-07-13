@@ -3,20 +3,9 @@ use crate::*;
 #[derive(Clone, Debug)]
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
-
-   
 }
 
-
-
-
-
-
 impl GameMap {
-  
-   
- 
-
     pub fn generate_test(seed: u32) -> RTree<Voxel> {
         let hasher = noise::permutationtable::PermutationTable::new(seed);
         let boop = noise::utils::PlaneMapBuilder::new_fn(|point| {
@@ -32,7 +21,7 @@ impl GameMap {
             for y in 0..300 {
                 let val = boop.get_value(x as usize, y as usize);
                 let floor = if val > 0.0 {
-                 DIRT_FLOOR
+                    DIRT_FLOOR
                 } else if val > -0.1 {
                     DIRT_FLOOR
                 } else if val > -0.2 {
@@ -40,7 +29,7 @@ impl GameMap {
                 } else {
                     WATER_FLOOR //water
                 };
-
+                //Some(WALL_FURNITURE),
                 batchvec.push(Voxel {
                     floor: floor,
                     furniture: None,
@@ -74,7 +63,6 @@ impl GameMap {
         ent_pos_comp: &MyPoint,
         render_rect: &Rect,
         ent_vec: std::vec::Vec<(&MyPoint, &GraphicTriple)>,
-       
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;

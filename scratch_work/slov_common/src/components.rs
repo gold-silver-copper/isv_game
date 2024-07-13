@@ -3,20 +3,14 @@ use crate::*;
 #[derive(Component)]
 pub struct Player;
 
-
-pub type MyPoint = ( CoordinateUnit, CoordinateUnit);
-pub type GraphicTriple = (String,RatColor,RatColor);
-
+pub type MyPoint = (CoordinateUnit, CoordinateUnit);
+pub type GraphicTriple = (String, RatColor, RatColor);
 
 #[derive(Component)]
 pub struct PointComponent(pub MyPoint);
 
 #[derive(Component)]
 pub struct GraphicComponent(pub GraphicTriple);
-
-
-
-
 
 // for horse vehicle use horse chess piece as head  ∧ ♞
 

@@ -9,23 +9,21 @@ pub fn draw_ascii_game(
 
     let mut ent_vec = Vec::new();
 
-    for (pc,gc) in render_query.iter() {
-
+    for (pc, gc) in render_query.iter() {
         if client_pos.0.distance_2(&pc.0) < LOCAL_RANGE {
-            ent_vec.push((&pc.0,&gc.0));
-
-
+            ent_vec.push((&pc.0, &gc.0));
         }
-
-        
     }
 
     termres
         .terminal_game
         .draw(|frame| {
             let area = frame.size();
-            let client_render =
-                masterok.game_map.create_client_render_packet_for_entity(&client_pos.0, &area, ent_vec);
+            let client_render = masterok.game_map.create_client_render_packet_for_entity(
+                &client_pos.0,
+                &area,
+                ent_vec,
+            );
 
             let client_graphics = client_render.voxel_grid;
 
@@ -85,8 +83,6 @@ pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>) {
 pub fn ui_example_system(
     mut contexts: EguiContexts,
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
-   
-
 ) {
     let mut gameframe = egui::Frame::default()
         .inner_margin(10.0)

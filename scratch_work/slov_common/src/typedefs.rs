@@ -3,10 +3,6 @@ use crate::*;
 pub type CoordinateUnit = i64;
 pub const LOCAL_RANGE: i64 = 10000;
 
-
-
-
-
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
     let mut result = (0, 0);
     result.0 = p1.0 + p2.0;

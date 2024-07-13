@@ -17,6 +17,8 @@ pub use voxel::*;
 mod components;
 pub use components::*;
 
+mod const_collection;
+pub use const_collection::*;
 
 mod bevy_resources;
 pub use bevy_resources::*;
@@ -46,7 +48,7 @@ pub use serde::{Deserialize, Deserializer};
 pub use bevy::{input::keyboard::Key, prelude::*, render::view::visibility};
 
 pub use bevy_egui::{
-    egui::{self, Frame,FontData, FontDefinitions, FontFamily},
+    egui::{self, FontData, FontDefinitions, FontFamily, Frame},
     EguiContexts, EguiPlugin,
 };
 pub use egui_ratatui::RataguiBackend;
