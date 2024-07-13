@@ -2,6 +2,7 @@ use crate::*;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Voxel {
     pub floor: Floor,
+    pub roof: Option<Roof>,
     pub furniture: Option<Furniture>,
     pub voxel_pos: MyPoint,
 }
@@ -11,6 +12,11 @@ impl Voxel {
         let mut floor = self.floor.to_graphic_triple();
         let mut plus_furn: GraphicTriple = match &self.furniture {
             Some(furn) => (furn.symbol.into(), furn.to_color(), floor.2.clone()),
+            None => floor,
+        };
+
+        let mut plus_roof: GraphicTriple = match &self.roof {
+            Some(roof) => (roof.symbol.into(), roof.to_fg_color(), roof.to_bg_color()),
             None => floor,
         };
 
@@ -41,6 +47,12 @@ pub enum FloorType {
     Water,
     Dirt,
 }
+#[derive(Clone, Debug, Display, PartialEq)]
+pub enum RoofType {
+   Tegula,
+   Imbrex,
+
+}
 #[derive(Clone, Debug, PartialEq)]
 pub struct Floor {
     pub name: &'static str,
@@ -48,6 +60,15 @@ pub struct Floor {
     pub fg_color: RatColor,
     pub bg_color: RatColor,
     pub floor_type: FloorType,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct Roof {
+    pub name: &'static str,
+    pub symbol: &'static str,
+    pub fg_color: RatColor,
+    pub bg_color: RatColor,
+    pub RoofType: RoofType,
 }
 
 impl Default for Floor {
@@ -132,6 +153,16 @@ impl Default for Furniture {
 impl Furniture {
     pub fn to_color(&self) -> RatColor {
         match &self.furniture_type {
+            FurnitureType::Wall(sm) => sm.to_color(),
+            FurnitureType::Door(sm) => sm.to_color(),
+            _ => RatColor::White
+        }
+    }
+}
+
+impl Roof {
+    pub fn to_fg_color(&self) -> RatColor {
+        match &self.roof {
             FurnitureType::Wall(sm) => sm.to_color(),
             FurnitureType::Door(sm) => sm.to_color(),
             _ => RatColor::White
