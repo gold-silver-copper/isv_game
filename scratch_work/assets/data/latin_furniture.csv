@@ -1,0 +1,4 @@
+id,isv,furn_tags,symbol
+wall,stěna,BLOCKS_MOVE BLOCKS_VISION,#
+chair,stul,,o
+door,dvėri, BLOCKS_VISION,+
