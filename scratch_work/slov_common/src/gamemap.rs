@@ -42,20 +42,18 @@ impl GameMap {
         for x in 0..300 {
             for y in 0..300 {
                 let val = boop.get_value(x as usize, y as usize);
-                let floor = if val > 0.0 {
-                    Floor::Grass
+                let graphic = if val > 0.0 {
+               //     Floor::Grass
                 } else if val > -0.1 {
-                    Floor::Dirt
+                 //   Floor::Dirt
                 } else if val > -0.2 {
-                    Floor::Sand
+                  //  Floor::Sand
                 } else {
-                    Floor::Water
+                 //   Floor::Water
                 };
 
                 batchvec.push(Voxel {
-                    floor: floor,
-
-                    roof: Roof::Sky,
+                    voxel_graphic: (String::from("."),RatColor::Magenta,RatColor::Black),
                     voxel_pos: (x, y),
                 });
             }

@@ -15,6 +15,22 @@ pub struct VoxelCSV {
     pub bg_color: RatColor,
 }
 
+impl Default for VoxelCSV {
+
+    fn default() -> Self {
+
+        Self{
+            voxel_id: String::new(),
+            latin: String::new(),
+            voxel_type: String::new(),
+            symbol: String::new(),
+            fg_color: RatColor::White,
+            bg_color: RatColor::Black,
+
+        }
+    }
+}
+
 
 
 
@@ -24,6 +40,28 @@ pub struct VoxelCSV {
 #[derive(Debug, Deserialize, Clone)]
 pub struct CSVTypeStore {
     pub voxels: HashMap<String,VoxelCSV>
+}
+
+impl CSVTypeStore {
+
+
+    pub fn voxel_graphic_from_id(&self, voxel_id: &str) -> GraphicTriple {
+
+
+
+        let voxel_info =  match self.voxels.get(voxel_id) {
+            Some(x) => x.clone(),
+            None => VoxelCSV::default()
+        };
+
+        (voxel_info.symbol,voxel_info.fg_color,voxel_info.bg_color)
+
+
+
+
+    }
+
+
 }
 
 impl Default for CSVTypeStore {
