@@ -42,7 +42,7 @@ impl GameMap {
                 };
 
                 batchvec.push(Voxel {
-                    voxel_graphic: graphic,
+                    voxel_floor_graphic: graphic,
                     voxel_pos: (x, y),
                 });
             }

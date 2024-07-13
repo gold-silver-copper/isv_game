@@ -1,7 +1,7 @@
 use crate::*;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Voxel {
-    pub voxel_graphic: GraphicTriple,
+    pub voxel_floor_graphic: GraphicTriple,
 
     pub voxel_pos: MyPoint,
 }
@@ -12,7 +12,7 @@ pub struct Voxel {
 
 impl Voxel {
     pub fn to_graphic(&self) -> GraphicTriple {
-        self.voxel_graphic.clone()
+        self.voxel_floor_graphic.clone()
     }
 }
 
