@@ -1,7 +1,7 @@
 use crate::*;
 
 pub type CoordinateUnit = i64;
-pub const LOCAL_RANGE: i64 = 2000;
+pub const LOCAL_RANGE: i64 = 10000;
 
 
 

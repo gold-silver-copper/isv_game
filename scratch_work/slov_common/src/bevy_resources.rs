@@ -62,7 +62,7 @@ pub fn setup(mut commands: Commands) {
         commands.spawn((
             // Initialize all your components and bundles here
            
-            PointComponent((boop*boop,boop*3)),
+            PointComponent((boop*2,boop*3)),
             HUMAN_GRAPHIC, // ...
         ));
 

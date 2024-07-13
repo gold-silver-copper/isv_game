@@ -10,7 +10,14 @@ pub fn draw_ascii_game(
     let mut ent_vec = Vec::new();
 
     for (pc,gc) in render_query.iter() {
-        ent_vec.push((&pc.0,&gc.0));
+
+        if client_pos.0.distance_2(&pc.0) < LOCAL_RANGE {
+            ent_vec.push((&pc.0,&gc.0));
+
+
+        }
+
+        
     }
 
     termres
