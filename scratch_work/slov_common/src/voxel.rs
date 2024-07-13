@@ -1,7 +1,7 @@
 use crate::*;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Voxel {
-    pub floor: FloorType,
+    pub floor: Floorik,
 
     pub voxel_pos: MyPoint,
 }
@@ -12,12 +12,8 @@ pub struct Voxel {
 
 impl Voxel {
     pub fn to_graphic(&self) -> GraphicTriple {
-        let voxel_character: String = self.floor.to_displaychar();
-        let char_color = self.floor.to_front_color();
-
-        let floor_color = self.floor.to_color();
-
-        (voxel_character, char_color, floor_color)
+    
+    self.floor.to_graphic_triple()
     
     }
 }
@@ -44,41 +40,30 @@ impl PointDistance for Voxel {
 pub enum FloorType {
     Water,
     Dirt,
-    Sand,
-    Grass,
+ 
+}
+#[derive(Clone, Debug,  PartialEq)]
+pub struct Floorik {
+    pub name: &'static str,
+    pub symbol: &'static str,
+    pub fg_color: RatColor,
+    pub bg_color: RatColor,
+    pub floor_type: FloorType
 }
 
-impl FloorType {
-    pub fn to_color(&self) -> RatColor {
-        match &self {
-            Self::Dirt => RatColor::Rgb(155, 118, 83),
-            Self::Water => RatColor::Rgb(15, 94, 156),
+/*
+dirt,brěst,solid, ,"166,112,78","166,112,78"
+water,jasenj,liquid,~,"","4"
+sand,lipa,granular, ,"233,225,194","233,225,194"
+grass,jablånj,solid, ,"21,114,65","21,114,65"
+*/
+pub const DIRT_FLOOR: Floorik = Floorik{name: "lutum", symbol: "%",fg_color: RatColor::Rgb(145, 118, 83),bg_color: RatColor::Rgb(155, 118, 83), floor_type:FloorType::Dirt};
+pub const WATER_FLOOR: Floorik = Floorik{name: "aqua", symbol: "~",fg_color: RatColor::Rgb(35,137,218),bg_color: RatColor::Rgb(45,117,228), floor_type:FloorType::Water};
 
-            Self::Grass => RatColor::Rgb(19, 109, 21),
 
-            Self::Sand => RatColor::Rgb(242, 210, 169),
-        }
-    }
+impl Floorik {
+    pub fn to_graphic_triple(&self) -> GraphicTriple{
 
-    pub fn to_displaychar(&self) -> String {
-        match &self {
-            Self::Dirt => "%".into(),
-            Self::Water => "~".into(),
-
-            Self::Grass => ";".into(),
-
-            Self::Sand => ".".into(),
-        }
-    }
-
-    pub fn to_front_color(&self) -> RatColor {
-        match &self {
-            Self::Dirt => RatColor::Rgb(145, 118, 83),
-            Self::Water => RatColor::Rgb(10, 84, 146),
-
-            Self::Grass => RatColor::Rgb(19, 99, 21),
-
-            Self::Sand => RatColor::Rgb(242, 200, 169),
-        }
+        (self.symbol.into(),self.fg_color.into(),self.bg_color.into())
     }
 }
