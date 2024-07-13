@@ -1,7 +1,7 @@
 use crate::*;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Voxel {
-    pub floor: Floorik,
+    pub floor: Floor,
 
     pub voxel_pos: MyPoint,
 }
@@ -43,7 +43,7 @@ pub enum FloorType {
  
 }
 #[derive(Clone, Debug,  PartialEq)]
-pub struct Floorik {
+pub struct Floor {
     pub name: &'static str,
     pub symbol: &'static str,
     pub fg_color: RatColor,
@@ -57,11 +57,11 @@ water,jasenj,liquid,~,"","4"
 sand,lipa,granular, ,"233,225,194","233,225,194"
 grass,jablånj,solid, ,"21,114,65","21,114,65"
 */
-pub const DIRT_FLOOR: Floorik = Floorik{name: "lutum", symbol: "%",fg_color: RatColor::Rgb(145, 118, 83),bg_color: RatColor::Rgb(155, 118, 83), floor_type:FloorType::Dirt};
-pub const WATER_FLOOR: Floorik = Floorik{name: "aqua", symbol: "~",fg_color: RatColor::Rgb(35,137,218),bg_color: RatColor::Rgb(45,117,228), floor_type:FloorType::Water};
+pub const DIRT_FLOOR: Floor = Floor{name: "lutum", symbol: "%",fg_color: RatColor::Rgb(145, 118, 83),bg_color: RatColor::Rgb(155, 118, 83), floor_type:FloorType::Dirt};
+pub const WATER_FLOOR: Floor = Floor{name: "aqua", symbol: "~",fg_color: RatColor::Rgb(35,137,218),bg_color: RatColor::Rgb(45,117,228), floor_type:FloorType::Water};
 
 
-impl Floorik {
+impl Floor {
     pub fn to_graphic_triple(&self) -> GraphicTriple{
 
         (self.symbol.into(),self.fg_color.into(),self.bg_color.into())
