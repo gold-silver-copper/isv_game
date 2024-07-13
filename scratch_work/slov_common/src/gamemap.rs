@@ -43,6 +43,7 @@ impl GameMap {
 
                 batchvec.push(Voxel {
                     floor: floor,
+                    furniture: None,
                     voxel_pos: (x, y),
                 });
             }
