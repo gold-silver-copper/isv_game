@@ -20,12 +20,11 @@ impl Voxel {
                 Some(roof) => (roof.symbol(), roof.to_fg_color(), roof.to_bg_color()),
                 None => plus_furn,
             };
-    
-            plus_roof
-        }
-        else {plus_furn}
 
-     
+            plus_roof
+        } else {
+            plus_furn
+        }
     }
 }
 
@@ -54,96 +53,84 @@ pub enum Floor {
 }
 
 impl Floor {
-    pub fn fg_color(&self) -> RatColor{
-        RatColor::Gray
+    pub fn fg_color(&self) -> RatColor {
+        dim(self.bg_color(), 1.2)
     }
-    pub fn bg_color(&self) -> RatColor{
+    pub fn bg_color(&self) -> RatColor {
         match self {
-            Floor::Liquid(liq) => {liq.color()},
-            Floor::Earth(ear) => {ear.color()},
-
+            Floor::Liquid(liq) => liq.color(),
+            Floor::Earth(ear) => ear.color(),
         }
     }
-    pub fn symbol(&self) -> String{
+    pub fn symbol(&self) -> String {
         match self {
             Floor::Liquid(_) => "~".into(),
             Floor::Earth(_) => ".".into(),
-
         }
     }
 
     pub fn to_graphic_triple(&self) -> GraphicTriple {
-
-
-        (self.symbol(),self.fg_color(),self.bg_color())
-
-
+        (self.symbol(), self.fg_color(), self.bg_color())
     }
-
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum LiquidType {
-   Water,
-   Lava,
-   Beer
-
+    Water,
+    Lava,
+    Beer,
 }
 
-
+pub fn dim(color: RatColor, factor: f32) -> RatColor {
+    match color {
+        RatColor::Rgb(r, g, b) => RatColor::Rgb(
+            ((r as f32 * factor).clamp(0.0, 127.0)) as u8,
+            ((g as f32 * factor).clamp(0.0, 127.0)) as u8,
+            ((b as f32 * factor).clamp(0.0, 127.0)) as u8,
+        ),
+        _ => RatColor::Gray,
+    }
+}
 
 impl LiquidType {
-    pub fn color(&self) -> RatColor{
+    pub fn color(&self) -> RatColor {
         match self {
-            LiquidType::Water =>  RatColor::Rgb(35, 137, 218),
-            LiquidType::Lava =>  RatColor::Rgb(135, 37, 118),
-            LiquidType::Beer =>  RatColor::Rgb(35, 37, 118),
-
-
+            LiquidType::Water => RatColor::Rgb(35, 137, 218),
+            LiquidType::Lava => RatColor::Rgb(135, 37, 118),
+            LiquidType::Beer => RatColor::Rgb(35, 37, 118),
         }
     }
-
-
 }
 
 impl EarthType {
-    pub fn color(&self) -> RatColor{
+    pub fn color(&self) -> RatColor {
         match self {
-            EarthType::Dirt =>  RatColor::Rgb(145, 118, 83),
-            EarthType::Clay =>  RatColor::Rgb(145, 118, 83),
-            EarthType::Sand =>  RatColor::Rgb(145, 118, 83),
-
-
+            EarthType::Dirt => RatColor::Rgb(145, 118, 83),
+            EarthType::Clay => RatColor::Rgb(145, 118, 83),
+            EarthType::Sand => RatColor::Rgb(145, 118, 83),
         }
     }
-
-
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum EarthType {
-   Dirt,
-   Clay,
-   Sand,
-
+    Dirt,
+    Clay,
+    Sand,
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Roof {
-   Tegula,
-   Imbrex,
-
+    Tegula(SolidMaterial),
+    Imbrex(SolidMaterial),
 }
-
-
-
-
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum SolidMaterial {
     Wood(Tree),
     Stone(Mineral),
     Metal(Metal),
+    Terracotta(EarthType),
 }
 
 impl SolidMaterial {
@@ -160,7 +147,7 @@ impl SolidMaterial {
 impl Tree {
     pub fn color(&self) -> RatColor {
         match self {
-            Tree::Glinos => RatColor::Rgb(51,34,17)
+            Tree::Glinos => RatColor::Rgb(51, 34, 17),
         }
     }
 }
@@ -170,22 +157,17 @@ pub enum Tree {
     Glinos, //Maple Tree
 }
 
-
 impl Mineral {
-
     pub fn color(&self) -> RatColor {
-
         match self {
-            _ => RatColor::Magenta
+            _ => RatColor::Magenta,
         }
     }
 }
 impl Metal {
-
     pub fn color(&self) -> RatColor {
-
         match self {
-            _ => RatColor::Magenta
+            _ => RatColor::Magenta,
         }
     }
 }
@@ -200,7 +182,6 @@ pub enum Metal {
     Glinos, //Maple Tree
 }
 
-
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Furniture {
     Wall(SolidMaterial),
@@ -208,23 +189,19 @@ pub enum Furniture {
     Trinket,
 }
 
-
-
-
 impl Furniture {
     pub fn to_color(&self) -> RatColor {
         match &self {
             Furniture::Wall(sm) => sm.to_color(),
             Furniture::Door(sm) => sm.to_color(),
-            _ => RatColor::White
+            Furniture::Trinket => RatColor::White,
         }
     }
-    pub fn symbol(&self) -> String{
+    pub fn symbol(&self) -> String {
         match &self {
             Furniture::Wall(sm) => "#".into(),
             Furniture::Door(sm) => "+".into(),
-            _ => " ".into()
-
+            Furniture::Trinket => " ".into(),
         }
     }
 }
@@ -232,22 +209,20 @@ impl Furniture {
 impl Roof {
     pub fn to_fg_color(&self) -> RatColor {
         match &self {
-           // RoofType::Wall(sm) => sm.to_color(),
-            _ => RatColor::Black
+            Roof::Tegula(sm) => dim(sm.to_color(),1.3),
+            Roof::Imbrex(sm) => dim(sm.to_color(),1.3),
         }
     }
     pub fn to_bg_color(&self) -> RatColor {
         match &self {
-           // RoofType::Wall(sm) => sm.to_color(),
-            _ => RatColor::White
+            Roof::Tegula(sm) => sm.to_color(),
+            Roof::Imbrex(sm) => sm.to_color(),
         }
     }
-    pub fn symbol(&self) -> String{
+    pub fn symbol(&self) -> String {
         match self {
-            Roof::Tegula => "t".into(),
-            Roof::Imbrex => "i".into(),
-
+            Roof::Tegula(_) => "^".into(),
+            Roof::Imbrex(_) => "=".into(),
         }
     }
 }
-
