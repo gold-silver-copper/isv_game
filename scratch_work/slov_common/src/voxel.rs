@@ -17,7 +17,7 @@ impl Voxel {
 
         if with_roof {
             let mut plus_roof: GraphicTriple = match &self.roof {
-                Some(roof) => (roof.symbol.into(), roof.to_fg_color(), roof.to_bg_color()),
+                Some(roof) => (roof.symbol(), roof.to_fg_color(), roof.to_bg_color()),
                 None => plus_furn,
             };
     
@@ -48,21 +48,36 @@ impl PointDistance for Voxel {
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
-pub enum FloorType {
+pub enum Floor {
     Liquid(LiquidType),
     Earth(EarthType),
 }
 
-impl FloorType {
+impl Floor {
     pub fn fg_color(&self) -> RatColor{
         RatColor::Gray
     }
     pub fn bg_color(&self) -> RatColor{
         match self {
-            FloorType::Liquid(liq) => {liq.color()},
-            FloorType::Earth(ear) => {ear.color()},
+            Floor::Liquid(liq) => {liq.color()},
+            Floor::Earth(ear) => {ear.color()},
 
         }
+    }
+    pub fn symbol(&self) -> String{
+        match self {
+            Floor::Liquid(_) => "~".into(),
+            Floor::Earth(_) => ".".into(),
+
+        }
+    }
+
+    pub fn to_graphic_triple(&self) -> GraphicTriple {
+
+
+        (self.symbol(),self.fg_color(),self.bg_color())
+
+
     }
 
 }
@@ -114,36 +129,14 @@ pub enum EarthType {
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
-pub enum RoofType {
+pub enum Roof {
    Tegula,
    Imbrex,
 
 }
-#[derive(Clone, Debug, PartialEq)]
-pub struct Floor {
-    pub name: &'static str,
-    pub symbol: &'static str,
-    pub floor_type: FloorType,
-}
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct Roof {
-    pub name: &'static str,
-    pub symbol: &'static str,
-    pub roof_type: RoofType,
-}
 
-impl Default for Floor {
-    fn default() -> Self {
 
-        Self {
-            name: "pavimentum",
-            symbol: " ",
-         
-            floor_type: FloorType::Earth(EarthType::Dirt)
-        }
-    }
-}
 
 
 #[derive(Clone, Debug, PartialEq)]
@@ -246,25 +239,23 @@ impl Furniture {
 
 impl Roof {
     pub fn to_fg_color(&self) -> RatColor {
-        match &self.roof_type {
+        match &self {
            // RoofType::Wall(sm) => sm.to_color(),
             _ => RatColor::Black
         }
     }
     pub fn to_bg_color(&self) -> RatColor {
-        match &self.roof_type {
+        match &self {
            // RoofType::Wall(sm) => sm.to_color(),
             _ => RatColor::White
         }
     }
-}
+    pub fn symbol(&self) -> String{
+        match self {
+            Roof::Tegula => "t".into(),
+            Roof::Imbrex => "i".into(),
 
-impl Floor {
-    pub fn to_graphic_triple(&self) -> GraphicTriple {
-        (
-            self.symbol.into(),
-            self.floor_type.fg_color(),
-            self.floor_type.bg_color(),
-        )
+        }
     }
 }
+

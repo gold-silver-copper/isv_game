@@ -20,16 +20,6 @@ water
     bg_color: RatColor::Rgb(45, 117, 228),
 
 */
-pub const DIRT_FLOOR: Floor = Floor {
-    name: "lutum",
-    symbol: "%",
+pub const DIRT_FLOOR: Floor = Floor::Earth(EarthType::Dirt);
 
-    floor_type: FloorType::Earth(EarthType::Dirt),
-};
-pub const WATER_FLOOR: Floor = Floor {
-    name: "aqua",
-    symbol: "~",
-   
-    floor_type: FloorType::Liquid(LiquidType::Water),
-};
-
+pub const WATER_FLOOR: Floor = Floor::Liquid(LiquidType::Water);
