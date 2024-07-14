@@ -4,7 +4,7 @@ use crate::*;
 pub struct Player;
 
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
-pub type GraphicTriple = (String, RatColor, RatColor);
+pub type GraphicTriple = ( &'static str, RatColor, RatColor);
 
 #[derive(Component)]
 pub struct PointComponent(pub MyPoint);

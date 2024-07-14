@@ -31,7 +31,7 @@ impl GameMap {
                 };
                 //Some(WALL_FURNITURE),
                 batchvec.push(Voxel {
-                    floor: floor,
+                    floor: Some(floor),
                     furniture: None,
                     roof: None,
                     voxel_pos: (x, y),

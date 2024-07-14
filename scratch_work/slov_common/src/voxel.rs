@@ -1,7 +1,7 @@
 use crate::*;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Voxel {
-    pub floor: Floor,
+    pub floor: Option<Floor>,
     pub roof: Option<Roof>,
     pub furniture: Option<Furniture>,
     pub voxel_pos: MyPoint,
@@ -9,7 +9,16 @@ pub struct Voxel {
 
 impl Voxel {
     pub fn to_graphic(&self, with_roof: bool) -> GraphicTriple {
-        let mut floor = self.floor.to_graphic_triple();
+
+        let mut floor =  match &self.floor {
+            Some(fl) => fl.to_graphic_triple(),
+            None => (" ",RatColor::Black,RatColor::Black)
+        };
+        
+ 
+
+
+
         let mut plus_furn: GraphicTriple = match &self.furniture {
             Some(furn) => (furn.symbol(), furn.to_color(), floor.2.clone()),
             None => floor,
@@ -62,10 +71,10 @@ impl Floor {
             Floor::Earth(ear) => ear.color(),
         }
     }
-    pub fn symbol(&self) -> String {
+    pub fn symbol(&self) ->  &'static str {
         match self {
-            Floor::Liquid(_) => "~".into(),
-            Floor::Earth(_) => ".".into(),
+            Floor::Liquid(_) => "~",
+            Floor::Earth(_) => ".",
         }
     }
 
@@ -197,11 +206,11 @@ impl Furniture {
             Furniture::Trinket => RatColor::White,
         }
     }
-    pub fn symbol(&self) -> String {
+    pub fn symbol(&self) ->  &'static str {
         match &self {
-            Furniture::Wall(sm) => "#".into(),
-            Furniture::Door(sm) => "+".into(),
-            Furniture::Trinket => " ".into(),
+            Furniture::Wall(sm) => "#",
+            Furniture::Door(sm) => "+",
+            Furniture::Trinket => " ",
         }
     }
 }
@@ -219,10 +228,10 @@ impl Roof {
             Roof::Imbrex(sm) => sm.to_color(),
         }
     }
-    pub fn symbol(&self) -> String {
+    pub fn symbol(&self) -> &'static str {
         match self {
-            Roof::Tegula(_) => "^".into(),
-            Roof::Imbrex(_) => "=".into(),
+            Roof::Tegula(_) => "^",
+            Roof::Imbrex(_) => "=",
         }
     }
 }

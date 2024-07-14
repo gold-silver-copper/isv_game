@@ -55,14 +55,14 @@ pub fn setup(mut commands: Commands) {
         // Initialize all your components and bundles here
         Player,
         PointComponent((5, 5)),
-        GraphicComponent((String::from("@"), RatColor::White, RatColor::Black)), // ...
+        GraphicComponent(("@", RatColor::White, RatColor::Black)), // ...
     ));
 
     for boop in 1..2000000 {
         commands.spawn((
             // Initialize all your components and bundles here
             PointComponent((boop * 2, boop * 3)),
-            GraphicComponent((String::from("@"), RatColor::White, RatColor::Black)), // ...
+            GraphicComponent(("@", RatColor::White, RatColor::Black)), // ...
         ));
     }
 }
