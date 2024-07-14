@@ -11,7 +11,7 @@ impl Voxel {
     pub fn to_graphic(&self, with_roof: bool) -> GraphicTriple {
         let mut floor = self.floor.to_graphic_triple();
         let mut plus_furn: GraphicTriple = match &self.furniture {
-            Some(furn) => (furn.symbol.into(), furn.to_color(), floor.2.clone()),
+            Some(furn) => (furn.symbol(), furn.to_color(), floor.2.clone()),
             None => floor,
         };
 
@@ -202,37 +202,29 @@ pub enum Metal {
 
 
 #[derive(Clone, Debug, Display, PartialEq)]
-pub enum FurnitureType {
+pub enum Furniture {
     Wall(SolidMaterial),
     Door(SolidMaterial),
     Trinket,
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct Furniture {
-    pub name: &'static str,
-    pub symbol: &'static str,
 
-    pub furniture_type: FurnitureType,
-}
 
-impl Default for Furniture {
-    fn default() -> Self {
-
-        Self {
-            name: "supellex",
-    symbol: "|",
-    furniture_type: FurnitureType::Trinket,
-        }
-    }
-}
 
 impl Furniture {
     pub fn to_color(&self) -> RatColor {
-        match &self.furniture_type {
-            FurnitureType::Wall(sm) => sm.to_color(),
-            FurnitureType::Door(sm) => sm.to_color(),
+        match &self {
+            Furniture::Wall(sm) => sm.to_color(),
+            Furniture::Door(sm) => sm.to_color(),
             _ => RatColor::White
+        }
+    }
+    pub fn symbol(&self) -> String{
+        match &self {
+            Furniture::Wall(sm) => "#".into(),
+            Furniture::Door(sm) => "+".into(),
+            _ => " ".into()
+
         }
     }
 }
