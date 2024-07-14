@@ -3,7 +3,7 @@ use crate::*;
 pub const WALL_FURNITURE: Furniture = Furniture {
     name: "paries",
     symbol: "#",
-    furniture_type: FurnitureType::Wall(SolidMaterial::Wood(WILLOW_TREE)),
+    furniture_type: FurnitureType::Wall(SolidMaterial::Wood(Tree::Glinos)),
 };
 
 /*
@@ -33,8 +33,3 @@ pub const WATER_FLOOR: Floor = Floor {
     floor_type: FloorType::Liquid(LiquidType::Water),
 };
 
-pub const WILLOW_TREE: Tree = Tree {
-    name: "salix",
-    symbol: "T",
-    fg_color: RatColor::Rgb(95, 2, 100),
-};

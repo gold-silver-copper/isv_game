@@ -55,16 +55,12 @@ pub enum FloorType {
 
 impl FloorType {
     pub fn fg_color(&self) -> RatColor{
-        match self {
-            FloorType::Liquid(liq) => {liq.fg_color()},
-            FloorType::Earth(ear) => {ear.fg_color()},
-
-        }
+        RatColor::Gray
     }
     pub fn bg_color(&self) -> RatColor{
         match self {
-            FloorType::Liquid(liq) => {liq.bg_color()},
-            FloorType::Earth(ear) => {ear.bg_color()},
+            FloorType::Liquid(liq) => {liq.color()},
+            FloorType::Earth(ear) => {ear.color()},
 
         }
     }
@@ -82,7 +78,7 @@ pub enum LiquidType {
 
 
 impl LiquidType {
-    pub fn fg_color(&self) -> RatColor{
+    pub fn color(&self) -> RatColor{
         match self {
             LiquidType::Water =>  RatColor::Rgb(35, 137, 218),
             LiquidType::Lava =>  RatColor::Rgb(135, 37, 118),
@@ -91,19 +87,12 @@ impl LiquidType {
 
         }
     }
-    pub fn bg_color(&self) -> RatColor{
-        match self {
-            LiquidType::Water =>  RatColor::Rgb(35, 137, 218),
-            LiquidType::Lava =>  RatColor::Rgb(135, 37, 118),
-            LiquidType::Beer =>  RatColor::Rgb(35, 37, 118),
 
-        }
-    }
 
 }
 
 impl EarthType {
-    pub fn fg_color(&self) -> RatColor{
+    pub fn color(&self) -> RatColor{
         match self {
             EarthType::Dirt =>  RatColor::Rgb(145, 118, 83),
             EarthType::Clay =>  RatColor::Rgb(145, 118, 83),
@@ -112,14 +101,7 @@ impl EarthType {
 
         }
     }
-    pub fn bg_color(&self) -> RatColor{
-        match self {
-            EarthType::Dirt =>  RatColor::Rgb(145, 118, 83),
-            EarthType::Clay =>  RatColor::Rgb(145, 118, 83),
-            EarthType::Sand => RatColor::Rgb(145, 118, 83),
 
-        }
-    }
 
 }
 
@@ -168,40 +150,63 @@ impl Default for Floor {
 pub enum SolidMaterial {
     Wood(Tree),
     Stone(Mineral),
-    Metal(Alloy),
+    Metal(Metal),
 }
 
 impl SolidMaterial {
     pub fn to_color(&self) -> RatColor {
         match self {
-            Self::Wood(inner) => inner.fg_color.clone(),
-            Self::Stone(inner) => inner.fg_color.clone(),
-            Self::Metal(inner) => inner.fg_color.clone(),
+            Self::Wood(inner) => inner.color(),
+            Self::Stone(inner) => inner.color(),
+            Self::Metal(inner) => inner.color(),
             _ => todo!("IMPLEMENT COLORS FOR MATERIAL"),
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct Tree {
-    pub name: &'static str,
-    pub symbol: &'static str,
-    pub fg_color: RatColor,
+impl Tree {
+    pub fn color(&self) -> RatColor {
+        match self {
+            Tree::Glinos => RatColor::Rgb(51,34,17)
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Mineral {
-    pub name: &'static str,
-    pub symbol: &'static str,
-    pub fg_color: RatColor,
+pub enum Tree {
+    Glinos, //Maple Tree
+}
+
+
+impl Mineral {
+
+    pub fn color(&self) -> RatColor {
+
+        match self {
+            _ => RatColor::Magenta
+        }
+    }
+}
+impl Metal {
+
+    pub fn color(&self) -> RatColor {
+
+        match self {
+            _ => RatColor::Magenta
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Alloy {
-    pub name: &'static str,
-    pub symbol: &'static str,
-    pub fg_color: RatColor,
+pub enum Mineral {
+    Iaspis, //Gold
 }
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Metal {
+    Glinos, //Maple Tree
+}
+
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum FurnitureType {
