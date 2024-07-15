@@ -13,6 +13,30 @@ pub struct Latin {
    pub verb_map: VerbMap,
 }
 
+
+pub struct ComplexNoun {
+ //   pub case: Case,
+  //  pub number: Number,
+    pub head_noun: String,
+    pub adjective: String,
+    pub adposition_noun: String
+}
+
+impl Default for ComplexNoun {
+
+    fn default() -> Self {
+        Self {
+            head_noun: "exemplum".into(),
+            adposition_noun: String::new(),
+            adjective: String::new(),
+
+
+
+        }
+    }
+}
+
+
 #[derive(Debug, Deserialize, Clone, Default)]
 pub struct NounRecord {
     pub word: String,
@@ -271,6 +295,36 @@ impl Latin {
         }
         verbmap
     }
+
+
+
+    pub fn complex_noun(&self, complex_nomen: &ComplexNoun, case: &Case, number: &Number) -> String {
+
+        let noun = self.noun(&complex_nomen.head_noun, case, number);
+        let adj = self.adjective(&complex_nomen.adjective, case, number, &noun.1);
+        let adpos = self.noun(&complex_nomen.adposition_noun, case, number);
+
+
+
+        let mut response = noun.0;
+
+        if adj != "" {
+            response = format!("{} {}",response,adj);
+        }
+        if adpos.0 != "" {
+            response = format!("{} {}",response,adpos.0);
+
+        }
+
+        response
+
+        
+
+
+
+    }
+
+
     pub fn noun(&self, word: &str, case: &Case, number: &Number) -> Noun {
         let defik = NounRecord::default();
 
@@ -302,7 +356,7 @@ impl Latin {
         }
 
         if (response.0 == "" || response.0 == "-") {
-            response.0 = format!("{}''", record.word.clone());
+            response.0 = "".into();
         }
 
         response
