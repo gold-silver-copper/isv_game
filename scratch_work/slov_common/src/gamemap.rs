@@ -79,7 +79,6 @@ impl GameMap {
         &self,
         ent_pos_comp: &MyPoint,
         render_rect: &Rect,
-       
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
@@ -113,7 +112,6 @@ impl GameMap {
             }
 
             //merge grids
-
 
             RenderPacket {
                 voxel_grid: voxel_grid,

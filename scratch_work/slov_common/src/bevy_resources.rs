@@ -50,11 +50,11 @@ impl Default for Masterok {
 }
 
 pub fn spawn_with_point_and_type<T: Bundle>(
-    mut commands: Commands,
+    mut commands: &mut Commands,
     point: MyPoint,
     ent_type: EntityType,
     bundle: T,
-    game_map:&mut GameMap
+    game_map: &mut GameMap,
 ) -> Entity {
     let mut e = commands.spawn((
         // Initialize all your components and bundles here
@@ -67,25 +67,36 @@ pub fn spawn_with_point_and_type<T: Bundle>(
     let vox = game_map.get_mut_voxel_at(&point);
 
     match vox {
-        Some(voxik) => voxik.entity_map.insert(eid.clone(),ent_type) ,
-        None => panic!("ATTEMPTING TO SPAWN ENTITY IN NON VOXEL AT LOC: {:#?}",point)
+        Some(voxik) => voxik.entity_map.insert(eid.clone(), ent_type),
+        None => panic!(
+            "ATTEMPTING TO SPAWN ENTITY IN NON VOXEL AT LOC: {:#?}",
+            point
+        ),
     };
 
     eid
 }
 
-pub fn setup(mut commands: Commands,mut masterok: ResMut<Masterok>) {
+pub fn setup(mut commands: Commands, mut masterok: ResMut<Masterok>) {
     // create a new entity
 
-    spawn_with_point_and_type(commands, (5, 5), EntityType::Human, (Player), &mut masterok.game_map);
+    spawn_with_point_and_type(
+        &mut commands,
+        (5, 5),
+        EntityType::Human,
+        (Player),
+        &mut masterok.game_map,
+    );
 
-    /* for boop in 1..2000000 {
-        commands.spawn((
-            // Initialize all your components and bundles here
-            PointComponent((boop * 2, boop * 3)),
-            GraphicComponent(("@", RatColor::White, RatColor::Black)), // ...
-        ));
-    } */
+    for boop in 1..20 {
+        spawn_with_point_and_type(
+            &mut commands,
+            (boop*2, boop*3),
+            EntityType::Human,
+            (),
+            &mut masterok.game_map,
+        );
+    } 
 }
 
 pub fn set_custom_font(mut contexts: EguiContexts) {

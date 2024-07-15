@@ -3,22 +3,16 @@ pub fn draw_ascii_game(
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
     masterok: Res<Masterok>,
     player_position: Query<(Entity, &PointComponent), With<Player>>,
- 
 ) {
     let (pid, client_pos) = player_position.single();
-
-
-   
 
     termres
         .terminal_game
         .draw(|frame| {
             let area = frame.size();
-            let client_render = masterok.game_map.create_client_render_packet_for_entity(
-                &client_pos.0,
-                &area,
-               
-            );
+            let client_render = masterok
+                .game_map
+                .create_client_render_packet_for_entity(&client_pos.0, &area);
 
             let client_graphics = client_render.voxel_grid;
 

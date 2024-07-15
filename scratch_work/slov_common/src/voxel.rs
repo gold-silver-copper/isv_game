@@ -20,26 +20,13 @@ impl Voxel {
             None => floor,
         };
 
-
-        for (ent,etyp) in &self.entity_map {
+        for (ent, etyp) in &self.entity_map {
             let pik = etyp.to_graphic_triple();
 
-
             if plus_furn.0 != "@" {
-
-                plus_furn = (pik.0,pik.1,plus_furn.2);
-
-
+                plus_furn = (pik.0, pik.1, plus_furn.2);
             }
-            
-
-
-
         }
-
-
-
-
 
         if with_roof {
             let mut plus_roof: GraphicTriple = match &self.roof {
@@ -54,9 +41,25 @@ impl Voxel {
     }
 
     pub fn blocks_movement(&self) -> bool {
-        match &self.furniture {
+        let furn_blocks = match &self.furniture {
             Some(furn) => furn.blocks_movement(),
             None => false,
+        };
+
+        if furn_blocks {return true;}
+
+        else{
+
+            for (ent, etyp) in &self.entity_map {
+                let pik = etyp.blocks_movement();
+
+                if pik {return true;}
+    
+                
+            }
+            return false;
+
+
         }
     }
 }
@@ -290,5 +293,11 @@ impl EntityType {
     }
     pub fn to_graphic_triple(&self) -> GraphicTriple {
         (self.symbol(), self.to_fg_color(), self.to_bg_color())
+    }
+    pub fn blocks_movement(&self) -> bool {
+        match &self {
+            EntityType::Human => true,
+            _ => false,
+        }
     }
 }
