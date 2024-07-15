@@ -2,19 +2,19 @@ use serde::{Deserialize, Deserializer};
 use std::collections::HashMap;
 use std::error::Error;
 
-type NounMap = HashMap<String, NounRecord>;
-type AdjectiveMap = HashMap<String, AdjectiveRecord>;
-type VerbMap = HashMap<String, VerbRecord>;
-type Verb = String;
+pub type NounMap = HashMap<String, NounRecord>;
+pub type AdjectiveMap = HashMap<String, AdjectiveRecord>;
+pub type VerbMap = HashMap<String, VerbRecord>;
+pub type Verb = String;
 
 pub struct Latin {
-    noun_map: NounMap,
-    adj_map: AdjectiveMap,
-    verb_map: VerbMap,
+  pub  noun_map: NounMap,
+   pub adj_map: AdjectiveMap,
+   pub verb_map: VerbMap,
 }
 
 #[derive(Debug, Deserialize, Clone, Default)]
-struct NounRecord {
+pub struct NounRecord {
     pub word: String,
     pub nom_sg: String,
     pub gen_sg: String,
@@ -76,7 +76,7 @@ impl Default for Gender {
 
 //word,canonical,present_infinitive,perfect_active,supine,conjugation,irregular
 #[derive(Debug, Deserialize, Clone, Default)]
-struct VerbRecord {
+pub struct VerbRecord {
     pub word: String,
     pub canonical: String,
     pub present_infinitive: String,
@@ -121,7 +121,7 @@ struct VerbRecord {
 
 //word,feminine,neuter,comparative,superlative,adverb,declension,adj_stem
 #[derive(Debug, Deserialize, Clone, Default)]
-struct AdjectiveRecord {
+pub struct AdjectiveRecord {
     pub word: String,
 
     pub comparative: String,
@@ -211,8 +211,8 @@ pub enum Number {
     Plural,
 }
 
-type Noun = (String, Gender);
-type Adjective = String;
+pub type Noun = (String, Gender);
+pub type Adjective = String;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Person {
@@ -223,17 +223,18 @@ pub enum Person {
 }
 
 impl Latin {
-    pub fn new() -> Self {
+    pub fn new(noun_path: String,adjective_path: String,verb_path: String, ) -> Self {
         Latin {
-            noun_map: Latin::load_nouns_from_csv(),
-            adj_map: Latin::load_adjectives_from_csv(),
-            verb_map: Latin::load_verbs_from_csv(),
+            noun_map: Latin::load_nouns_from_csv(noun_path),
+            adj_map: Latin::load_adjectives_from_csv(adjective_path),
+            verb_map: Latin::load_verbs_from_csv(verb_path),
         }
     }
 
-    pub fn load_nouns_from_csv() -> NounMap {
+    //"nouns.csv"
+    pub fn load_nouns_from_csv(path: String) -> NounMap {
         let mut nounmap = HashMap::new();
-        let file_path = "nouns.csv";
+        let file_path: &str = path.as_str();
 
         let mut rdr = csv::Reader::from_path(file_path).unwrap();
         for result in rdr.deserialize() {
@@ -241,32 +242,32 @@ impl Latin {
 
             nounmap.insert(record.word.clone(), record.clone());
 
-            println!("{:?}", record);
+        //    //println!("{:?}", record);
         }
         nounmap
     }
-    pub fn load_adjectives_from_csv() -> AdjectiveMap {
-        let file_path = "adjectives.csv";
+    pub fn load_adjectives_from_csv(path: String) -> AdjectiveMap {
+        let file_path: &str = path.as_str();
         let mut adjmap = HashMap::new();
         let mut rdr = csv::Reader::from_path(file_path).unwrap();
         for result in rdr.deserialize() {
-            println!("{:?}", result);
+         //   //println!("{:?}", result);
             let record: AdjectiveRecord = result.unwrap();
             adjmap.insert(record.word.clone(), record.clone());
-            println!("{:?}", record);
+          //  //println!("{:?}", record);
         }
         adjmap
     }
 
-    pub fn load_verbs_from_csv() -> VerbMap {
-        let file_path = "verbs.csv";
+    pub fn load_verbs_from_csv(path: String) -> VerbMap {
+        let file_path: &str = path.as_str();
         let mut verbmap = HashMap::new();
         let mut rdr = csv::Reader::from_path(file_path).unwrap();
         for result in rdr.deserialize() {
-            println!("{:?}", result);
+            //println!("{:?}", result);
             let record: VerbRecord = result.unwrap();
             verbmap.insert(record.word.clone(), record.clone());
-            println!("{:?}", record);
+            //println!("{:?}", record);
         }
         verbmap
     }
@@ -511,10 +512,10 @@ impl Latin {
 /*
 
 fn main() {
-    println!("Hello, world!");
+    //println!("Hello, world!");
 
     let boop = Latin::last_n_chars("be", 3);
-    println!("boopik : {:#?}", boop);
+    //println!("boopik : {:#?}", boop);
     let conji = Latin::new();
 
     let testik = conji.noun_map.clone();
@@ -522,19 +523,19 @@ fn main() {
     let testik3 = conji.verb_map.clone();
 
     for wot in testik {
-        println!("new_noun : {:#?}", wot);
+        //println!("new_noun : {:#?}", wot);
         let new_noun = conji.noun(&wot.0, &Case::Acc, &Number::Singular);
-        println!("new_noun : {:#?}", new_noun);
+        //println!("new_noun : {:#?}", new_noun);
     }
     for wot in testik2 {
-        println!("adj : {:#?}", wot);
+        //println!("adj : {:#?}", wot);
         let new_noun = conji.adjective(&wot.0, &Case::Acc, &Number::Singular, &Gender::Feminine);
-        println!("adj : {:#?}", new_noun);
+        //println!("adj : {:#?}", new_noun);
     }
     for wot in testik3 {
-        println!("verb : {:#?}", wot);
+        //println!("verb : {:#?}", wot);
         let new_noun = conji.verb(&wot.0, &Mood::Indicative, &Voice::Active, &Tense::Perfect, &Number::Plural, &Person::Second);
-        println!("verb : {:#?}", new_noun);
+        //println!("verb : {:#?}", new_noun);
     }
 }
 
