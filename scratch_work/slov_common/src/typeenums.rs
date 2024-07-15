@@ -11,7 +11,21 @@ pub enum EarthType {
 
 #[derive(Clone, Debug, Display, PartialEq, Component)]
 pub enum EntityType {
-    Human,
+    Humanus,
+}
+
+impl EntityType {
+
+    pub fn to_complex_noun(&self) -> ComplexNoun {
+
+        match self {
+
+            _ => { let head_noun = format!("{}",self).to_lowercase();
+            //println!("{}",head_noun);
+        ComplexNoun{head_noun, ..default()}}
+        }
+
+    }
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]

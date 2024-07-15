@@ -82,17 +82,17 @@ impl Roof {
 impl EntityType {
     pub fn to_fg_color(&self) -> RatColor {
         match &self {
-            EntityType::Human => RatColor::White,
+            EntityType::Humanus => RatColor::White,
         }
     }
     pub fn to_bg_color(&self) -> RatColor {
         match &self {
-            EntityType::Human => RatColor::Black,
+            EntityType::Humanus => RatColor::Black,
         }
     }
     pub fn symbol(&self) -> &'static str {
         match &self {
-            EntityType::Human => "@",
+            EntityType::Humanus => "@",
         }
     }
     pub fn to_graphic_triple(&self) -> GraphicTriple {
@@ -100,7 +100,7 @@ impl EntityType {
     }
     pub fn blocks_movement(&self) -> bool {
         match &self {
-            EntityType::Human => true,
+            EntityType::Humanus => true,
             _ => false,
         }
     }

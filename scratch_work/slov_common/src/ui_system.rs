@@ -48,11 +48,26 @@ pub fn draw_ascii_game(
 }
 
 pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>,   ui_resources: Res<UIResources>,) {
-    let name_string = format! {"{}","hello"};
+    let name_string = format! {"{}","Salve!"};
 
     let mut messages_to_show = Vec::new();
+    let conji = &ui_resources.latin_conjugator;
 
-    messages_to_show.push(Line::from("Věči...."));
+    messages_to_show.push(Line::from("Vides...."));
+
+
+    for (ent,typ) in &ui_resources.visible_ents {
+
+        let cn = typ.to_complex_noun();
+        let boop = conji.complex_noun(&cn,&Case::Gen, &Number::Singular);
+       // println!("{}",boop);
+        messages_to_show.push(Line::from(boop));
+
+
+
+    }
+
+   
 
     termres
         .terminal_info
