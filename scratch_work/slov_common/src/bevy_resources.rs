@@ -49,6 +49,22 @@ impl Default for Masterok {
     }
 }
 
+#[derive(Clone, Debug, Resource)]
+pub struct UIResources {
+    pub visible_ents: Vec<(Entity,EntityType)>,
+
+}
+
+impl Default for UIResources {
+    fn default() -> Self {
+       
+
+        Self {
+            visible_ents: Vec::new()
+        }
+    }
+}
+
 pub fn spawn_with_point_and_type<T: Bundle>(
     mut commands: &mut Commands,
     point: MyPoint,

@@ -2,6 +2,7 @@ use crate::*;
 pub fn draw_ascii_game(
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
     masterok: Res<Masterok>,
+    mut ui_resources: ResMut<UIResources>,
     player_position: Query<(Entity, &PointComponent), With<Player>>,
 ) {
     let (pid, client_pos) = player_position.single();
@@ -15,6 +16,8 @@ pub fn draw_ascii_game(
                 .create_client_render_packet_for_entity(&client_pos.0, &area);
 
             let client_graphics = client_render.voxel_grid;
+            let client_visible_ents = client_render.ent_vec;
+            ui_resources.visible_ents = client_visible_ents;
 
             let mut render_lines = Vec::new();
             let needed_height = area.height as i16;
