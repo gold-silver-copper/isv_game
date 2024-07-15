@@ -12,8 +12,8 @@ fn main() {
 
     let complexik = ComplexNoun {
         head_noun: "lorica".into(),
-        adjective: "hamatus".into(),
-        adposition_noun: "manica".into(),
+        adjective: vec!["hamatus".into()],
+        adposition_noun: vec!["manica".into()],
     };
     let comp2 = conji.complex_noun(&complexik, &Case::Acc, &Number::Plural);
     println!("{:#?}", comp2);

@@ -19,16 +19,16 @@ pub struct ComplexNoun {
     //   pub case: Case,
     //  pub number: Number,
     pub head_noun: String,
-    pub adjective: String,
-    pub adposition_noun: String,
+    pub adjective: Vec<String>,
+    pub adposition_noun: Vec<String>,
 }
 
 impl Default for ComplexNoun {
     fn default() -> Self {
         Self {
             head_noun: "exemplum".into(),
-            adposition_noun: String::new(),
-            adjective: String::new(),
+            adposition_noun: Vec::new(),
+            adjective: Vec::new(),
         }
     }
 }
@@ -283,17 +283,39 @@ impl Latin {
         number: &Number,
     ) -> String {
         let noun = self.noun(&complex_nomen.head_noun, case, number);
-        let adj = self.adjective(&complex_nomen.adjective, case, number, &noun.1);
-        let adpos = self.noun(&complex_nomen.adposition_noun, case, number);
 
         let mut response = noun.0;
 
-        if adj != "" {
-            response = format!("{} {}", response, adj);
+
+        for adpos in &complex_nomen.adposition_noun {
+
+            let adposik = self.noun(adpos, case, number);
+            if adposik.0 != "" {
+                response = format!("{} {}", response, adposik.0);
+            }
+
+
         }
-        if adpos.0 != "" {
-            response = format!("{} {}", response, adpos.0);
+      
+        for adj in &complex_nomen.adjective {
+
+
+
+            let adjik = self.adjective(adj, case, number, &noun.1);
+            if adjik != "" {
+                response = format!("{} {}", response, adjik);
+            }
+
         }
+
+
+
+        
+
+       
+
+      
+       
 
         response
     }

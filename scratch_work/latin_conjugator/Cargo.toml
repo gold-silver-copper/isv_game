@@ -1,6 +1,6 @@
 [package]
 name = "botanical-latin"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 description = "Conugator and Decliner for ancient and botanical Latin"
 license = "MIT OR Apache-2.0"
