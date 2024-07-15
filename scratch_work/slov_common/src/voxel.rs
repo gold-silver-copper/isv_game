@@ -221,7 +221,7 @@ impl Furniture {
 
     pub fn blocks_movement(&self) -> bool {
         match &self {
-            Furniture::Wall(sm) => true,
+            Furniture::Wall(_) => true,
            _ => false
         }
     }
