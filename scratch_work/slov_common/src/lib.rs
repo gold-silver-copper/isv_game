@@ -20,6 +20,9 @@ pub use components::*;
 mod const_collection;
 pub use const_collection::*;
 
+mod complexplanet;
+pub use complexplanet::*;
+
 mod bevy_resources;
 pub use bevy_resources::*;
 mod actions;

@@ -8,36 +8,55 @@ pub struct GameMap {
 impl GameMap {
     pub fn generate_test(seed: u32) -> RTree<Voxel> {
         let hasher = noise::permutationtable::PermutationTable::new(seed);
-        let boop = noise::utils::PlaneMapBuilder::new_fn(|point| {
-            noise::core::open_simplex::open_simplex_2d(point.into(), &hasher)
-        })
-        .set_size(300, 300)
-        .set_x_bounds(-5.0, 5.0)
-        .set_y_bounds(-5.0, 5.0)
-        .build();
+        let boop = generate_complex_planet();
 
         let mut batchvec = Vec::new();
-        for x in 0..300 {
-            for y in 0..300 {
+        for x in 0..MAP_SIZE {
+            for y in 0..MAP_SIZE {
                 let val = boop.get_value(x as usize, y as usize);
-                let floor = if val > 0.0 {
+                let floor = if val > 0.2 {
                     DIRT_FLOOR
-                } else if val > -0.1 {
-                    DIRT_FLOOR
-                } else if val > -0.2 {
-                    DIRT_FLOOR
+                } else if val > 0.0 {
+                    CLAY_FLOOR
+                } else if val > -0.9 {
+                    SAND_FLOOR
                 } else {
                     WATER_FLOOR //water
                 };
-                //Some(WALL_FURNITURE),
+
+
+                if x == 15 && y > 8 {
+
+                          //Some(WALL_FURNITURE),
                 batchvec.push(Voxel {
                     floor: Some(floor),
-                    furniture: None,
+                    furniture: Some(WALL_FURNITURE),
                     roof: None,
                     voxel_pos: (x, y),
                 });
+
+
+                }
+                else {
+      //Some(WALL_FURNITURE),
+      batchvec.push(Voxel {
+        floor: Some(floor),
+        furniture: None,
+        roof: None,
+        voxel_pos: (x, y),
+    });
+
+
+                }
+
+
+          
             }
         }
+
+
+        
+
         let newtree = RTree::bulk_load(batchvec);
 
         newtree
