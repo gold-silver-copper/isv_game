@@ -3,7 +3,7 @@ pub fn draw_ascii_game(
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
     masterok: Res<Masterok>,
     player_position: Query<(Entity, &PointComponent), With<Player>>,
-    render_query: Query<(&PointComponent, &GraphicComponent)>,
+    render_query: Query<(&PointComponent, &EntityType)>,
 ) {
     let (pid, client_pos) = player_position.single();
 
@@ -11,7 +11,7 @@ pub fn draw_ascii_game(
 
     for (pc, gc) in render_query.iter() {
         if client_pos.0.distance_2(&pc.0) < LOCAL_RANGE {
-            ent_vec.push((&pc.0, &gc.0));
+            ent_vec.push((&pc.0, gc.to_graphic_triple()));
         }
     }
 

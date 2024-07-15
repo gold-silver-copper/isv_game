@@ -4,6 +4,7 @@ pub struct Voxel {
     pub floor: Option<Floor>,
     pub roof: Option<Roof>,
     pub furniture: Option<Furniture>,
+    pub entity_map: HashMap<Entity,EntityType>,
     pub voxel_pos: MyPoint,
 }
 
@@ -133,6 +134,11 @@ pub enum EarthType {
     Sand,
 }
 
+#[derive(Clone, Debug, Display, PartialEq, Component)]
+pub enum EntityType {
+    Human,
+}
+
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Roof {
     Tegula(SolidMaterial),
@@ -245,5 +251,29 @@ impl Roof {
             Roof::Tegula(_) => "^",
             Roof::Imbrex(_) => "=",
         }
+    }
+}
+
+
+
+impl EntityType {
+    pub fn to_fg_color(&self) -> RatColor {
+        match &self {
+            EntityType::Human => RatColor::White
+        }
+    }
+    pub fn to_bg_color(&self) -> RatColor {
+        match &self {
+            EntityType::Human => RatColor::Black
+        }
+    }
+    pub fn symbol(&self) -> &'static str {
+        match &self {
+            EntityType::Human => "@"
+        }
+    }
+    pub fn to_graphic_triple(&self) -> GraphicTriple {
+
+        (self.symbol(),self.to_fg_color(),self.to_bg_color())
     }
 }

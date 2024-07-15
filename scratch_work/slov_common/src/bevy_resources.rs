@@ -55,16 +55,16 @@ pub fn setup(mut commands: Commands) {
         // Initialize all your components and bundles here
         Player,
         PointComponent((5, 5)),
-        GraphicComponent(("@", RatColor::White, RatColor::Black)), // ...
+        EntityType::Human
     ));
 
-    for boop in 1..2000000 {
+   /* for boop in 1..2000000 {
         commands.spawn((
             // Initialize all your components and bundles here
             PointComponent((boop * 2, boop * 3)),
             GraphicComponent(("@", RatColor::White, RatColor::Black)), // ...
         ));
-    }
+    } */
 }
 
 pub fn set_custom_font(mut contexts: EguiContexts) {

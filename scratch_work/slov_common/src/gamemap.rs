@@ -30,6 +30,7 @@ impl GameMap {
                         floor: Some(floor),
                         furniture: Some(WALL_FURNITURE),
                         roof: None,
+                        entity_map:HashMap::new(),
                         voxel_pos: (x, y),
                     });
                 } else {
@@ -38,6 +39,7 @@ impl GameMap {
                         floor: Some(floor),
                         furniture: None,
                         roof: None,
+                        entity_map:HashMap::new(),
                         voxel_pos: (x, y),
                     });
                 }
@@ -69,7 +71,7 @@ impl GameMap {
         &self,
         ent_pos_comp: &MyPoint,
         render_rect: &Rect,
-        ent_vec: std::vec::Vec<(&MyPoint, &GraphicTriple)>,
+        ent_vec: std::vec::Vec<(&MyPoint, GraphicTriple)>,
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
