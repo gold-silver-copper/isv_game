@@ -24,6 +24,7 @@ csv = "1.3.0"
 bevy = "0.14"
 bevy_egui = "0.28.0"
 egui_ratatui = {version = "0.0.10"}
+bracket-pathfinding = "0.8.7"
 
 
 

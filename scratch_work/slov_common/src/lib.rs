@@ -62,3 +62,5 @@ pub use ratatui::{
     text::Text,
     widgets::{Block, Borders, Paragraph, Wrap, *},
 };
+
+pub use bracket_pathfinding::prelude::{Rect as BracketRect, Point as BracketPoint, *};

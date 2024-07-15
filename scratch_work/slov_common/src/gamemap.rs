@@ -1,5 +1,10 @@
 use crate::*;
 
+
+
+
+
+
 #[derive(Clone, Debug)]
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
@@ -97,6 +102,11 @@ impl GameMap {
             // THIS GRID IS INDEXD Y FIRST
             let mut voxel_grid = create_2d_array(render_width.into(), render_height.into());
 
+
+            let fov = field_of_view_set(BracketPoint{x:e_pos.0 as i32,y:e_pos.1 as i32}, 15, self);
+
+        //    println!("FOV IS {:#?}",fov);
+
             for lv in local_voxels {
                 let relative_point_x = lv.voxel_pos.0 - bottom_left_of_game_screen.0;
                 let relative_point_y = lv.voxel_pos.1 - bottom_left_of_game_screen.1;
@@ -106,7 +116,24 @@ impl GameMap {
                     && (0 < relative_point_x)
                     && (relative_point_x < render_width as i64)
                 {
-                    let boop = lv.to_graphic(true);
+
+                    let bp = BracketPoint{x: lv.voxel_pos.0 as i32, y: lv.voxel_pos.1 as i32} ;
+
+                   
+
+
+                    let mut boop = lv.to_graphic(true);
+
+                    if !fov.contains(&bp) {
+
+                        boop.1 = RatColor::Black;
+                        boop.2 = RatColor::Black;
+
+
+
+                    }
+
+
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;
                 }
             }
@@ -117,5 +144,31 @@ impl GameMap {
                 voxel_grid: voxel_grid,
             }
         }
+    }
+}
+
+
+
+impl BaseMap for GameMap {
+    fn is_opaque(&self, idx: usize) -> bool {
+        let bp = self.index_to_point2d(idx);
+        let mp = (bp.x as i64, bp.y as i64);
+        let vox = self.get_voxel_at(&mp);
+        match vox {
+            Some(voxik) => {voxik.blocks_vision()},
+            None => {true}
+        }
+    }
+
+   
+
+    fn get_pathing_distance(&self, idx1: usize, idx2: usize) -> f32 {
+        DistanceAlg::Pythagoras.distance2d(self.index_to_point2d(idx1), self.index_to_point2d(idx2))
+    }
+}
+
+impl Algorithm2D for GameMap {
+    fn dimensions(&self) -> BracketPoint {
+        BracketPoint::new(MAP_SIZE, MAP_SIZE)
     }
 }

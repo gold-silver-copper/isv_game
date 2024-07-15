@@ -62,6 +62,15 @@ impl Voxel {
 
         }
     }
+
+    pub fn blocks_vision(&self) -> bool {
+         match &self.furniture {
+            Some(furn) => furn.blocks_vision(),
+            None => false,
+        }
+
+     
+    }
 }
 
 impl RTreeObject for Voxel {
@@ -247,6 +256,12 @@ impl Furniture {
     }
 
     pub fn blocks_movement(&self) -> bool {
+        match &self {
+            Furniture::Wall(_) => true,
+            _ => false,
+        }
+    }
+    pub fn blocks_vision(&self) -> bool {
         match &self {
             Furniture::Wall(_) => true,
             _ => false,
