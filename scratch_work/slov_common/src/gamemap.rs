@@ -79,7 +79,7 @@ impl GameMap {
         &self,
         ent_pos_comp: &MyPoint,
         render_rect: &Rect,
-        ent_vec: std::vec::Vec<(&MyPoint, GraphicTriple)>,
+       
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
@@ -114,28 +114,6 @@ impl GameMap {
 
             //merge grids
 
-            for (ent_pos, ent_renderable) in ent_vec {
-                let ent_relative = (
-                    ent_pos.0 - bottom_left_of_game_screen.0,
-                    ent_pos.1 - bottom_left_of_game_screen.1,
-                );
-                let graphic = ent_renderable.clone();
-
-                if (0 < ent_relative.1)
-                    && (ent_relative.1 < render_height as i64)
-                    && (0 < ent_relative.0)
-                    && (ent_relative.0 < render_width as i64)
-                {
-                    if voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0
-                        != String::from("@")
-                    {
-                        voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].0 =
-                            graphic.0.clone();
-                        voxel_grid[ent_relative.1 as usize][ent_relative.0 as usize].1 =
-                            graphic.1.clone();
-                    }
-                }
-            }
 
             RenderPacket {
                 voxel_grid: voxel_grid,

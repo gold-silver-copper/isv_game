@@ -3,17 +3,12 @@ pub fn draw_ascii_game(
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
     masterok: Res<Masterok>,
     player_position: Query<(Entity, &PointComponent), With<Player>>,
-    render_query: Query<(&PointComponent, &EntityType)>,
+ 
 ) {
     let (pid, client_pos) = player_position.single();
 
-    let mut ent_vec = Vec::new();
 
-    for (pc, gc) in render_query.iter() {
-        if client_pos.0.distance_2(&pc.0) < LOCAL_RANGE {
-            ent_vec.push((&pc.0, gc.to_graphic_triple()));
-        }
-    }
+   
 
     termres
         .terminal_game
@@ -22,7 +17,7 @@ pub fn draw_ascii_game(
             let client_render = masterok.game_map.create_client_render_packet_for_entity(
                 &client_pos.0,
                 &area,
-                ent_vec,
+               
             );
 
             let client_graphics = client_render.voxel_grid;

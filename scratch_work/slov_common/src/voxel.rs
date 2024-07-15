@@ -20,6 +20,27 @@ impl Voxel {
             None => floor,
         };
 
+
+        for (ent,etyp) in &self.entity_map {
+            let pik = etyp.to_graphic_triple();
+
+
+            if plus_furn.0 != "@" {
+
+                plus_furn = (pik.0,pik.1,plus_furn.2);
+
+
+            }
+            
+
+
+
+        }
+
+
+
+
+
         if with_roof {
             let mut plus_roof: GraphicTriple = match &self.roof {
                 Some(roof) => (roof.symbol(), roof.to_fg_color(), roof.to_bg_color()),
