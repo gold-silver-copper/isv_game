@@ -38,6 +38,15 @@ impl GameMap {
                         entity_map: HashMap::new(),
                         voxel_pos: (x, y),
                     });
+                } else if x < 15 && y > 8 {
+                    //Some(WALL_FURNITURE),
+                    batchvec.push(Voxel {
+                        floor: Some(floor),
+                        furniture: None,
+                        roof: Some(TEGULA_ROOF),
+                        entity_map: HashMap::new(),
+                        voxel_pos: (x, y),
+                    });
                 } else {
                     //Some(WALL_FURNITURE),
                     batchvec.push(Voxel {

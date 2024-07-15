@@ -206,7 +206,7 @@ impl SolidMaterial {
 impl Tree {
     pub fn color(&self) -> RatColor {
         match &self {
-            Tree::Glinos => RatColor::Rgb(51, 34, 17),
+            Tree::Glinos => RatColor::Rgb(160,82,45),
         }
     }
 }
