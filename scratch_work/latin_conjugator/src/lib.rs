@@ -8,34 +8,28 @@ pub type VerbMap = HashMap<String, VerbRecord>;
 pub type Verb = String;
 
 pub struct Latin {
-  pub  noun_map: NounMap,
-   pub adj_map: AdjectiveMap,
-   pub verb_map: VerbMap,
+    pub noun_map: NounMap,
+    pub adj_map: AdjectiveMap,
+    pub verb_map: VerbMap,
 }
 
-
 pub struct ComplexNoun {
- //   pub case: Case,
-  //  pub number: Number,
+    //   pub case: Case,
+    //  pub number: Number,
     pub head_noun: String,
     pub adjective: String,
-    pub adposition_noun: String
+    pub adposition_noun: String,
 }
 
 impl Default for ComplexNoun {
-
     fn default() -> Self {
         Self {
             head_noun: "exemplum".into(),
             adposition_noun: String::new(),
             adjective: String::new(),
-
-
-
         }
     }
 }
-
 
 #[derive(Debug, Deserialize, Clone, Default)]
 pub struct NounRecord {
@@ -59,7 +53,6 @@ pub struct NounRecord {
     pub gender: Gender,
 }
 
-
 #[derive(Debug, PartialEq, Clone)]
 pub enum Mood {
     Indicative,
@@ -68,14 +61,12 @@ pub enum Mood {
     Infinitive,
     Participle,
     VerbalNoun,
-
 }
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Voice {
     Active,
-    Passive
-
+    Passive,
 }
 #[derive(Debug, PartialEq, Clone)]
 pub enum Tense {
@@ -85,18 +76,13 @@ pub enum Tense {
     Perfect,
     Pluperfect,
     FuturePerfect,
-
 }
-
-
-
 
 impl Default for Gender {
     fn default() -> Gender {
         Gender::Masculine
     }
 }
-
 
 //word,canonical,present_infinitive,perfect_active,supine,conjugation,irregular
 #[derive(Debug, Deserialize, Clone, Default)]
@@ -136,11 +122,6 @@ pub struct VerbRecord {
     pub indicative_active_pluperfect_plural_first: String,
     pub indicative_active_pluperfect_plural_second: String,
     pub indicative_active_pluperfect_plural_third: String,
-    
-    
-
-
- 
 }
 
 //word,feminine,neuter,comparative,superlative,adverb,declension,adj_stem
@@ -182,8 +163,6 @@ pub struct AdjectiveRecord {
     pub acc_pl_neut: String,
     pub abl_pl_neut: String,
 }
-
-
 
 fn deserialize_gender<'de, D>(deserializer: D) -> Result<Gender, D::Error>
 where
@@ -243,11 +222,10 @@ pub enum Person {
     First,
     Second,
     Third,
-
 }
 
 impl Latin {
-    pub fn new(noun_path: String,adjective_path: String,verb_path: String, ) -> Self {
+    pub fn new(noun_path: String, adjective_path: String, verb_path: String) -> Self {
         Latin {
             noun_map: Latin::load_nouns_from_csv(noun_path),
             adj_map: Latin::load_adjectives_from_csv(adjective_path),
@@ -266,7 +244,7 @@ impl Latin {
 
             nounmap.insert(record.word.clone(), record.clone());
 
-        //    //println!("{:?}", record);
+            //    //println!("{:?}", record);
         }
         nounmap
     }
@@ -275,10 +253,10 @@ impl Latin {
         let mut adjmap = HashMap::new();
         let mut rdr = csv::Reader::from_path(file_path).unwrap();
         for result in rdr.deserialize() {
-         //   //println!("{:?}", result);
+            //   //println!("{:?}", result);
             let record: AdjectiveRecord = result.unwrap();
             adjmap.insert(record.word.clone(), record.clone());
-          //  //println!("{:?}", record);
+            //  //println!("{:?}", record);
         }
         adjmap
     }
@@ -296,34 +274,27 @@ impl Latin {
         verbmap
     }
 
-
-
-    pub fn complex_noun(&self, complex_nomen: &ComplexNoun, case: &Case, number: &Number) -> String {
-
+    pub fn complex_noun(
+        &self,
+        complex_nomen: &ComplexNoun,
+        case: &Case,
+        number: &Number,
+    ) -> String {
         let noun = self.noun(&complex_nomen.head_noun, case, number);
         let adj = self.adjective(&complex_nomen.adjective, case, number, &noun.1);
         let adpos = self.noun(&complex_nomen.adposition_noun, case, number);
 
-
-
         let mut response = noun.0;
 
         if adj != "" {
-            response = format!("{} {}",response,adj);
+            response = format!("{} {}", response, adj);
         }
         if adpos.0 != "" {
-            response = format!("{} {}",response,adpos.0);
-
+            response = format!("{} {}", response, adpos.0);
         }
 
         response
-
-        
-
-
-
     }
-
 
     pub fn noun(&self, word: &str, case: &Case, number: &Number) -> Noun {
         let defik = NounRecord::default();
@@ -437,7 +408,7 @@ impl Latin {
         mood: &Mood,
         voice: &Voice,
         tense: &Tense,
-        number:&Number ,
+        number: &Number,
         person: &Person,
     ) -> Verb {
         let defik = VerbRecord::default();
@@ -445,116 +416,118 @@ impl Latin {
         let record = self.verb_map.get(word).unwrap_or(&defik);
 
         match mood {
-            Mood::Indicative => {
-
-                match voice {
-                    Voice::Active => {
-                        match tense {
-                            Tense::Present => {
-                                match number {
-                                    Number::Singular => {
-                                        match person {
-                                            Person::First => record.indicative_active_present_singular_first.clone(),
-                                            Person::Second => record.indicative_active_present_singular_second.clone(),
-                                            Person::Third => record.indicative_active_present_singular_third.clone(),
-                                        }
-                                    }
-                                    Number::Plural => {
-                                        match person {
-                                            Person::First => record.indicative_active_present_plural_first.clone(),
-                                            Person::Second => record.indicative_active_present_plural_second.clone(),
-                                            Person::Third => record.indicative_active_present_plural_third.clone(),
-                                        }
-                                    }
-                                }
+            Mood::Indicative => match voice {
+                Voice::Active => match tense {
+                    Tense::Present => match number {
+                        Number::Singular => match person {
+                            Person::First => {
+                                record.indicative_active_present_singular_first.clone()
                             }
-                            Tense::Imperfect => {
-                                match number {
-                                    Number::Singular => {
-                                        match person {
-                                            Person::First => record.indicative_active_imperfect_singular_first.clone(),
-                                            Person::Second => record.indicative_active_imperfect_singular_second.clone(),
-                                            Person::Third => record.indicative_active_imperfect_singular_third.clone(),
-                                        }
-                                    }
-                                    Number::Plural => {
-                                        match person {
-                                            Person::First => record.indicative_active_imperfect_plural_first.clone(),
-                                            Person::Second => record.indicative_active_imperfect_plural_second.clone(),
-                                            Person::Third => record.indicative_active_imperfect_plural_third.clone(),
-                                        }
-                                    }
-                                }
+                            Person::Second => {
+                                record.indicative_active_present_singular_second.clone()
                             }
-                            Tense::Future => {
-                                match number {
-                                    Number::Singular => {
-                                        match person {
-                                            Person::First => record.indicative_active_future_singular_first.clone(),
-                                            Person::Second => record.indicative_active_future_singular_second.clone(),
-                                            Person::Third => record.indicative_active_future_singular_third.clone(),
-                                        }
-                                    }
-                                    Number::Plural => {
-                                        match person {
-                                            Person::First => record.indicative_active_future_plural_first.clone(),
-                                            Person::Second => record.indicative_active_future_plural_second.clone(),
-                                            Person::Third => record.indicative_active_future_plural_third.clone(),
-                                        }
-                                    }
-                                }
+                            Person::Third => {
+                                record.indicative_active_present_singular_third.clone()
                             }
-                            Tense::Perfect => {
-                                match number {
-                                    Number::Singular => {
-                                        match person {
-                                            Person::First => record.indicative_active_perfect_singular_first.clone(),
-                                            Person::Second => record.indicative_active_perfect_singular_second.clone(),
-                                            Person::Third => record.indicative_active_perfect_singular_third.clone(),
-                                        }
-                                    }
-                                    Number::Plural => {
-                                        match person {
-                                            Person::First => record.indicative_active_perfect_plural_first.clone(),
-                                            Person::Second => record.indicative_active_perfect_plural_second.clone(),
-                                            Person::Third => record.indicative_active_perfect_plural_third.clone(),
-                                        }
-                                    }
-                                }
+                        },
+                        Number::Plural => match person {
+                            Person::First => record.indicative_active_present_plural_first.clone(),
+                            Person::Second => {
+                                record.indicative_active_present_plural_second.clone()
                             }
-                            Tense::Pluperfect => {
-                                match number {
-                                    Number::Singular => {
-                                        match person {
-                                            Person::First => record.indicative_active_pluperfect_singular_first.clone(),
-                                            Person::Second => record.indicative_active_pluperfect_singular_second.clone(),
-                                            Person::Third => record.indicative_active_pluperfect_singular_third.clone(),
-                                        }
-                                    }
-                                    Number::Plural => {
-                                        match person {
-                                            Person::First => record.indicative_active_pluperfect_plural_first.clone(),
-                                            Person::Second => record.indicative_active_pluperfect_plural_second.clone(),
-                                            Person::Third => record.indicative_active_pluperfect_plural_third.clone(),
-                                        }
-                                    }
-                                }
-                            }
-                            Tense::FuturePerfect => {
-                               todo!("IMPLEMENT FUTURE PERFECT")
-                            }
-                        }
-                        
+                            Person::Third => record.indicative_active_present_plural_third.clone(),
+                        },
                     },
-                    _ => todo!("IMPLEMENT PASSIVE VOICE")
-                }
-
+                    Tense::Imperfect => match number {
+                        Number::Singular => match person {
+                            Person::First => {
+                                record.indicative_active_imperfect_singular_first.clone()
+                            }
+                            Person::Second => {
+                                record.indicative_active_imperfect_singular_second.clone()
+                            }
+                            Person::Third => {
+                                record.indicative_active_imperfect_singular_third.clone()
+                            }
+                        },
+                        Number::Plural => match person {
+                            Person::First => {
+                                record.indicative_active_imperfect_plural_first.clone()
+                            }
+                            Person::Second => {
+                                record.indicative_active_imperfect_plural_second.clone()
+                            }
+                            Person::Third => {
+                                record.indicative_active_imperfect_plural_third.clone()
+                            }
+                        },
+                    },
+                    Tense::Future => match number {
+                        Number::Singular => match person {
+                            Person::First => record.indicative_active_future_singular_first.clone(),
+                            Person::Second => {
+                                record.indicative_active_future_singular_second.clone()
+                            }
+                            Person::Third => record.indicative_active_future_singular_third.clone(),
+                        },
+                        Number::Plural => match person {
+                            Person::First => record.indicative_active_future_plural_first.clone(),
+                            Person::Second => record.indicative_active_future_plural_second.clone(),
+                            Person::Third => record.indicative_active_future_plural_third.clone(),
+                        },
+                    },
+                    Tense::Perfect => match number {
+                        Number::Singular => match person {
+                            Person::First => {
+                                record.indicative_active_perfect_singular_first.clone()
+                            }
+                            Person::Second => {
+                                record.indicative_active_perfect_singular_second.clone()
+                            }
+                            Person::Third => {
+                                record.indicative_active_perfect_singular_third.clone()
+                            }
+                        },
+                        Number::Plural => match person {
+                            Person::First => record.indicative_active_perfect_plural_first.clone(),
+                            Person::Second => {
+                                record.indicative_active_perfect_plural_second.clone()
+                            }
+                            Person::Third => record.indicative_active_perfect_plural_third.clone(),
+                        },
+                    },
+                    Tense::Pluperfect => match number {
+                        Number::Singular => match person {
+                            Person::First => {
+                                record.indicative_active_pluperfect_singular_first.clone()
+                            }
+                            Person::Second => {
+                                record.indicative_active_pluperfect_singular_second.clone()
+                            }
+                            Person::Third => {
+                                record.indicative_active_pluperfect_singular_third.clone()
+                            }
+                        },
+                        Number::Plural => match person {
+                            Person::First => {
+                                record.indicative_active_pluperfect_plural_first.clone()
+                            }
+                            Person::Second => {
+                                record.indicative_active_pluperfect_plural_second.clone()
+                            }
+                            Person::Third => {
+                                record.indicative_active_pluperfect_plural_third.clone()
+                            }
+                        },
+                    },
+                    Tense::FuturePerfect => {
+                        todo!("IMPLEMENT FUTURE PERFECT")
+                    }
+                },
+                _ => todo!("IMPLEMENT PASSIVE VOICE"),
             },
-            _ => todo!("IMPLEMENT OTHER MOODS")
-            
+            _ => todo!("IMPLEMENT OTHER MOODS"),
         }
-
-        
     }
 
     pub fn last_n_chars(word: &str, n: usize) -> String {
