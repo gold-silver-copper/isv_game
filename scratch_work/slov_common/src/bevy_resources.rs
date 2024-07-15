@@ -52,6 +52,7 @@ impl Default for Masterok {
 #[derive(Clone, Debug, Resource)]
 pub struct UIResources {
     pub visible_ents: Vec<(Entity,EntityType)>,
+    pub latin_conjugator: Latin,
 
 }
 
@@ -60,7 +61,12 @@ impl Default for UIResources {
        
 
         Self {
-            visible_ents: Vec::new()
+            visible_ents: Vec::new(),
+            latin_conjugator: Latin::new(
+                "../../assets/nouns.csv".into(),
+                "../../assets/adjectives.csv".into(),
+                "../../assets/verbs.csv".into(),
+            )
         }
     }
 }

@@ -52,7 +52,9 @@ pub use strum::Display;
 use strum::IntoEnumIterator;
 use strum::{EnumCount, EnumIter, FromRepr};
 
-pub use serde::{Deserialize, Deserializer};
+pub use botanical_latin::*;
+
+//pub use serde::{Deserialize, Deserializer};
 
 pub use bevy::{
     ecs::system::EntityCommands, input::keyboard::Key, prelude::*, render::view::visibility,

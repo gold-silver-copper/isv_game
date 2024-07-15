@@ -7,6 +7,8 @@ pub type AdjectiveMap = HashMap<String, AdjectiveRecord>;
 pub type VerbMap = HashMap<String, VerbRecord>;
 pub type Verb = String;
 
+
+#[derive(Debug, Deserialize, Clone, Default)]
 pub struct Latin {
     pub noun_map: NounMap,
     pub adj_map: AdjectiveMap,
