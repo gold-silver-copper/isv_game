@@ -47,7 +47,7 @@ pub fn draw_ascii_game(
         .expect("epic fail");
 }
 
-pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>) {
+pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>,   ui_resources: Res<UIResources>,) {
     let name_string = format! {"{}","hello"};
 
     let mut messages_to_show = Vec::new();
