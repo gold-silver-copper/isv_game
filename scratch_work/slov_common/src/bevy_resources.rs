@@ -63,9 +63,9 @@ impl Default for UIResources {
         Self {
             visible_ents: Vec::new(),
             latin_conjugator: Latin::new(
-                "../../assets/nouns.csv".into(),
-                "../../assets/adjectives.csv".into(),
-                "../../assets/verbs.csv".into(),
+                "nouns.csv".into(),
+                "adjectives.csv".into(),
+                "verbs.csv".into(),
             )
         }
     }
