@@ -103,7 +103,7 @@ impl GameMap {
             let mut voxel_grid = create_2d_array(render_width.into(), render_height.into());
 
 
-            let fov = field_of_view_set(BracketPoint{x:e_pos.0 as i32,y:e_pos.1 as i32}, 15, self);
+            let fov = field_of_view_set(BracketPoint{x:e_pos.0 as i32,y:e_pos.1 as i32}, 10, self);
 
         //    println!("FOV IS {:#?}",fov);
 
@@ -122,16 +122,20 @@ impl GameMap {
                    
 
 
-                    let mut boop = lv.to_graphic(true);
+                   
 
-                    if !fov.contains(&bp) {
-
-                        boop.1 = RatColor::Black;
-                        boop.2 = RatColor::Black;
+                    let boop = if fov.contains(&bp) {
+                         lv.to_graphic(true)
 
 
 
                     }
+                    else {
+
+                        lv.to_graphic(false)
+
+
+                    };
 
 
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;

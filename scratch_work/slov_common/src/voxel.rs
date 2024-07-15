@@ -9,7 +9,7 @@ pub struct Voxel {
 }
 
 impl Voxel {
-    pub fn to_graphic(&self, with_roof: bool) -> GraphicTriple {
+    pub fn to_graphic(&self, visible: bool) -> GraphicTriple {
         let mut floor = match &self.floor {
             Some(fl) => fl.to_graphic_triple(),
             None => (" ", RatColor::Black, RatColor::Black),
@@ -20,24 +20,33 @@ impl Voxel {
             None => floor,
         };
 
-        for (ent, etyp) in &self.entity_map {
-            let pik = etyp.to_graphic_triple();
 
-            if plus_furn.0 != "@" {
-                plus_furn = (pik.0, pik.1, plus_furn.2);
+        if visible {
+
+            for (ent, etyp) in &self.entity_map {
+                let pik = etyp.to_graphic_triple();
+    
+                if plus_furn.0 != "@" {
+                    plus_furn = (pik.0, pik.1, plus_furn.2);
+                }
             }
+            plus_furn
+
+
+
         }
 
-        if with_roof {
+        else {
             let mut plus_roof: GraphicTriple = match &self.roof {
                 Some(roof) => (roof.symbol(), roof.to_fg_color(), roof.to_bg_color()),
                 None => plus_furn,
             };
 
+            plus_roof.1 = dim(plus_roof.1, 0.3);
+            plus_roof.2 = dim(plus_roof.2, 0.3);
+
             plus_roof
-        } else {
-            plus_furn
-        }
+        } 
     }
 
     pub fn blocks_movement(&self) -> bool {
