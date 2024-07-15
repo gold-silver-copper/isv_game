@@ -1,6 +1,7 @@
 use crate::*;
 pub fn keyboard_input_system(
     input: Res<ButtonInput<KeyCode>>,
+    mut bevyterm: ResMut<BevyTerminal<RataguiBackend> > ,
     mut player_eid: Query<(Entity), With<Player>>,
     mut commands: Commands,
 ) {
@@ -29,6 +30,32 @@ pub fn keyboard_input_system(
     let char_eight = input.any_just_pressed([KeyCode::Digit8]);
     let char_nine = input.any_just_pressed([KeyCode::Digit9]);
     let char_zero = input.any_just_pressed([KeyCode::Digit0]);
+
+
+    let char_minus = input.any_just_pressed([KeyCode::Minus]);
+    let char_equal = input.any_just_pressed([KeyCode::Equal]);
+
+    if char_minus {
+
+
+        let term_size= bevyterm.terminal_game.backend().get_font_size();
+        let term_size = term_size -2;
+        if term_size >1 {
+
+            bevyterm.terminal_game.backend_mut().set_font_size(term_size);
+        }
+    
+
+
+    }
+    else if char_equal {
+        let term_size= bevyterm.terminal_game.backend().get_font_size();
+        let term_size = term_size +2;
+        if term_size <30 {
+
+            bevyterm.terminal_game.backend_mut().set_font_size(term_size);
+        }
+      }
 
     let char_backspace = input.any_pressed([KeyCode::Backspace, KeyCode::Delete]);
     let char_quit = input.any_just_pressed([KeyCode::KeyQ]);

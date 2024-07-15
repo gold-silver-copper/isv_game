@@ -1,6 +1,6 @@
 use crate::*;
 
-pub const MAP_SIZE: i64 = 100;
+pub const MAP_SIZE: i64 = 1000;
 
 pub const WALL_FURNITURE: Furniture = Furniture::Wall(SolidMaterial::Wood(Tree::Glinos));
 

@@ -103,7 +103,7 @@ impl GameMap {
             let mut voxel_grid = create_2d_array(render_width.into(), render_height.into());
 
 
-            let fov = field_of_view_set(BracketPoint{x:e_pos.0 as i32,y:e_pos.1 as i32}, 10, self);
+            let fov = field_of_view_set(BracketPoint{x:e_pos.0 as i32,y:e_pos.1 as i32}, 60, self);
 
         //    println!("FOV IS {:#?}",fov);
 

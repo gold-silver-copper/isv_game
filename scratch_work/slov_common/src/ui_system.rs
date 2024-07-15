@@ -86,7 +86,7 @@ pub fn ui_example_system(
     egui::CentralPanel::default()
         .frame(Frame::none())
         .show(contexts.ctx_mut(), |ui| {
-            let av_height = ui.available_height().clamp(100., 1500.);
+            let av_height = ui.available_height().clamp(100., 4500.);
 
             egui::SidePanel::right("containeeee")
                 .min_width(260.)
@@ -96,7 +96,7 @@ pub fn ui_example_system(
                     ui.add(termres.terminal_info.backend_mut());
                 });
 
-            let av_width = ui.available_width().clamp(100., 1500.);
+            let av_width = ui.available_width().clamp(100., 4500.);
             egui::SidePanel::left("gameik")
                 .min_width(av_width)
                 .max_width(av_width)
