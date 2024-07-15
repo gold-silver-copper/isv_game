@@ -24,38 +24,25 @@ impl GameMap {
                     WATER_FLOOR //water
                 };
 
-
                 if x == 15 && y > 8 {
-
-                          //Some(WALL_FURNITURE),
-                batchvec.push(Voxel {
-                    floor: Some(floor),
-                    furniture: Some(WALL_FURNITURE),
-                    roof: None,
-                    voxel_pos: (x, y),
-                });
-
-
+                    //Some(WALL_FURNITURE),
+                    batchvec.push(Voxel {
+                        floor: Some(floor),
+                        furniture: Some(WALL_FURNITURE),
+                        roof: None,
+                        voxel_pos: (x, y),
+                    });
+                } else {
+                    //Some(WALL_FURNITURE),
+                    batchvec.push(Voxel {
+                        floor: Some(floor),
+                        furniture: None,
+                        roof: None,
+                        voxel_pos: (x, y),
+                    });
                 }
-                else {
-      //Some(WALL_FURNITURE),
-      batchvec.push(Voxel {
-        floor: Some(floor),
-        furniture: None,
-        roof: None,
-        voxel_pos: (x, y),
-    });
-
-
-                }
-
-
-          
             }
         }
-
-
-        
 
         let newtree = RTree::bulk_load(batchvec);
 

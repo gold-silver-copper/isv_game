@@ -2,7 +2,6 @@ use crate::*;
 
 pub const MAP_SIZE: i64 = 100;
 
-
 pub const WALL_FURNITURE: Furniture = Furniture::Wall(SolidMaterial::Wood(Tree::Glinos));
 
 pub const DIRT_FLOOR: Floor = Floor::Earth(EarthType::Dirt);

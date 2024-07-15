@@ -3,8 +3,6 @@ use crate::*;
 
 use noise::{core::worley::ReturnType, utils::*, *};
 
-
-
 /// This example demonstrates how to use the noise-rs library to generate
 /// terrain elevations for a complex planetary surface.
 ///
@@ -1725,10 +1723,8 @@ pub fn generate_complex_planet() -> NoiseMap {
         .set_y_bounds(-2.0, 2.0)
         .build();
 
-
     return noise_map;
 }
-
 
 /*
     utils::write_image_to_file(
