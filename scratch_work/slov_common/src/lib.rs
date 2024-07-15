@@ -48,7 +48,9 @@ use strum::{EnumCount, EnumIter, FromRepr};
 
 pub use serde::{Deserialize, Deserializer};
 
-pub use bevy::{input::keyboard::Key, prelude::*, render::view::visibility, ecs::system::EntityCommands};
+pub use bevy::{
+    ecs::system::EntityCommands, input::keyboard::Key, prelude::*, render::view::visibility,
+};
 
 pub use bevy_egui::{
     egui::{self, FontData, FontDefinitions, FontFamily, Frame},

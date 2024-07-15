@@ -4,7 +4,7 @@ pub struct Voxel {
     pub floor: Option<Floor>,
     pub roof: Option<Roof>,
     pub furniture: Option<Furniture>,
-    pub entity_map: HashMap<Entity,EntityType>,
+    pub entity_map: HashMap<Entity, EntityType>,
     pub voxel_pos: MyPoint,
 }
 
@@ -33,13 +33,10 @@ impl Voxel {
     }
 
     pub fn blocks_movement(&self) -> bool {
-
         match &self.furniture {
             Some(furn) => furn.blocks_movement(),
-            None => false
+            None => false,
         }
-
-
     }
 }
 
@@ -228,7 +225,7 @@ impl Furniture {
     pub fn blocks_movement(&self) -> bool {
         match &self {
             Furniture::Wall(_) => true,
-           _ => false
+            _ => false,
         }
     }
 }
@@ -254,26 +251,23 @@ impl Roof {
     }
 }
 
-
-
 impl EntityType {
     pub fn to_fg_color(&self) -> RatColor {
         match &self {
-            EntityType::Human => RatColor::White
+            EntityType::Human => RatColor::White,
         }
     }
     pub fn to_bg_color(&self) -> RatColor {
         match &self {
-            EntityType::Human => RatColor::Black
+            EntityType::Human => RatColor::Black,
         }
     }
     pub fn symbol(&self) -> &'static str {
         match &self {
-            EntityType::Human => "@"
+            EntityType::Human => "@",
         }
     }
     pub fn to_graphic_triple(&self) -> GraphicTriple {
-
-        (self.symbol(),self.to_fg_color(),self.to_bg_color())
+        (self.symbol(), self.to_fg_color(), self.to_bg_color())
     }
 }

@@ -30,7 +30,7 @@ impl GameMap {
                         floor: Some(floor),
                         furniture: Some(WALL_FURNITURE),
                         roof: None,
-                        entity_map:HashMap::new(),
+                        entity_map: HashMap::new(),
                         voxel_pos: (x, y),
                     });
                 } else {
@@ -39,7 +39,7 @@ impl GameMap {
                         floor: Some(floor),
                         furniture: None,
                         roof: None,
-                        entity_map:HashMap::new(),
+                        entity_map: HashMap::new(),
                         voxel_pos: (x, y),
                     });
                 }
@@ -62,6 +62,14 @@ impl GameMap {
     pub fn get_voxel_at(&self, point: &MyPoint) -> Option<Voxel> {
         if let Some(boop) = self.voxeltile_grid.locate_at_point(point) {
             Some(boop.clone())
+        } else {
+            None
+        }
+    }
+
+    pub fn get_mut_voxel_at(&mut self, point: &MyPoint) -> Option<&mut Voxel> {
+        if let Some(boop) = self.voxeltile_grid.locate_at_point_mut(point) {
+            Some(boop)
         } else {
             None
         }
