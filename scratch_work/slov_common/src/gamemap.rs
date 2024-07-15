@@ -116,6 +116,8 @@ impl GameMap {
 
         //    println!("FOV IS {:#?}",fov);
 
+        let mut visible_ents = Vec::new();
+
             for lv in local_voxels {
                 let relative_point_x = lv.voxel_pos.0 - bottom_left_of_game_screen.0;
                 let relative_point_y = lv.voxel_pos.1 - bottom_left_of_game_screen.1;
@@ -134,6 +136,12 @@ impl GameMap {
                    
 
                     let boop = if fov.contains(&bp) {
+
+                        for (ent,typ) in &lv.entity_map {
+
+                            visible_ents.push((ent.clone(),typ.clone()));
+                        }
+
                          lv.to_graphic(true)
 
 
@@ -155,6 +163,7 @@ impl GameMap {
 
             RenderPacket {
                 voxel_grid: voxel_grid,
+                ent_vec: visible_ents
             }
         }
     }

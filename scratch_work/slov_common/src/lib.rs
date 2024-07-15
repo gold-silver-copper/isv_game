@@ -23,6 +23,12 @@ pub use const_collection::*;
 mod complexplanet;
 pub use complexplanet::*;
 
+mod typeimpls;
+pub use typeimpls::*;
+
+mod typeenums;
+pub use typeenums::*;
+
 mod bevy_resources;
 pub use bevy_resources::*;
 mod actions;

@@ -28,15 +28,17 @@ pub fn locate_square(e_pos: &MyPoint, w_radius: i64, h_radius: i64) -> AABB<MyPo
 #[derive(Debug)]
 pub struct RenderPacket {
     pub voxel_grid: Vec<Vec<GraphicTriple>>,
+    pub ent_vec: Vec<(Entity,EntityType)>
 }
-
 impl RenderPacket {
     pub fn new() -> Self {
         RenderPacket {
             voxel_grid: Vec::new(),
+            ent_vec: Vec::new()
         }
     }
 }
+
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum CardinalDirection {
