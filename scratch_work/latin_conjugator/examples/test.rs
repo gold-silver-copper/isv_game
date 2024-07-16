@@ -18,6 +18,10 @@ fn main() {
     let comp2 = conji.complex_noun(&complexik, &Case::Acc, &Number::Plural);
     println!("{:#?}", comp2);
 
+
+    let comp2 = conji.guess_noun("smilax", &Case::Acc, &Number::Plural);
+    println!("{:#?}", comp2.0);
+
     let testik = conji.noun_map.clone();
     let testik2 = conji.adj_map.clone();
     let testik3 = conji.verb_map.clone();

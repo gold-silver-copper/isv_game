@@ -7,7 +7,6 @@ pub type AdjectiveMap = HashMap<String, AdjectiveRecord>;
 pub type VerbMap = HashMap<String, VerbRecord>;
 pub type Verb = String;
 
-
 #[derive(Debug, Deserialize, Clone, Default)]
 pub struct Latin {
     pub noun_map: NounMap,
@@ -209,6 +208,482 @@ pub enum Case {
     Voc,
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub struct CaseEndings {
+    pub gender: Gender,
+    pub nom_sg: &'static str,
+    pub acc_sg: &'static str,
+    pub gen_sg: &'static str,
+    pub dat_sg: &'static str,
+    pub abl_sg: &'static str,
+
+    pub nom_pl: &'static str,
+    pub acc_pl: &'static str,
+    pub gen_pl: &'static str,
+    pub dat_pl: &'static str,
+    pub abl_pl: &'static str,
+  
+}
+
+impl CaseEndings {
+    pub fn ending(&self, case: &Case, number: &Number) -> &str {
+        match number {
+            Number::Singular => match case {
+                Case::Nom => self.nom_sg,
+                Case::Acc => self.acc_sg,
+                Case::Gen => self.gen_sg,
+                Case::Dat => self.dat_sg,
+                Case::Abl => self.abl_sg,
+                Case::Loc => self.abl_sg,
+                Case::Voc => self.nom_sg,
+            },
+            Number::Plural => match case {
+                Case::Nom => self.nom_pl,
+                Case::Acc => self.acc_pl,
+                Case::Gen => self.gen_pl,
+                Case::Dat => self.dat_pl,
+                Case::Abl => self.abl_pl,
+                Case::Loc => self.abl_pl,
+                Case::Voc => self.nom_pl,
+            },
+        }
+    }
+}
+
+pub const ONE_LETTER_ENDINGS: [CaseEndings; 4] = [A_DECLENSION_ENDINGS,E_DECLENSION_ENDINGS,O_DECLENSION_ENDINGS,U_DECLENSION_ENDINGS];
+pub const TWO_LETTER_ENDINGS: [CaseEndings; 23] = [AL_DECLENSION_ENDINGS,AR_DECLENSION_ENDINGS,AR_DECLENSION_ENDINGS,AS_DECLENSION_ENDINGS,AX_DECLENSION_ENDINGS,EN_DECLENSION_ENDINGS,ER_DECLENSION_ENDINGS,ES_DECLENSION_ENDINGS,EX_DECLENSION_ENDINGS,ON_DECLENSION_ENDINGS,OR_DECLENSION_ENDINGS,OS_DECLENSION_ENDINGS,UM_DECLENSION_ENDINGS,US_DECLENSION_ENDINGS,UT_DECLENSION_ENDINGS,UX_DECLENSION_ENDINGS,MA_DECLENSION_ENDINGS,YX_DECLENSION_ENDINGS,YS_DECLENSION_ENDINGS,NX_DECLENSION_ENDINGS,MA_DECLENSION_ENDINGS,IS_DECLENSION_ENDINGS,IX_DECLENSION_ENDINGS];
+
+
+pub const TEST_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "nom_sg",
+    acc_sg: "acc_sg",
+    gen_sg: "gen_sg",
+    dat_sg: "dat_sg",
+    abl_sg: "abl_sg",
+
+    nom_pl: "nom_pl",
+    acc_pl: "acc_pl",
+    gen_pl: "gen_pl",
+    dat_pl: "dat_pl",
+    abl_pl: "abl_pl",
+
+};
+
+pub const A_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "a",
+    acc_sg: "am",
+    gen_sg: "ae",
+    dat_sg: "ae",
+    abl_sg: "a",
+
+    nom_pl: "ae",
+    acc_pl: "as",
+    gen_pl: "arum",
+    dat_pl: "is",
+    abl_pl: "is",
+
+};
+pub const US_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "us",
+    acc_sg: "um",
+    gen_sg: "i",
+    dat_sg: "o",
+    abl_sg: "o",
+
+    nom_pl: "i",
+    acc_pl: "os",
+    gen_pl: "orum",
+    dat_pl: "is",
+    abl_pl: "is",
+
+};
+
+pub const O_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "o",
+    acc_sg: "onem",
+    gen_sg: "onis",
+    dat_sg: "oni",
+    abl_sg: "one",
+
+    nom_pl: "ones",
+    acc_pl: "ones",
+    gen_pl: "onum",
+    dat_pl: "onibus",
+    abl_pl: "onibus",
+
+};
+
+pub const ON_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "on",
+    acc_sg: "ontem",
+    gen_sg: "ontis",
+    dat_sg: "onti",
+    abl_sg: "onte",
+
+    nom_pl: "ontes",
+    acc_pl: "ontes",
+    gen_pl: "ontum",
+    dat_pl: "ontibus",
+    abl_pl: "ontibus",
+
+};
+
+pub const UT_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "ut",
+    acc_sg: "ut",
+    gen_sg: "itis",
+    dat_sg: "iti",
+    abl_sg: "ite",
+
+    nom_pl: "ita",
+    acc_pl: "ita",
+    gen_pl: "itum",
+    dat_pl: "itibus",
+    abl_pl: "itibus",
+
+};
+
+pub const OR_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "or",
+    acc_sg: "orem",
+    gen_sg: "oris",
+    dat_sg: "ori",
+    abl_sg: "ore",
+
+    nom_pl: "ores",
+    acc_pl: "ores",
+    gen_pl: "orum",
+    dat_pl: "oribus",
+    abl_pl: "oribus",
+
+};
+
+pub const OS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "os",
+    acc_sg: "orem",
+    gen_sg: "oris",
+    dat_sg: "ori",
+    abl_sg: "ore",
+
+    nom_pl: "ores",
+    acc_pl: "ores",
+    gen_pl: "orum",
+    dat_pl: "oribus",
+    abl_pl: "oribus",
+
+};
+pub const S_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "s",
+    acc_sg: "tem",
+    gen_sg: "tis",
+    dat_sg: "ti",
+    abl_sg: "te",
+
+    nom_pl: "tes",
+    acc_pl: "tes",
+    gen_pl: "tium",
+    dat_pl: "tibus",
+    abl_pl: "tibus",
+
+};
+
+pub const UM_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "um",
+    acc_sg: "um",
+    gen_sg: "i",
+    dat_sg: "o",
+    abl_sg: "o",
+
+    nom_pl: "a",
+    acc_pl: "a",
+    gen_pl: "orum",
+    dat_pl: "is",
+    abl_pl: "is",
+
+};
+
+
+pub const U_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "u",
+    acc_sg: "u",
+    gen_sg: "us",
+    dat_sg: "ui",
+    abl_sg: "u",
+
+    nom_pl: "ua",
+    acc_pl: "ua",
+    gen_pl: "uum",
+    dat_pl: "uibus",
+    abl_pl: "uibus",
+
+};
+
+pub const ER_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "er",
+    acc_sg: "rum",
+    gen_sg: "ri",
+    dat_sg: "ro",
+    abl_sg: "ro",
+
+    nom_pl: "ri",
+    acc_pl: "ros",
+    gen_pl: "rorum",
+    dat_pl: "ris",
+    abl_pl: "ris",
+
+};
+
+pub const AL_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "al",
+    acc_sg: "al",
+    gen_sg: "alis",
+    dat_sg: "ali",
+    abl_sg: "ali",
+
+    nom_pl: "alia",
+    acc_pl: "alia",
+    gen_pl: "alium",
+    dat_pl: "alibus",
+    abl_pl: "alibus",
+
+};
+
+pub const AR_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "ar",
+    acc_sg: "ar",
+    gen_sg: "aris",
+    dat_sg: "ari",
+    abl_sg: "ari",
+
+    nom_pl: "aria",
+    acc_pl: "aria",
+    gen_pl: "arium",
+    dat_pl: "aribus",
+    abl_pl: "aribus",
+
+};
+
+
+pub const AS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "as",
+    acc_sg: "atem",
+    gen_sg: "atis",
+    dat_sg: "ati",
+    abl_sg: "ate",
+
+    nom_pl: "ates",
+    acc_pl: "ates",
+    gen_pl: "atum",
+    dat_pl: "atibus",
+    abl_pl: "atibus",
+
+};
+
+pub const AX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "ax",
+    acc_sg: "acem",
+    gen_sg: "acis",
+    dat_sg: "aci",
+    abl_sg: "ace",
+
+    nom_pl: "aces",
+    acc_pl: "aces",
+    gen_pl: "acum",
+    dat_pl: "acibus",
+    abl_pl: "acibus",
+
+};
+
+pub const IX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "ix",
+    acc_sg: "icem",
+    gen_sg: "icis",
+    dat_sg: "ici",
+    abl_sg: "ice",
+
+    nom_pl: "ices",
+    acc_pl: "ices",
+    gen_pl: "icum",
+    dat_pl: "icibus",
+    abl_pl: "icibus",
+
+};
+pub const YX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "yx",
+    acc_sg: "ycem",
+    gen_sg: "ycis",
+    dat_sg: "yci",
+    abl_sg: "yce",
+
+    nom_pl: "yces",
+    acc_pl: "yces",
+    gen_pl: "ycum",
+    dat_pl: "ycibus",
+    abl_pl: "ycibus",
+
+};
+
+pub const YS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "ys",
+    acc_sg: "ydem",
+    gen_sg: "ydis",
+    dat_sg: "ydi",
+    abl_sg: "yde",
+
+    nom_pl: "ydes",
+    acc_pl: "ydes",
+    gen_pl: "ydum",
+    dat_pl: "ydibus",
+    abl_pl: "ydibus",
+
+};
+
+pub const UX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "ux",
+    acc_sg: "ucem",
+    gen_sg: "ucis",
+    dat_sg: "uci",
+    abl_sg: "uce",
+
+    nom_pl: "uces",
+    acc_pl: "uces",
+    gen_pl: "ucum",
+    dat_pl: "ucibus",
+    abl_pl: "ucibus",
+
+};
+
+pub const NX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "nx",
+    acc_sg: "ngem",
+    gen_sg: "ngis",
+    dat_sg: "ngi",
+    abl_sg: "nge",
+
+    nom_pl: "nges",
+    acc_pl: "nges",
+    gen_pl: "ngium",
+    dat_pl: "ngibus",
+    abl_pl: "ngibus",
+
+};
+
+pub const IS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "is",
+    acc_sg: "em",
+    gen_sg: "is",
+    dat_sg: "i",
+    abl_sg: "e",
+
+    nom_pl: "es",
+    acc_pl: "es",
+    gen_pl: "ium",
+    dat_pl: "ibus",
+    abl_pl: "ibus",
+
+};
+
+pub const EX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "ex",
+    acc_sg: "icem",
+    gen_sg: "icis",
+    dat_sg: "ici",
+    abl_sg: "ice",
+
+    nom_pl: "ices",
+    acc_pl: "ices",
+    gen_pl: "icum",
+    dat_pl: "icibus",
+    abl_pl: "icibus",
+
+};
+
+
+pub const E_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "e",
+    acc_sg: "e",
+    gen_sg: "is",
+    dat_sg: "i",
+    abl_sg: "i",
+
+    nom_pl: "ia",
+    acc_pl: "ia",
+    gen_pl: "ium",
+    dat_pl: "ibus",
+    abl_pl: "ibus",
+
+};
+pub const EN_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "en",
+    acc_sg: "en",
+    gen_sg: "inis",
+    dat_sg: "ini",
+    abl_sg: "ine",
+
+    nom_pl: "ina",
+    acc_pl: "ina",
+    gen_pl: "inum",
+    dat_pl: "inibus",
+    abl_pl: "inibus",
+
+};
+pub const ES_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "es",
+    acc_sg: "em",
+    gen_sg: "ei",
+    dat_sg: "ei",
+    abl_sg: "e",
+
+    nom_pl: "es",
+    acc_pl: "es",
+    gen_pl: "erum",
+    dat_pl: "ebus",
+    abl_pl: "ebus",
+
+};
+
+pub const MA_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "ma",
+    acc_sg: "ma",
+    gen_sg: "matis",
+    dat_sg: "mati",
+    abl_sg: "mate",
+
+    nom_pl: "mata",
+    acc_pl: "mata",
+    gen_pl: "matum",
+    dat_pl: "matibus",
+    abl_pl: "matibus",
+
+};
+
 // have a possesive func, but reflexive person?
 #[derive(Debug, PartialEq, Clone)]
 pub enum Number {
@@ -227,6 +702,106 @@ pub enum Person {
 }
 
 impl Latin {
+    pub fn guess_noun(&self, word: &str, case: &Case, number: &Number) -> Noun{
+
+        for ce in &TWO_LETTER_ENDINGS {
+
+            let nom_end = ce.nom_sg;
+
+            if word.ends_with(nom_end) {
+
+                let word_gender = &ce.gender;
+
+                let n = nom_end.len();
+
+                let mut word_stem =  word.to_string();
+
+                if n <= word.len() {
+                 
+                   word_stem.truncate(word.len() - n);
+                   let ending = ce.ending(case, number);
+                   let merged = format!("{}{}",word_stem,ending);
+                   return (merged,word_gender.clone());
+                }
+
+
+
+            }
+
+        }
+
+        
+
+        (word.to_string(),Gender::Masculine)
+
+
+
+    }
+
+    pub fn complex_noun(
+        &self,
+        complex_nomen: &ComplexNoun,
+        case: &Case,
+        number: &Number,
+    ) -> String {
+        let noun = self.noun(&complex_nomen.head_noun, case, number);
+
+        let mut response = noun.0;
+
+        for adpos in &complex_nomen.adposition_noun {
+            let adposik = self.noun(adpos, case, number);
+            if adposik.0 != "" {
+                response = format!("{} {}", response, adposik.0);
+            }
+        }
+
+        for adj in &complex_nomen.adjective {
+            let adjik = self.adjective(adj, case, number, &noun.1);
+            if adjik != "" {
+                response = format!("{} {}", response, adjik);
+            }
+        }
+
+        response
+    }
+
+    pub fn noun(&self, word: &str, case: &Case, number: &Number) -> Noun {
+        let defik = NounRecord::default();
+
+        let record = self.noun_map.get(word).unwrap_or(&defik);
+
+        let mut response = match number {
+            Number::Singular => match case {
+                Case::Nom => (record.nom_sg.clone(), record.gender.clone()),
+                Case::Gen => (record.gen_sg.clone(), record.gender.clone()),
+                Case::Dat => (record.dat_sg.clone(), record.gender.clone()),
+                Case::Acc => (record.acc_sg.clone(), record.gender.clone()),
+                Case::Abl => (record.abl_sg.clone(), record.gender.clone()),
+                Case::Voc => (record.voc_sg.clone(), record.gender.clone()),
+                Case::Loc => (record.loc_sg.clone(), record.gender.clone()),
+            },
+            Number::Plural => match case {
+                Case::Nom => (record.nom_pl.clone(), record.gender.clone()),
+                Case::Gen => (record.gen_pl.clone(), record.gender.clone()),
+                Case::Dat => (record.dat_pl.clone(), record.gender.clone()),
+                Case::Acc => (record.acc_pl.clone(), record.gender.clone()),
+                Case::Abl => (record.abl_pl.clone(), record.gender.clone()),
+                Case::Voc => (record.voc_pl.clone(), record.gender.clone()),
+                Case::Loc => (record.loc_pl.clone(), record.gender.clone()),
+            },
+        };
+
+        if case == &Case::Loc && (response.0 == "" || response.0 == "-") {
+            response.0 = format!("in {}", record.abl_sg.clone());
+        }
+
+        if (response.0 == "" || response.0 == "-") {
+            response.0 = "".into();
+        }
+
+        response
+    }
+
     pub fn new(noun_path: String, adjective_path: String, verb_path: String) -> Self {
         Latin {
             noun_map: Latin::load_nouns_from_csv(noun_path),
@@ -274,87 +849,6 @@ impl Latin {
             //println!("{:?}", record);
         }
         verbmap
-    }
-
-    pub fn complex_noun(
-        &self,
-        complex_nomen: &ComplexNoun,
-        case: &Case,
-        number: &Number,
-    ) -> String {
-        let noun = self.noun(&complex_nomen.head_noun, case, number);
-
-        let mut response = noun.0;
-
-
-        for adpos in &complex_nomen.adposition_noun {
-
-            let adposik = self.noun(adpos, case, number);
-            if adposik.0 != "" {
-                response = format!("{} {}", response, adposik.0);
-            }
-
-
-        }
-      
-        for adj in &complex_nomen.adjective {
-
-
-
-            let adjik = self.adjective(adj, case, number, &noun.1);
-            if adjik != "" {
-                response = format!("{} {}", response, adjik);
-            }
-
-        }
-
-
-
-        
-
-       
-
-      
-       
-
-        response
-    }
-
-    pub fn noun(&self, word: &str, case: &Case, number: &Number) -> Noun {
-        let defik = NounRecord::default();
-
-        let record = self.noun_map.get(word).unwrap_or(&defik);
-
-        let mut response = match number {
-            Number::Singular => match case {
-                Case::Nom => (record.nom_sg.clone(), record.gender.clone()),
-                Case::Gen => (record.gen_sg.clone(), record.gender.clone()),
-                Case::Dat => (record.dat_sg.clone(), record.gender.clone()),
-                Case::Acc => (record.acc_sg.clone(), record.gender.clone()),
-                Case::Abl => (record.abl_sg.clone(), record.gender.clone()),
-                Case::Voc => (record.voc_sg.clone(), record.gender.clone()),
-                Case::Loc => (record.loc_sg.clone(), record.gender.clone()),
-            },
-            Number::Plural => match case {
-                Case::Nom => (record.nom_pl.clone(), record.gender.clone()),
-                Case::Gen => (record.gen_pl.clone(), record.gender.clone()),
-                Case::Dat => (record.dat_pl.clone(), record.gender.clone()),
-                Case::Acc => (record.acc_pl.clone(), record.gender.clone()),
-                Case::Abl => (record.abl_pl.clone(), record.gender.clone()),
-                Case::Voc => (record.voc_pl.clone(), record.gender.clone()),
-                Case::Loc => (record.loc_pl.clone(), record.gender.clone()),
-            },
-        };
-
-        if case == &Case::Loc && (response.0 == "" || response.0 == "-") {
-            response.0 = format!("in {}", record.abl_sg.clone());
-        }
-
-        if (response.0 == "" || response.0 == "-") {
-            response.0 = "".into();
-        }
-
-        response
     }
 
     pub fn adjective(
