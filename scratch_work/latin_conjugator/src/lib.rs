@@ -222,7 +222,6 @@ pub struct CaseEndings {
     pub gen_pl: &'static str,
     pub dat_pl: &'static str,
     pub abl_pl: &'static str,
-  
 }
 
 impl CaseEndings {
@@ -250,9 +249,37 @@ impl CaseEndings {
     }
 }
 
-pub const ONE_LETTER_ENDINGS: [CaseEndings; 4] = [A_DECLENSION_ENDINGS,E_DECLENSION_ENDINGS,O_DECLENSION_ENDINGS,U_DECLENSION_ENDINGS];
-pub const TWO_LETTER_ENDINGS: [CaseEndings; 23] = [AL_DECLENSION_ENDINGS,AR_DECLENSION_ENDINGS,AR_DECLENSION_ENDINGS,AS_DECLENSION_ENDINGS,AX_DECLENSION_ENDINGS,EN_DECLENSION_ENDINGS,ER_DECLENSION_ENDINGS,ES_DECLENSION_ENDINGS,EX_DECLENSION_ENDINGS,ON_DECLENSION_ENDINGS,OR_DECLENSION_ENDINGS,OS_DECLENSION_ENDINGS,UM_DECLENSION_ENDINGS,US_DECLENSION_ENDINGS,UT_DECLENSION_ENDINGS,UX_DECLENSION_ENDINGS,MA_DECLENSION_ENDINGS,YX_DECLENSION_ENDINGS,YS_DECLENSION_ENDINGS,NX_DECLENSION_ENDINGS,MA_DECLENSION_ENDINGS,IS_DECLENSION_ENDINGS,IX_DECLENSION_ENDINGS];
-
+pub const ONE_LETTER_ENDINGS: [CaseEndings; 4] = [
+    A_DECLENSION_ENDINGS,
+    E_DECLENSION_ENDINGS,
+    O_DECLENSION_ENDINGS,
+    U_DECLENSION_ENDINGS,
+];
+pub const TWO_LETTER_ENDINGS: [CaseEndings; 23] = [
+    AL_DECLENSION_ENDINGS,
+    AR_DECLENSION_ENDINGS,
+    AR_DECLENSION_ENDINGS,
+    AS_DECLENSION_ENDINGS,
+    AX_DECLENSION_ENDINGS,
+    EN_DECLENSION_ENDINGS,
+    ER_DECLENSION_ENDINGS,
+    ES_DECLENSION_ENDINGS,
+    EX_DECLENSION_ENDINGS,
+    ON_DECLENSION_ENDINGS,
+    OR_DECLENSION_ENDINGS,
+    OS_DECLENSION_ENDINGS,
+    UM_DECLENSION_ENDINGS,
+    US_DECLENSION_ENDINGS,
+    UT_DECLENSION_ENDINGS,
+    UX_DECLENSION_ENDINGS,
+    MA_DECLENSION_ENDINGS,
+    YX_DECLENSION_ENDINGS,
+    YS_DECLENSION_ENDINGS,
+    NX_DECLENSION_ENDINGS,
+    MA_DECLENSION_ENDINGS,
+    IS_DECLENSION_ENDINGS,
+    IX_DECLENSION_ENDINGS,
+];
 
 pub const TEST_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Neuter,
@@ -267,7 +294,6 @@ pub const TEST_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "gen_pl",
     dat_pl: "dat_pl",
     abl_pl: "abl_pl",
-
 };
 
 pub const A_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -283,8 +309,23 @@ pub const A_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "arum",
     dat_pl: "is",
     abl_pl: "is",
-
 };
+
+/*pub const RA_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "ra",
+    acc_sg: "ram",
+    gen_sg: "rae",
+    dat_sg: "rae",
+    abl_sg: "ra",
+
+    nom_pl: "rae",
+    acc_pl: "ras",
+    gen_pl: "rarum",
+    dat_pl: "ris",
+    abl_pl: "ris",
+};
+ */
 pub const US_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Masculine,
     nom_sg: "us",
@@ -298,7 +339,6 @@ pub const US_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "orum",
     dat_pl: "is",
     abl_pl: "is",
-
 };
 
 pub const O_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -314,7 +354,6 @@ pub const O_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "onum",
     dat_pl: "onibus",
     abl_pl: "onibus",
-
 };
 
 pub const ON_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -330,7 +369,6 @@ pub const ON_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "ontum",
     dat_pl: "ontibus",
     abl_pl: "ontibus",
-
 };
 
 pub const UT_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -346,7 +384,6 @@ pub const UT_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "itum",
     dat_pl: "itibus",
     abl_pl: "itibus",
-
 };
 
 pub const OR_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -362,7 +399,21 @@ pub const OR_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "orum",
     dat_pl: "oribus",
     abl_pl: "oribus",
+};
 
+pub const OR_ADJ_NEUTER_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "or",
+    acc_sg: "or",
+    gen_sg: "oris",
+    dat_sg: "ori",
+    abl_sg: "ori",
+
+    nom_pl: "oria",
+    acc_pl: "oria",
+    gen_pl: "orium",
+    dat_pl: "oribus",
+    abl_pl: "oribus",
 };
 
 pub const OS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -378,7 +429,6 @@ pub const OS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "orum",
     dat_pl: "oribus",
     abl_pl: "oribus",
-
 };
 pub const S_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Masculine,
@@ -393,7 +443,21 @@ pub const S_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "tium",
     dat_pl: "tibus",
     abl_pl: "tibus",
+};
 
+pub const S_ADJ_NEUTER_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "s",
+    acc_sg: "s",
+    gen_sg: "tis",
+    dat_sg: "ti",
+    abl_sg: "te",
+
+    nom_pl: "tia",
+    acc_pl: "tia",
+    gen_pl: "tium",
+    dat_pl: "tibus",
+    abl_pl: "tibus",
 };
 
 pub const UM_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -409,9 +473,22 @@ pub const UM_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "orum",
     dat_pl: "is",
     abl_pl: "is",
-
 };
 
+/*pub const RUM_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Neuter,
+    nom_sg: "rum",
+    acc_sg: "rum",
+    gen_sg: "ri",
+    dat_sg: "ro",
+    abl_sg: "ro",
+
+    nom_pl: "ra",
+    acc_pl: "ra",
+    gen_pl: "rorum",
+    dat_pl: "ris",
+    abl_pl: "ris",
+}; */
 
 pub const U_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Neuter,
@@ -426,23 +503,36 @@ pub const U_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "uum",
     dat_pl: "uibus",
     abl_pl: "uibus",
-
 };
 
 pub const ER_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Masculine,
     nom_sg: "er",
-    acc_sg: "rum",
-    gen_sg: "ri",
-    dat_sg: "ro",
-    abl_sg: "ro",
+    acc_sg: "er",
+    gen_sg: "eris",
+    dat_sg: "eri",
+    abl_sg: "ere",
 
-    nom_pl: "ri",
-    acc_pl: "ros",
-    gen_pl: "rorum",
-    dat_pl: "ris",
-    abl_pl: "ris",
+    nom_pl: "era",
+    acc_pl: "era",
+    gen_pl: "erum",
+    dat_pl: "eribus",
+    abl_pl: "eribus",
+};
 
+pub const ER_ADJECTIVE_MASC_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "",
+    acc_sg: "um",
+    gen_sg: "i",
+    dat_sg: "o",
+    abl_sg: "o",
+
+    nom_pl: "i",
+    acc_pl: "os",
+    gen_pl: "orum",
+    dat_pl: "is",
+    abl_pl: "is",
 };
 
 pub const AL_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -458,7 +548,6 @@ pub const AL_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "alium",
     dat_pl: "alibus",
     abl_pl: "alibus",
-
 };
 
 pub const AR_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -474,9 +563,7 @@ pub const AR_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "arium",
     dat_pl: "aribus",
     abl_pl: "aribus",
-
 };
-
 
 pub const AS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Feminine,
@@ -491,7 +578,6 @@ pub const AS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "atum",
     dat_pl: "atibus",
     abl_pl: "atibus",
-
 };
 
 pub const AX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -507,7 +593,6 @@ pub const AX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "acum",
     dat_pl: "acibus",
     abl_pl: "acibus",
-
 };
 
 pub const IX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -523,7 +608,6 @@ pub const IX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "icum",
     dat_pl: "icibus",
     abl_pl: "icibus",
-
 };
 pub const YX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Feminine,
@@ -538,7 +622,6 @@ pub const YX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "ycum",
     dat_pl: "ycibus",
     abl_pl: "ycibus",
-
 };
 
 pub const YS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -554,7 +637,6 @@ pub const YS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "ydum",
     dat_pl: "ydibus",
     abl_pl: "ydibus",
-
 };
 
 pub const UX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -570,7 +652,6 @@ pub const UX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "ucum",
     dat_pl: "ucibus",
     abl_pl: "ucibus",
-
 };
 
 pub const NX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -586,7 +667,6 @@ pub const NX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "ngium",
     dat_pl: "ngibus",
     abl_pl: "ngibus",
-
 };
 
 pub const IS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -602,7 +682,21 @@ pub const IS_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "ium",
     dat_pl: "ibus",
     abl_pl: "ibus",
+};
 
+pub const IS_ADJECTIVE_MASC_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "is",
+    acc_sg: "em",
+    gen_sg: "is",
+    dat_sg: "i",
+    abl_sg: "i",
+
+    nom_pl: "es",
+    acc_pl: "es",
+    gen_pl: "ium",
+    dat_pl: "ibus",
+    abl_pl: "ibus",
 };
 
 pub const EX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
@@ -618,9 +712,37 @@ pub const EX_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "icum",
     dat_pl: "icibus",
     abl_pl: "icibus",
-
 };
 
+pub const EX_ADJECTIVE_MASC_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "ex",
+    acc_sg: "icem",
+    gen_sg: "icis",
+    dat_sg: "ici",
+    abl_sg: "ici",
+
+    nom_pl: "ices",
+    acc_pl: "ices",
+    gen_pl: "icium",
+    dat_pl: "icibus",
+    abl_pl: "icibus",
+};
+
+pub const EX_ADJECTIVE_NEUT_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Masculine,
+    nom_sg: "ex",
+    acc_sg: "ex",
+    gen_sg: "icis",
+    dat_sg: "ici",
+    abl_sg: "ici",
+
+    nom_pl: "icia",
+    acc_pl: "icia",
+    gen_pl: "icium",
+    dat_pl: "icibus",
+    abl_pl: "icibus",
+};
 
 pub const E_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Neuter,
@@ -635,7 +757,6 @@ pub const E_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "ium",
     dat_pl: "ibus",
     abl_pl: "ibus",
-
 };
 pub const EN_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Neuter,
@@ -650,7 +771,6 @@ pub const EN_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "inum",
     dat_pl: "inibus",
     abl_pl: "inibus",
-
 };
 pub const ES_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Feminine,
@@ -665,8 +785,38 @@ pub const ES_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "erum",
     dat_pl: "ebus",
     abl_pl: "ebus",
-
 };
+
+pub const ES_ADJ_MASC_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "es",
+    acc_sg: "em",
+    gen_sg: "is",
+    dat_sg: "i",
+    abl_sg: "e",
+
+    nom_pl: "es",
+    acc_pl: "es",
+    gen_pl: "um",
+    dat_pl: "ibus",
+    abl_pl: "ibus",
+};
+pub const ES_ADJ_NEUT_ENDINGS: CaseEndings = CaseEndings {
+    gender: Gender::Feminine,
+    nom_sg: "es",
+    acc_sg: "em",
+    gen_sg: "is",
+    dat_sg: "i",
+    abl_sg: "e",
+
+    nom_pl: "es",
+    acc_pl: "es",
+    gen_pl: "um",
+    dat_pl: "ibus",
+    abl_pl: "ibus",
+};
+
+
 
 pub const MA_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gender: Gender::Neuter,
@@ -681,7 +831,6 @@ pub const MA_DECLENSION_ENDINGS: CaseEndings = CaseEndings {
     gen_pl: "matum",
     dat_pl: "matibus",
     abl_pl: "matibus",
-
 };
 
 // have a possesive func, but reflexive person?
@@ -702,41 +851,119 @@ pub enum Person {
 }
 
 impl Latin {
-    pub fn guess_noun(&self, word: &str, case: &Case, number: &Number) -> Noun{
-
+    pub fn guess_noun( word: &str, case: &Case, number: &Number) -> Noun {
         let mut appended = Vec::from(TWO_LETTER_ENDINGS);
         appended.append(&mut Vec::from(ONE_LETTER_ENDINGS));
 
         for ce in &appended {
-
             let nom_end = ce.nom_sg;
 
             if word.ends_with(nom_end) {
-
                 let word_gender = &ce.gender;
 
                 let n = nom_end.len();
 
-                let mut word_stem =  word.to_string();
+                let mut word_stem = word.to_string();
 
                 if n <= word.len() {
-                 
-                   word_stem.truncate(word.len() - n);
-                   let ending = ce.ending(case, number);
-                   let merged = format!("{}{}",word_stem,ending);
-                   return (merged,word_gender.clone());
+                    word_stem.truncate(word.len() - n);
+                    let ending = ce.ending(case, number);
+                    let merged = format!("{}{}", word_stem, ending);
+                    return (merged, word_gender.clone());
                 }
-
-
-
             }
-
         }
 
-        
+        (word.to_string(), Gender::Masculine)
+    }
 
-        (word.to_string(),Gender::Masculine)
+    pub fn guess_adjective(word: &str, case: &Case, number: &Number, gender: &Gender) -> Adjective {
 
+        let mut word_stem = word.to_string();
+        word_stem.truncate(word_stem.len() - 2);
+
+        let mut masc_ends = &US_DECLENSION_ENDINGS; 
+        let mut fem_ends = &A_DECLENSION_ENDINGS;
+        let mut neut_ends = &UM_DECLENSION_ENDINGS;
+    
+
+   if word.ends_with("us") {
+
+    word_stem = word.to_string();
+    word_stem.truncate(word.len() - 2);
+
+  masc_ends = &US_DECLENSION_ENDINGS; 
+    fem_ends = &A_DECLENSION_ENDINGS;
+    neut_ends = &UM_DECLENSION_ENDINGS;
+
+   }
+  
+
+    else if word.ends_with("er") {
+        word_stem = word.to_string();
+       
+        masc_ends = &ER_ADJECTIVE_MASC_ENDINGS;
+
+    }
+   else  if word.ends_with("is") {
+         word_stem = word.to_string();
+         word_stem.truncate(word.len() - 2);
+       
+        masc_ends = &IS_ADJECTIVE_MASC_ENDINGS;
+        fem_ends = &IS_ADJECTIVE_MASC_ENDINGS;
+       neut_ends = &E_DECLENSION_ENDINGS;
+
+    }
+
+    else if word.ends_with("ex") {
+        word_stem = word.to_string();
+        word_stem.truncate(word.len() - 2);
+      
+       masc_ends = &EX_ADJECTIVE_MASC_ENDINGS;
+       fem_ends = &EX_ADJECTIVE_MASC_ENDINGS;
+      neut_ends = &EX_ADJECTIVE_NEUT_ENDINGS;
+
+   }
+
+  else  if word.ends_with("or") {
+    word_stem = word.to_string();
+    word_stem.truncate(word.len() - 2);
+  
+   masc_ends = &OR_DECLENSION_ENDINGS;
+   fem_ends = &OR_DECLENSION_ENDINGS;
+  neut_ends = &OR_ADJ_NEUTER_ENDINGS;
+
+}
+
+
+else if word.ends_with("des") {
+    word_stem = word.to_string();
+    word_stem.truncate(word.len() - 2);
+  
+   masc_ends = &ES_ADJ_MASC_ENDINGS;
+   fem_ends = &ES_ADJ_MASC_ENDINGS;
+  neut_ends = &ES_ADJ_NEUT_ENDINGS;
+
+}
+else if word.ends_with("s") {
+    word_stem = word.to_string();
+    word_stem.truncate(word.len() - 1);
+  
+   masc_ends = &S_DECLENSION_ENDINGS;
+   fem_ends = &S_DECLENSION_ENDINGS;
+  neut_ends = &S_ADJ_NEUTER_ENDINGS;
+
+}
+
+
+
+let ending = match gender {
+    Gender::Feminine => fem_ends.ending(case, number),
+    Gender::Masculine => masc_ends.ending(case, number),
+    Gender::Neuter => neut_ends.ending(case, number)
+};
+
+format!("{word_stem}{ending}")
 
 
     }
@@ -771,38 +998,43 @@ impl Latin {
     pub fn noun(&self, word: &str, case: &Case, number: &Number) -> Noun {
         let defik = NounRecord::default();
 
-        let record = self.noun_map.get(word).unwrap_or(&defik);
+        let recordik = self.noun_map.get(word);
 
-        let mut response = match number {
-            Number::Singular => match case {
-                Case::Nom => (record.nom_sg.clone(), record.gender.clone()),
-                Case::Gen => (record.gen_sg.clone(), record.gender.clone()),
-                Case::Dat => (record.dat_sg.clone(), record.gender.clone()),
-                Case::Acc => (record.acc_sg.clone(), record.gender.clone()),
-                Case::Abl => (record.abl_sg.clone(), record.gender.clone()),
-                Case::Voc => (record.voc_sg.clone(), record.gender.clone()),
-                Case::Loc => (record.loc_sg.clone(), record.gender.clone()),
-            },
-            Number::Plural => match case {
-                Case::Nom => (record.nom_pl.clone(), record.gender.clone()),
-                Case::Gen => (record.gen_pl.clone(), record.gender.clone()),
-                Case::Dat => (record.dat_pl.clone(), record.gender.clone()),
-                Case::Acc => (record.acc_pl.clone(), record.gender.clone()),
-                Case::Abl => (record.abl_pl.clone(), record.gender.clone()),
-                Case::Voc => (record.voc_pl.clone(), record.gender.clone()),
-                Case::Loc => (record.loc_pl.clone(), record.gender.clone()),
-            },
-        };
-
-        if case == &Case::Loc && (response.0 == "" || response.0 == "-") {
-            response.0 = format!("in {}", record.abl_sg.clone());
+        match recordik {
+            Some(record) => { let mut response = match number {
+                Number::Singular => match case {
+                    Case::Nom => (record.nom_sg.clone(), record.gender.clone()),
+                    Case::Gen => (record.gen_sg.clone(), record.gender.clone()),
+                    Case::Dat => (record.dat_sg.clone(), record.gender.clone()),
+                    Case::Acc => (record.acc_sg.clone(), record.gender.clone()),
+                    Case::Abl => (record.abl_sg.clone(), record.gender.clone()),
+                    Case::Voc => (record.voc_sg.clone(), record.gender.clone()),
+                    Case::Loc => (record.loc_sg.clone(), record.gender.clone()),
+                },
+                Number::Plural => match case {
+                    Case::Nom => (record.nom_pl.clone(), record.gender.clone()),
+                    Case::Gen => (record.gen_pl.clone(), record.gender.clone()),
+                    Case::Dat => (record.dat_pl.clone(), record.gender.clone()),
+                    Case::Acc => (record.acc_pl.clone(), record.gender.clone()),
+                    Case::Abl => (record.abl_pl.clone(), record.gender.clone()),
+                    Case::Voc => (record.voc_pl.clone(), record.gender.clone()),
+                    Case::Loc => (record.loc_pl.clone(), record.gender.clone()),
+                },
+            };
+    
+            if case == &Case::Loc && (response.0 == "" || response.0 == "-") {
+                response.0 = format!("{}", record.abl_sg.clone());
+            }
+    
+            if (response.0 == "" || response.0 == "-") {
+                response = Latin::guess_noun(word, case, number);
+            }
+    
+            response},
+            None => Latin::guess_noun(word, case, number)
         }
 
-        if (response.0 == "" || response.0 == "-") {
-            response.0 = "".into();
-        }
-
-        response
+       
     }
 
     pub fn new(noun_path: String, adjective_path: String, verb_path: String) -> Self {
@@ -863,64 +1095,73 @@ impl Latin {
     ) -> Adjective {
         let defik = AdjectiveRecord::default();
 
-        let record = self.adj_map.get(word).unwrap_or(&defik);
+        let recordik = self.adj_map.get(word);
 
-        match gender {
-            Gender::Masculine => match number {
-                Number::Singular => match case {
-                    Case::Nom => record.nom_sg_masc.clone(),
-                    Case::Gen => record.gen_sg_masc.clone(),
-                    Case::Dat => record.dat_sg_masc.clone(),
-                    Case::Acc => record.acc_sg_masc.clone(),
-                    Case::Abl => record.abl_sg_masc.clone(),
-                    _ => record.abl_sg_masc.clone(),
+        match recordik {
+            Some(record) => {    match gender {
+                Gender::Masculine => match number {
+                    Number::Singular => match case {
+                        Case::Nom => record.nom_sg_masc.clone(),
+                        Case::Gen => record.gen_sg_masc.clone(),
+                        Case::Dat => record.dat_sg_masc.clone(),
+                        Case::Acc => record.acc_sg_masc.clone(),
+                        Case::Abl => record.abl_sg_masc.clone(),
+                        _ => record.abl_sg_masc.clone(),
+                    },
+                    Number::Plural => match case {
+                        Case::Nom => record.nom_pl_masc.clone(),
+                        Case::Gen => record.gen_pl_masc.clone(),
+                        Case::Dat => record.dat_pl_masc.clone(),
+                        Case::Acc => record.acc_pl_masc.clone(),
+                        Case::Abl => record.abl_pl_masc.clone(),
+                        _ => record.abl_pl_masc.clone(),
+                    },
                 },
-                Number::Plural => match case {
-                    Case::Nom => record.nom_pl_masc.clone(),
-                    Case::Gen => record.gen_pl_masc.clone(),
-                    Case::Dat => record.dat_pl_masc.clone(),
-                    Case::Acc => record.acc_pl_masc.clone(),
-                    Case::Abl => record.abl_pl_masc.clone(),
-                    _ => record.abl_pl_masc.clone(),
+                Gender::Feminine => match number {
+                    Number::Singular => match case {
+                        Case::Nom => record.nom_sg_fem.clone(),
+                        Case::Gen => record.gen_sg_fem.clone(),
+                        Case::Dat => record.dat_sg_fem.clone(),
+                        Case::Acc => record.acc_sg_fem.clone(),
+                        Case::Abl => record.abl_sg_fem.clone(),
+                        _ => record.abl_sg_fem.clone(),
+                    },
+                    Number::Plural => match case {
+                        Case::Nom => record.nom_pl_fem.clone(),
+                        Case::Gen => record.gen_pl_fem.clone(),
+                        Case::Dat => record.dat_pl_fem.clone(),
+                        Case::Acc => record.acc_pl_fem.clone(),
+                        Case::Abl => record.abl_pl_fem.clone(),
+                        _ => record.abl_pl_fem.clone(),
+                    },
                 },
-            },
-            Gender::Feminine => match number {
-                Number::Singular => match case {
-                    Case::Nom => record.nom_sg_fem.clone(),
-                    Case::Gen => record.gen_sg_fem.clone(),
-                    Case::Dat => record.dat_sg_fem.clone(),
-                    Case::Acc => record.acc_sg_fem.clone(),
-                    Case::Abl => record.abl_sg_fem.clone(),
-                    _ => record.abl_sg_fem.clone(),
+                Gender::Neuter => match number {
+                    Number::Singular => match case {
+                        Case::Nom => record.nom_sg_neut.clone(),
+                        Case::Gen => record.gen_sg_neut.clone(),
+                        Case::Dat => record.dat_sg_neut.clone(),
+                        Case::Acc => record.acc_sg_neut.clone(),
+                        Case::Abl => record.abl_sg_neut.clone(),
+                        _ => record.abl_sg_neut.clone(),
+                    },
+                    Number::Plural => match case {
+                        Case::Nom => record.nom_pl_neut.clone(),
+                        Case::Gen => record.gen_pl_neut.clone(),
+                        Case::Dat => record.dat_pl_neut.clone(),
+                        Case::Acc => record.acc_pl_neut.clone(),
+                        Case::Abl => record.abl_pl_neut.clone(),
+                        _ => record.abl_pl_neut.clone(),
+                    },
                 },
-                Number::Plural => match case {
-                    Case::Nom => record.nom_pl_fem.clone(),
-                    Case::Gen => record.gen_pl_fem.clone(),
-                    Case::Dat => record.dat_pl_fem.clone(),
-                    Case::Acc => record.acc_pl_fem.clone(),
-                    Case::Abl => record.abl_pl_fem.clone(),
-                    _ => record.abl_pl_fem.clone(),
-                },
-            },
-            Gender::Neuter => match number {
-                Number::Singular => match case {
-                    Case::Nom => record.nom_sg_neut.clone(),
-                    Case::Gen => record.gen_sg_neut.clone(),
-                    Case::Dat => record.dat_sg_neut.clone(),
-                    Case::Acc => record.acc_sg_neut.clone(),
-                    Case::Abl => record.abl_sg_neut.clone(),
-                    _ => record.abl_sg_neut.clone(),
-                },
-                Number::Plural => match case {
-                    Case::Nom => record.nom_pl_neut.clone(),
-                    Case::Gen => record.gen_pl_neut.clone(),
-                    Case::Dat => record.dat_pl_neut.clone(),
-                    Case::Acc => record.acc_pl_neut.clone(),
-                    Case::Abl => record.abl_pl_neut.clone(),
-                    _ => record.abl_pl_neut.clone(),
-                },
-            },
+            }
+        
+        
+        },
+        None => Latin::guess_adjective(word, case, number, gender)
+
         }
+
+    
     }
 
     pub fn verb(
