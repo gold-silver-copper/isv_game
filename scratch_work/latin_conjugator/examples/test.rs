@@ -19,7 +19,10 @@ fn main() {
     println!("{:#?}", comp2);
 
 
-    let comp2 = conji.guess_noun("smilax", &Case::Acc, &Number::Plural);
+    let comp2 = conji.guess_noun("agricola", &Case::Acc, &Number::Plural);
+    println!("{:#?}", comp2.0);
+
+    let comp2 = conji.guess_noun("trichoma", &Case::Acc, &Number::Plural);
     println!("{:#?}", comp2.0);
 
     let testik = conji.noun_map.clone();

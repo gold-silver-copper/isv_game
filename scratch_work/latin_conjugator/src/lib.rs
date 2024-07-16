@@ -704,7 +704,10 @@ pub enum Person {
 impl Latin {
     pub fn guess_noun(&self, word: &str, case: &Case, number: &Number) -> Noun{
 
-        for ce in &TWO_LETTER_ENDINGS {
+        let mut appended = Vec::from(TWO_LETTER_ENDINGS);
+        appended.append(&mut Vec::from(ONE_LETTER_ENDINGS));
+
+        for ce in &appended {
 
             let nom_end = ce.nom_sg;
 
