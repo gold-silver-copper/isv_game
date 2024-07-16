@@ -1,4 +1,4 @@
-# egui_ratatui : egui widget + ratatui backend (WASM) 
+# botanical-latin "Decliner / conjugator / inflector for classical / botanical Latin."
 
 [![Crates.io](https://img.shields.io/crates/v/botanical-latin.svg)](https://crates.io/crates/botanical-latin)
 [![Documentation](https://docs.rs/botanical-latin/badge.svg)](https://docs.rs/botanical-latin/latest/botanical-latin/)
