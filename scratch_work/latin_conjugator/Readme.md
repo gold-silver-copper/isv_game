@@ -6,7 +6,7 @@
 [![Downloads](https://img.shields.io/crates/d/botanical-latin.svg)](https://crates.io/crates/botanical-latin) 
 
 
-This crate provides a decliner/conjugator for classical / botanical Latin.
+This crate provides a decliner/conjugator/inflector for classical / botanical Latin.
 
 It uses data extracted from Wiktionary to create dictionaries from which it pulls words, if a word is not found in the dictionary it makes an educated guess as to the stem of the word (and gender for nouns), and declines accordingly. 
 Right now Nouns and Adjectives are almost completely finished in their implementation, whereas Verbs only support the present tense and need a good bit more work, but it should be already useful for many tasks.

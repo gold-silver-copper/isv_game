@@ -1,10 +1,10 @@
 [package]
 name = "botanical-latin"
-version = "0.0.5"
+version = "0.0.6"
 edition = "2021"
-description = "Conugator and Decliner for ancient and botanical Latin"
+description = "Decliner / conjugator / inflector for classical / botanical Latin."
 license = "MIT OR Apache-2.0"
-#repository = "https://github.com/gold-silver-copper/interslavic-rs"
+repository = "https://github.com/gold-silver-copper/botanical-latin"
 
 [dependencies]
 
