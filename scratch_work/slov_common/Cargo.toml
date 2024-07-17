@@ -22,7 +22,7 @@ bevy = "0.14"
 bevy_egui = "0.28.0"
 egui_ratatui = {version = "0.0.10"}
 bracket-pathfinding = "0.8.7"
-botanical-latin = "0.0.4"
+botanical-latin = "0.0.7"
 
 
 
