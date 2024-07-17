@@ -51,22 +51,19 @@ impl Default for Masterok {
 
 #[derive(Clone, Debug, Resource)]
 pub struct UIResources {
-    pub visible_ents: Vec<(Entity,EntityType)>,
+    pub visible_ents: Vec<(Entity, EntityType)>,
     pub latin_conjugator: Latin,
-
 }
 
 impl Default for UIResources {
     fn default() -> Self {
-       
-
         Self {
             visible_ents: Vec::new(),
             latin_conjugator: Latin::new(
                 "nouns.csv".into(),
                 "adjectives.csv".into(),
                 "verbs.csv".into(),
-            )
+            ),
         }
     }
 }
@@ -113,12 +110,12 @@ pub fn setup(mut commands: Commands, mut masterok: ResMut<Masterok>) {
     for boop in 1..20 {
         spawn_with_point_and_type(
             &mut commands,
-            (boop*2, boop*3),
+            (boop * 2, boop * 3),
             EntityType::Humanus,
             (),
             &mut masterok.game_map,
         );
-    } 
+    }
 }
 
 pub fn set_custom_font(mut contexts: EguiContexts) {

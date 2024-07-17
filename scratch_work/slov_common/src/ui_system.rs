@@ -47,7 +47,10 @@ pub fn draw_ascii_game(
         .expect("epic fail");
 }
 
-pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>,   ui_resources: Res<UIResources>,) {
+pub fn draw_ascii_info(
+    mut termres: ResMut<BevyTerminal<RataguiBackend>>,
+    ui_resources: Res<UIResources>,
+) {
     let name_string = format! {"{}","Salve!"};
 
     let mut messages_to_show = Vec::new();
@@ -55,19 +58,12 @@ pub fn draw_ascii_info(mut termres: ResMut<BevyTerminal<RataguiBackend>>,   ui_r
 
     messages_to_show.push(Line::from("Vides...."));
 
-
-    for (ent,typ) in &ui_resources.visible_ents {
-
+    for (ent, typ) in &ui_resources.visible_ents {
         let cn = typ.to_complex_noun();
-        let boop = conji.complex_noun(&cn,&Case::Gen, &Number::Singular);
-       // println!("{}",boop);
+        let boop = conji.complex_noun(&cn, &Case::Gen, &Number::Singular);
+        // println!("{}",boop);
         messages_to_show.push(Line::from(boop));
-
-
-
     }
-
-   
 
     termres
         .terminal_info

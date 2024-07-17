@@ -1,7 +1,5 @@
 use crate::*;
 
-
-
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum EarthType {
     Dirt,
@@ -11,8 +9,7 @@ pub enum EarthType {
 
 #[derive(Clone, Debug, Display, PartialEq, Component)]
 pub enum EntityType {
-    Creatura(CreatureType),
-   //Item(ItemType),
+    Humanus, //Item(ItemType),
 }
 
 // fishes, amphibians, reptiles, birds, and mammals.
@@ -21,52 +18,44 @@ pub enum CreatureType {
     Human,
     Mammal(MammalType),
     Reptile,
-    Bird, 
+    Bird,
     Fish,
     Amphibian,
-
-
-
-
-
-
-
 }
-
 
 #[derive(Clone, Debug, Display, PartialEq, Component)]
 pub enum MammalType {
-    Camelus,//camel
-    Er,//hedgehog
-    Mus, //Mouse
-    Ursus, //Bear
-    Zibethus, //Civet
-    Elephantus, //Elephant
-    Cuniculus, //A type of rabbit
-    Dasypus, //Rabbit
-    Lepus, // Hare
+    Camelus,        //camel
+    Er,             //hedgehog
+    Mus,            //Mouse
+    Ursus,          //Bear
+    Zibethus,       //Civet
+    Elephantus,     //Elephant
+    Cuniculus,      //A type of rabbit
+    Dasypus,        //Rabbit
+    Lepus,          // Hare
     Camelopardalis, // Giraffe
-    Dorcas, //Gazelle
-    Hippopotamus, // hippo
-    Musimo, //Wild sheep in sardinia
-    Addax, //addax type of antelope
-    Gazella, //Gazelle
-    Oryx, //oryx
+    Dorcas,         //Gazelle
+    Hippopotamus,   // hippo
+    Musimo,         //Wild sheep in sardinia
+    Addax,          //addax type of antelope
+    Gazella,        //Gazelle
+    Oryx,           //oryx
     Pygargus,
     Tragelaphus, //Type of goat
     Bison,
     Bonasus, //European bison
     Bubalus, // buffalo
-    Ceva, //Cow
-    Bos, //Cow
+    Ceva,    //Cow
+    Bos,     //Cow
     Taurus,
     Buccus, //bull
     Haedus,
-    Caper, //goat
+    Caper,  //goat
     Caprea, //goat
 
     Hircus, //goat
-    Ibex, // goat
+    Ibex,   // goat
     Camox,
     Umber,
     Agna,
@@ -74,38 +63,25 @@ pub enum MammalType {
     Apica,
     Aries,
     Ovis,
-Alces, // Elk
-Cervus, //Stag deer
-Damma, //Fallow deer
-Gammus, //Kind of Deer
-Hinnuleus, //Young mule
-Rangifer, //reindeer
-Tarandus, //reindeer
-Aper, //wild boar
-Porcus,
-Porca,
-Sus,
-Hyaena,
-Belbus,
-
-
-
-
-
-
-
+    Alces,     // Elk
+    Cervus,    //Stag deer
+    Damma,     //Fallow deer
+    Gammus,    //Kind of Deer
+    Hinnuleus, //Young mule
+    Rangifer,  //reindeer
+    Tarandus,  //reindeer
+    Aper,      //wild boar
+    Porcus,
+    Porca,
+    Sus,
+    Hyaena,
+    Belbus,
 }
 
 #[derive(Clone, Debug, Display, PartialEq, Component)]
 pub enum BirdType {
     Vespertilio, //flying bat
-
-
-
-
-
 }
-
 
 #[derive(Clone, Debug, Display, PartialEq, Component)]
 pub enum FishType {
@@ -115,45 +91,28 @@ pub enum FishType {
     Orca,
     Pistris,
     Tursio,
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
 
 #[derive(Clone, Debug, Display, PartialEq, Component)]
 pub enum ItemType {
-    Clothing, 
+    Clothing,
     Weapon,
     Consumable,
     Armor,
-
-
-
 }
 
 impl EntityType {
-
     pub fn to_complex_noun(&self) -> ComplexNoun {
-
         match self {
-
-            _ => { let head_noun = format!("{}",self).to_lowercase();
-            //println!("{}",head_noun);
-        ComplexNoun{head_noun, ..default()}}
+            _ => {
+                let head_noun = format!("{}", self).to_lowercase();
+                //println!("{}",head_noun);
+                ComplexNoun {
+                    head_noun,
+                    ..default()
+                }
+            }
         }
-
     }
 }
 
@@ -171,14 +130,10 @@ pub enum SolidMaterial {
     Terracotta(EarthType),
 }
 
-
-
 #[derive(Clone, Debug, PartialEq)]
 pub enum Tree {
     Glinos, //Maple Tree
 }
-
-
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Mineral {
@@ -196,4 +151,3 @@ pub enum Furniture {
     Door(SolidMaterial),
     Trinket,
 }
-

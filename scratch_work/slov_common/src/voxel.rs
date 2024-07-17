@@ -20,23 +20,16 @@ impl Voxel {
             None => floor,
         };
 
-
         if visible {
-
             for (ent, etyp) in &self.entity_map {
                 let pik = etyp.to_graphic_triple();
-    
+
                 if plus_furn.0 != "@" {
                     plus_furn = (pik.0, pik.1, plus_furn.2);
                 }
             }
             plus_furn
-
-
-
-        }
-
-        else {
+        } else {
             let mut plus_roof: GraphicTriple = match &self.roof {
                 Some(roof) => (roof.symbol(), roof.to_fg_color(), roof.to_bg_color()),
                 None => plus_furn,
@@ -46,7 +39,7 @@ impl Voxel {
             plus_roof.2 = dim(plus_roof.2, 0.3);
 
             plus_roof
-        } 
+        }
     }
 
     pub fn blocks_movement(&self) -> bool {
@@ -55,30 +48,25 @@ impl Voxel {
             None => false,
         };
 
-        if furn_blocks {return true;}
-
-        else{
-
+        if furn_blocks {
+            return true;
+        } else {
             for (ent, etyp) in &self.entity_map {
                 let pik = etyp.blocks_movement();
 
-                if pik {return true;}
-    
-                
+                if pik {
+                    return true;
+                }
             }
             return false;
-
-
         }
     }
 
     pub fn blocks_vision(&self) -> bool {
-         match &self.furniture {
+        match &self.furniture {
             Some(furn) => furn.blocks_vision(),
             None => false,
         }
-
-     
     }
 }
 
@@ -106,8 +94,6 @@ pub enum Floor {
     Earth(EarthType),
 }
 
-
-
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum LiquidType {
     Water,
@@ -125,5 +111,3 @@ pub fn dim(color: RatColor, factor: f32) -> RatColor {
         _ => RatColor::Gray,
     }
 }
-
-

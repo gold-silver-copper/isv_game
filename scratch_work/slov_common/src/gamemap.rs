@@ -1,10 +1,5 @@
 use crate::*;
 
-
-
-
-
-
 #[derive(Clone, Debug)]
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
@@ -111,12 +106,18 @@ impl GameMap {
             // THIS GRID IS INDEXD Y FIRST
             let mut voxel_grid = create_2d_array(render_width.into(), render_height.into());
 
+            let fov = field_of_view_set(
+                BracketPoint {
+                    x: e_pos.0 as i32,
+                    y: e_pos.1 as i32,
+                },
+                60,
+                self,
+            );
 
-            let fov = field_of_view_set(BracketPoint{x:e_pos.0 as i32,y:e_pos.1 as i32}, 60, self);
+            //    println!("FOV IS {:#?}",fov);
 
-        //    println!("FOV IS {:#?}",fov);
-
-        let mut visible_ents = Vec::new();
+            let mut visible_ents = Vec::new();
 
             for lv in local_voxels {
                 let relative_point_x = lv.voxel_pos.0 - bottom_left_of_game_screen.0;
@@ -127,33 +128,20 @@ impl GameMap {
                     && (0 < relative_point_x)
                     && (relative_point_x < render_width as i64)
                 {
-
-                    let bp = BracketPoint{x: lv.voxel_pos.0 as i32, y: lv.voxel_pos.1 as i32} ;
-
-                   
-
-
-                   
-
-                    let boop = if fov.contains(&bp) {
-
-                        for (ent,typ) in &lv.entity_map {
-
-                            visible_ents.push((ent.clone(),typ.clone()));
-                        }
-
-                         lv.to_graphic(true)
-
-
-
-                    }
-                    else {
-
-                        lv.to_graphic(false)
-
-
+                    let bp = BracketPoint {
+                        x: lv.voxel_pos.0 as i32,
+                        y: lv.voxel_pos.1 as i32,
                     };
 
+                    let boop = if fov.contains(&bp) {
+                        for (ent, typ) in &lv.entity_map {
+                            visible_ents.push((ent.clone(), typ.clone()));
+                        }
+
+                        lv.to_graphic(true)
+                    } else {
+                        lv.to_graphic(false)
+                    };
 
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;
                 }
@@ -163,13 +151,11 @@ impl GameMap {
 
             RenderPacket {
                 voxel_grid: voxel_grid,
-                ent_vec: visible_ents
+                ent_vec: visible_ents,
             }
         }
     }
 }
-
-
 
 impl BaseMap for GameMap {
     fn is_opaque(&self, idx: usize) -> bool {
@@ -177,12 +163,10 @@ impl BaseMap for GameMap {
         let mp = (bp.x as i64, bp.y as i64);
         let vox = self.get_voxel_at(&mp);
         match vox {
-            Some(voxik) => {voxik.blocks_vision()},
-            None => {true}
+            Some(voxik) => voxik.blocks_vision(),
+            None => true,
         }
     }
-
-   
 
     fn get_pathing_distance(&self, idx1: usize, idx2: usize) -> f32 {
         DistanceAlg::Pythagoras.distance2d(self.index_to_point2d(idx1), self.index_to_point2d(idx2))

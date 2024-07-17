@@ -29,6 +29,9 @@ pub use typeimpls::*;
 mod typeenums;
 pub use typeenums::*;
 
+mod animal_types;
+pub use animal_types::*;
+
 mod bevy_resources;
 pub use bevy_resources::*;
 mod actions;
@@ -71,4 +74,4 @@ pub use ratatui::{
     widgets::{Block, Borders, Paragraph, Wrap, *},
 };
 
-pub use bracket_pathfinding::prelude::{Rect as BracketRect, Point as BracketPoint, *};
+pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};

@@ -1,10 +1,5 @@
 use crate::*;
 
-
-
-
-
-
 impl Floor {
     pub fn fg_color(&self) -> RatColor {
         dim(self.bg_color(), 1.2)
@@ -26,7 +21,6 @@ impl Floor {
         (self.symbol(), self.fg_color(), self.bg_color())
     }
 }
-
 
 impl Furniture {
     pub fn to_color(&self) -> RatColor {
@@ -106,7 +100,6 @@ impl EntityType {
     }
 }
 
-
 impl Mineral {
     pub fn color(&self) -> RatColor {
         match &self {
@@ -136,7 +129,7 @@ impl SolidMaterial {
 impl Tree {
     pub fn color(&self) -> RatColor {
         match &self {
-            Tree::Glinos => RatColor::Rgb(160,82,45),
+            Tree::Glinos => RatColor::Rgb(160, 82, 45),
         }
     }
 }
