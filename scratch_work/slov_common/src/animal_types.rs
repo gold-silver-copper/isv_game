@@ -70,6 +70,18 @@ pub enum Animalia {
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
+pub enum Insecta {
+   Coleoptera,
+   Hemiptera,
+   Lepidoptera,
+   Neuroptera,
+   Hymenoptera,
+   Diptera,
+   Aptera
+
+}
+
+#[derive(Clone, Debug, Display, PartialEq)]
 pub enum Pisces {
     Apodes,
     Jugulares,
