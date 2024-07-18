@@ -59,15 +59,45 @@ pub enum SubspeciesAdjective {
     Pacificus,
 }
 
+
+
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Animalia {
-    Mammalia,
-    Aves,
-    Amphibia,
-    Pisces,
+    Mammalia(Mammalia),
+    Aves(Aves),
+    Amphibia(Amphibia),
+    Pisces(Pisces),
     Insecta,
     Vermes,
 }
+
+#[derive(Clone, Debug, Display, PartialEq)]
+pub enum Mammalia {
+    Primates(Primates),
+    Bruta(Bruta),
+    Ferae(Ferae),
+    Glires(Glires),
+    Pecora(Pecora),
+    Belluae(Belluae),
+    Cete(Cete),
+}
+
+#[derive(Clone, Debug, Display, PartialEq)]
+pub enum Aves {
+    Accipitres(Accipitres), //hawk
+    Picae(Picae),      //magpie
+    Anseres(Anseres),    //gooese
+    Grallae(Grallae),    //stilt like flamingo
+    Gallinae(Gallinae),   //chicken
+    Passeres(Passeres),   //songbird
+}
+
+#[derive(Clone, Debug, Display, PartialEq)]
+pub enum Amphibia {
+    Reptilia,
+    Serpentes,
+}
+
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Insecta {
@@ -81,14 +111,17 @@ pub enum Insecta {
 
 }
 
+
+
+
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Pisces {
-    Apodes,
-    Jugulares,
-    Thoracici,
-    Abdominales,
-    Branchiotegi,
-    Chondropterygii,
+    Apodes(Apodes),
+    Jugulares(Jugulares),
+    Thoracici(Thoracici),
+    Abdominales(Abdominales),
+    Branchiostegi(Branchiostegi),
+    Chondropterygii(Chondropterygii),
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
@@ -174,11 +207,6 @@ pub enum Chondropterygii {
     Petromyzon,
 }
 
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum Amphibia {
-    Reptilia,
-    Serpentes,
-}
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Reptilia {
@@ -211,15 +239,7 @@ pub enum Serpentes {
     Caecilia,
 }
 
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum Aves {
-    Accipitres, //hawk
-    Picae,      //magpie
-    Anseres,    //gooese
-    Grallae,    //stilt like flamingo
-    Gallinae,   //chicken
-    Passeres,   //songbird
-}
+
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Grallae {
@@ -331,16 +351,7 @@ pub enum Accipitres {
     Harpyia,
 }
 
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum Mammalia {
-    Primates,
-    Bruta,
-    Ferae,
-    Glires,
-    Pecora,
-    Belluae,
-    Cete,
-}
+
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Primates {
