@@ -15,9 +15,9 @@ pub enum ImperiumNaturae {
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Regna {
-    Animalia,
+    Animalia(Animalia),
     Vegetabilia,
-    Lapides,
+    Lapides(Lapides),
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
@@ -61,7 +61,7 @@ pub enum SubspeciesAdjective {
 
 
 
-#[derive(Clone, Debug, Display, PartialEq)]
+#[derive(Clone, Debug, Display, PartialEq,Component)]
 pub enum Animalia {
     Mammalia(Mammalia),
     Aves(Aves),
@@ -70,6 +70,8 @@ pub enum Animalia {
     Insecta,
     Vermes,
 }
+
+pub const HUMAN_MAMMAL: Animalia = Animalia::Mammalia(Mammalia::Primates(Primates::Homo)) ;
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Mammalia {
@@ -94,25 +96,9 @@ pub enum Aves {
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Amphibia {
-    Reptilia,
-    Serpentes,
+    Reptilia(Reptilia),
+    Serpentes(Serpentes),
 }
-
-
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum Insecta {
-   Coleoptera,
-   Hemiptera,
-   Lepidoptera,
-   Neuroptera,
-   Hymenoptera,
-   Diptera,
-   Aptera
-
-}
-
-
-
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Pisces {
@@ -123,6 +109,25 @@ pub enum Pisces {
     Branchiostegi(Branchiostegi),
     Chondropterygii(Chondropterygii),
 }
+
+/*
+
+#[derive(Clone, Debug, Display, PartialEq)]
+pub enum Insecta {
+   Coleoptera(Coleoptera),
+   Hemiptera(Hemiptera),
+   Lepidoptera(Lepidoptera),
+   Neuroptera(Neuroptera),
+   Hymenoptera(Hymenoptera),
+   Diptera(Diptera),
+   Aptera(Aptera)
+
+}
+ */
+
+
+
+
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Apodes {
