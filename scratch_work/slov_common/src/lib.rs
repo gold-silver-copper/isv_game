@@ -29,8 +29,7 @@ pub use typeimpls::*;
 mod typeenums;
 pub use typeenums::*;
 
-mod animal_types;
-pub use animal_types::*;
+
 
 mod bevy_resources;
 pub use bevy_resources::*;

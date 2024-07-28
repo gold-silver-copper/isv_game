@@ -9,7 +9,7 @@ pub enum EarthType {
 
 #[derive(Clone, Debug, Display, PartialEq, Component)]
 pub enum EntityType {
-    Animalia(Animalia), //Item(ItemType),
+    Animalia,
 }
 
 #[derive(Clone, Debug, Display, PartialEq, Component)]

@@ -102,7 +102,7 @@ pub fn setup(mut commands: Commands, mut masterok: ResMut<Masterok>) {
     spawn_with_point_and_type(
         &mut commands,
         (5, 5),
-        EntityType::Animalia(HUMAN_MAMMAL),
+        EntityType::Animalia,
         (Player),
         &mut masterok.game_map,
     );
@@ -111,7 +111,7 @@ pub fn setup(mut commands: Commands, mut masterok: ResMut<Masterok>) {
         spawn_with_point_and_type(
             &mut commands,
             (boop * 2, boop * 3),
-            EntityType::Animalia(HUMAN_MAMMAL),
+            EntityType::Animalia,
             (),
             &mut masterok.game_map,
         );
