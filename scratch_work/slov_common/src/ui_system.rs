@@ -88,14 +88,18 @@ pub fn ui_example_system(
     mut termres: ResMut<BevyTerminal<RataguiBackend>>,
 ) {
     let mut gameframe = egui::Frame::default()
-        .inner_margin(10.0)
+        .inner_margin(0.0)
         .outer_margin(0.0)
-        .fill(egui::Color32::BLACK);
+        .fill(egui::Color32::YELLOW);
 
     let mut infoframe = egui::Frame::default()
         .inner_margin(0.0)
         .outer_margin(0.0)
-        .fill(egui::Color32::BLACK);
+        .fill(egui::Color32::GREEN);
+    let mut mainframe = egui::Frame::default()
+    .inner_margin(0.0)
+    .outer_margin(0.0)
+    .fill(egui::Color32::RED);
 
     egui::CentralPanel::default()
         .frame(Frame::none())

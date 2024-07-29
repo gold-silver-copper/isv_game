@@ -1,0 +1,34 @@
+
+
+What I'm noticing is that you have a bunch of components saying "this is a". "This is a wall", "This is a player", "This is a tile", "This is a AI". This is a common mistake with ECS, where you're going right back to defining objects, instead of defining behaviours (systems), and facilitating them with the data (components) they need.
+For example, you state you can't remember where you use "Wall", which makes sense, because I would say that's just an Entity with the "Tile" and "Blocking" components. Maybe add a "Health" component if it's a destructable wall.
+Most of these you can fix just by renaming them.
+
+As others have said, some of these components can also be merged. Does it ever make sense for an entity to have a Health component, but not a BaseHealth component, or vice versa? Merge them. The beauty of ECS is that it's extremely easy to refactor components. Merging or separating components can usually be done with a find and replace.
+
+With that, here's my suggested component list:
+
+    Position
+
+    Sprite (Replaces Tile)
+
+    Blocking
+
+    Opaque
+
+    Name
+
+    ViewShed (Combines with KnownShed)
+
+    Action
+
+    Health (Combines with BaseHealth and Dead)
+
+    Stamina (Combines with BaseStamina)
+
+    Controllable (Takes in commands to control the entity)
+
+    UserInputControls (Uses Controllable. replaces Player)
+
+    AIControls (Uses Controllable, replaces AI)
+
