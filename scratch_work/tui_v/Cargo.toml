@@ -1,0 +1,11 @@
+[package]
+name = "tui_v"
+version = "0.1.0"
+edition = "2021"
+
+
+# ANCHOR: dependencies
+[dependencies]
+color-eyre = "0.6.3"
+ratatui = "0.28.0"
+# ANCHOR_END: dependencies

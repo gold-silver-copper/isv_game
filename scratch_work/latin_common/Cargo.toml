@@ -20,7 +20,7 @@ rand = { version = "0.8.5", default-features = false, features = ["small_rng"] }
 
 bevy = "0.14"
 bevy_egui = "0.28.0"
-egui_ratatui = {version = "0.0.20"}
+egui_ratatui = {version = "0.0.21"}
 bracket-pathfinding = "0.8.7"
 botanical-latin = "0.0.7"
 
