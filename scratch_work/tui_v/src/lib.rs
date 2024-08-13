@@ -54,8 +54,8 @@ pub use typedefs::*;
 mod voxel;
 pub use voxel::*;
 
-mod components;
-pub use components::*;
+/*mod components;
+pub use components::*; */
 
 mod typeimpls;
 pub use typeimpls::*;

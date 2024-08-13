@@ -4,7 +4,10 @@ use crate::*;
 pub struct App {
     counter: u8,
     exit: bool,
-    game_map: GameMap
+    game_map: GameMap,
+    action_queue: ActionQueue,
+    local_player_id: EntityID,
+    local_player_pos: MyPoint,
 }
 
 impl App {
@@ -13,6 +16,7 @@ impl App {
         while !self.exit {
             terminal.draw(|frame| self.render_frame(frame))?;
             self.handle_events().wrap_err("handle events failed")?;
+            self.handle_actions()?;
         }
         Ok(())
     }
@@ -38,9 +42,41 @@ impl App {
             KeyCode::Char('q') => self.exit(),
             KeyCode::Left => self.decrement_counter()?,
             KeyCode::Right => self.increment_counter()?,
+            KeyCode::Char('w') => {self.action_queue.action_map.insert(1,GameAction::Go(CardinalDirection::North));},
             _ => {}
         }
         Ok(())
+    }
+
+    fn handle_movement(&mut self, eid: EntityID, cd:CardinalDirection)-> Result<()> {
+
+        let xyik = cd.to_xyz();
+
+        self.local_player_pos = (self.local_player_pos.0 + xyik.0,self.local_player_pos.1 + xyik.1);
+        Ok(())
+    }
+
+    fn handle_actions(&mut self) -> Result<()> {
+
+        let a_map = self.action_queue.action_map.clone();
+
+
+        for (eid, act) in a_map {
+            //println!("moving");
+
+            match act {
+                GameAction::Go(cd) => self.handle_movement(eid,cd)?,
+                _ => panic!("meow")
+            }
+
+
+        }
+
+        self.action_queue.action_map.drain();
+
+
+        Ok(())
+
     }
   
     fn exit(&mut self) {
@@ -69,13 +105,13 @@ impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
      
      
-        let client_pos = PointComponent((2,2));
+        let client_pos = self.local_player_pos.clone();
 
 
 
             let client_render = self
                 .game_map
-                .create_client_render_packet_for_entity(&client_pos.0, &area);
+                .create_client_render_packet_for_entity(&client_pos, &area);
 
             let client_graphics = client_render.voxel_grid;
             let client_visible_ents = client_render.ent_vec;

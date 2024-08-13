@@ -13,6 +13,32 @@ pub const CLAY_FLOOR: Floor = Floor::Earth(EarthType::Clay);
 
 pub const WATER_FLOOR: Floor = Floor::Liquid(LiquidType::Water);
 
+pub struct Player;
+
+pub type MyPoint = (CoordinateUnit, CoordinateUnit);
+pub type GraphicTriple = (&'static str, RatColor, RatColor);
+
+
+
+pub struct GraphicComponent(pub GraphicTriple);
+
+// for horse vehicle use horse chess piece as head  ∧ ♞
+
+// projectile weapons have two parts (path to take, and steps of path to take, something flying slow and not far will have low each, something flying slow but far will ahve lots of steps, this can be passed to Go()
+//MAKE IT POSSIBLE TO SET PLAYER AI MODE FOR AUTO PLAYING
+#[derive(Clone, Debug, PartialEq)]
+pub enum GameAction {
+    Wait,
+    Take(),
+    MeleeAttack(),
+    Drop(),
+    Give(),
+    Hit(),
+    Go(CardinalDirection),
+    Quit,
+}
+
+
 
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
     let mut result = (0, 0);
@@ -35,6 +61,16 @@ pub fn locate_square(e_pos: &MyPoint, w_radius: i64, h_radius: i64) -> AABB<MyPo
         (e_pos.0 + w_radius, e_pos.1 + h_radius),
     )
 }
+
+#[derive(Debug,Default)]
+pub struct ActionQueue {
+
+    pub action_map: HashMap<EntityID,GameAction>
+
+}
+
+
+
 
 #[derive(Debug)]
 pub struct RenderPacket {
