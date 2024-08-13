@@ -67,33 +67,49 @@ impl App {
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let title = Title::from(" Counter App Tutorial ".bold());
-        let instructions = Title::from(Line::from(vec![
-            " Decrement ".into(),
-            "<Left>".blue().bold(),
-            " Increment ".into(),
-            "<Right>".blue().bold(),
-            " Quit ".into(),
-            "<Q> ".blue().bold(),
-        ]));
-        let block = Block::default()
-            .title(title.alignment(Alignment::Center))
-            .title(
-                instructions
-                    .alignment(Alignment::Center)
-                    .position(Position::Bottom),
-            )
-            .borders(Borders::ALL)
-            .border_set(border::THICK);
+     
+     
+        let client_pos = PointComponent((2,2));
 
-        let counter_text = Text::from(vec![Line::from(vec![
-            "Value: ".into(),
-            self.counter.to_string().yellow(),
-        ])]);
 
-        Paragraph::new(counter_text)
-            .centered()
-            .block(block)
-            .render(area, buf);
+
+            let client_render = self
+                .game_map
+                .create_client_render_packet_for_entity(&client_pos.0, &area);
+
+            let client_graphics = client_render.voxel_grid;
+            let client_visible_ents = client_render.ent_vec;
+        //    ui_resources.visible_ents = client_visible_ents;
+
+            let mut render_lines = Vec::new();
+            let needed_height = area.height as i16;
+
+            if client_graphics.len() > 0 {
+                for y in (0..needed_height) {
+                    let myspanvec: Vec<_> = client_graphics[y as usize]
+                        .iter()
+                        .map(|x| Span::from(x.0).fg(x.1).bg(x.2))
+                        .collect();
+
+                    let myline = ratatui::text::Line::from(myspanvec);
+
+                    render_lines.push(myline);
+                }
+            }
+
+            //neccesary beccause drawing is from the top
+            render_lines.reverse();
+            Paragraph::new(Text::from(render_lines))
+                    .on_black()
+                    .block(Block::new()) .render(area, buf);
+
+
+
+
+
+
+
+
+
     }
 }

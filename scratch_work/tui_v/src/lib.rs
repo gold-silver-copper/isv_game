@@ -23,7 +23,7 @@ pub use ratatui::{
     },
     Terminal,
 };
-
+pub use ratatui::text::Span;
 pub use botanical_latin::*;
 pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};
 pub use ratatui::style::Color as RatColor;
