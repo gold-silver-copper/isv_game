@@ -8,4 +8,13 @@ edition = "2021"
 [dependencies]
 color-eyre = "0.6.3"
 ratatui = "0.28.0"
-# ANCHOR_END: dependencies
+
+
+rstar = { git = "https://github.com/georust/rstar.git", branch = "master" }
+strum = { version = "0.26", features = ["derive"] }
+noise = "0.9"
+rand = { version = "0.8.5", default-features = false, features = ["small_rng"] }
+
+
+bracket-pathfinding = "0.8.7"
+botanical-latin = "0.0.7"

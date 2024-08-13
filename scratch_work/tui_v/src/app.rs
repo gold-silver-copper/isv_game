@@ -5,12 +5,9 @@ pub struct App {
     counter: u8,
     exit: bool,
 }
-// ANCHOR_END: app
 
-// ANCHOR: impl App
 impl App {
-    // ANCHOR: run
-    /// runs the application's main loop until the user quits
+  
     pub fn run(&mut self, terminal: &mut tui::Tui) -> Result<()> {
         while !self.exit {
             terminal.draw(|frame| self.render_frame(frame))?;
@@ -18,16 +15,11 @@ impl App {
         }
         Ok(())
     }
-    // ANCHOR_END: run
-
-    // ANCHOR: render_frame
+ 
     fn render_frame(&self, frame: &mut Frame) {
         frame.render_widget(self, frame.area());
     }
-    // ANCHOR_END: render_frame
-
-    // ANCHOR: handle_events
-    /// updates the application's state based on user input
+ 
     fn handle_events(&mut self) -> Result<()> {
         match event::read()? {
             // it's important to check that the event is a key press event as
@@ -38,9 +30,7 @@ impl App {
             _ => Ok(()),
         }
     }
-    // ANCHOR_END: handle_events
-
-    // ANCHOR: handle_key_event
+   
     fn handle_key_event(&mut self, key_event: KeyEvent) -> Result<()> {
         match key_event.code {
             KeyCode::Char('q') => self.exit(),
@@ -50,14 +40,12 @@ impl App {
         }
         Ok(())
     }
-    // ANCHOR_END: handle_key_event
-
-    // ANCHOR: methods
+  
     fn exit(&mut self) {
         self.exit = true;
     }
 
-    // ANCHOR: increment_decrement
+
     fn decrement_counter(&mut self) -> Result<()> {
         self.counter -= 1;
         Ok(())
@@ -72,12 +60,9 @@ impl App {
        */
         Ok(())
     }
-    // ANCHOR_END: increment_decrement
-    // ANCHOR_END: methods
+  
 }
-// ANCHOR_END: impl App
 
-// ANCHOR: impl Widget
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let title = Title::from(" Counter App Tutorial ".bold());

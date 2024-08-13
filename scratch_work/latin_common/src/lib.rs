@@ -43,7 +43,7 @@ use rand::{Rng, SeedableRng};
 pub use ui_system::*;
 
 pub use noise::*;
-pub use ratatui::style::Color as RatColor;
+
 pub use ratatui::style::{Style, Stylize};
 pub use ratatui::text::Span;
 use ratatui::{layout::Rect, text::Line};
@@ -55,7 +55,8 @@ use strum::IntoEnumIterator;
 use strum::{EnumCount, EnumIter, FromRepr};
 
 pub use botanical_latin::*;
-
+pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};
+pub use ratatui::style::Color as RatColor;
 //pub use serde::{Deserialize, Deserializer};
 
 pub use bevy::{
@@ -73,4 +74,4 @@ pub use ratatui::{
     widgets::{Block, Borders, Paragraph, Wrap, *},
 };
 
-pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};
+
