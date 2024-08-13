@@ -4,6 +4,7 @@ use crate::*;
 pub struct App {
     counter: u8,
     exit: bool,
+    game_map: GameMap
 }
 
 impl App {
@@ -19,6 +20,7 @@ impl App {
     fn render_frame(&self, frame: &mut Frame) {
         frame.render_widget(self, frame.area());
     }
+    
  
     fn handle_events(&mut self) -> Result<()> {
         match event::read()? {

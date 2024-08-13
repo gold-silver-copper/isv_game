@@ -5,10 +5,9 @@ pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
 }
 
-impl GameMap {
-    pub fn generate_test(seed: u32) -> RTree<Voxel> {
-       
-      
+impl Default for GameMap {
+    fn default() -> Self {
+
 
         let mut batchvec = Vec::new();
         for x in 0..MAP_SIZE {
@@ -57,8 +56,19 @@ impl GameMap {
 
         let newtree = RTree::bulk_load(batchvec);
 
-        newtree
+        GameMap {
+             voxeltile_grid: newtree,
+        }
+
+
+
+
+
     }
+}
+
+impl GameMap {
+   
 
     pub fn set_voxel_at(&mut self, vox: &Voxel) {
         if let Some(boop) = self.voxeltile_grid.locate_at_point_mut(&vox.voxel_pos) {
