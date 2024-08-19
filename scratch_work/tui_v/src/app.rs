@@ -2,10 +2,10 @@ use crate::*;
 // ANCHOR: app
 #[derive(Debug, Default)]
 pub struct App {
-    counter: u8,
+   
     exit: bool,
     game_map: GameMap,
-    action_queue: ActionQueue,
+    action_map: ActionMap,
     local_player_id: EntityID,
     local_player_pos: MyPoint,
 }
@@ -40,9 +40,9 @@ impl App {
     fn handle_key_event(&mut self, key_event: KeyEvent) -> Result<()> {
         match key_event.code {
             KeyCode::Char('q') => self.exit(),
-            KeyCode::Left => self.decrement_counter()?,
-            KeyCode::Right => self.increment_counter()?,
-            KeyCode::Char('w') => {self.action_queue.action_map.insert(1,GameAction::Go(CardinalDirection::North));},
+
+            KeyCode::Char('w') => {self.action_map.insert(1,GameAction::Go(CardinalDirection::North));},
+            KeyCode::Char('s') => {self.action_map.insert(1,GameAction::Go(CardinalDirection::South));},
             _ => {}
         }
         Ok(())
@@ -58,7 +58,7 @@ impl App {
 
     fn handle_actions(&mut self) -> Result<()> {
 
-        let a_map = self.action_queue.action_map.clone();
+        let a_map = self.action_map.clone();
 
 
         for (eid, act) in a_map {
@@ -72,7 +72,7 @@ impl App {
 
         }
 
-        self.action_queue.action_map.drain();
+        self.action_map.drain();
 
 
         Ok(())
@@ -84,20 +84,7 @@ impl App {
     }
 
 
-    fn decrement_counter(&mut self) -> Result<()> {
-        self.counter -= 1;
-        Ok(())
-    }
-
-    fn increment_counter(&mut self) -> Result<()> {
-        self.counter += 1;
-      /*
-        if self.counter > 2 {
-            bail!("counter overflow");
-        }
-       */
-        Ok(())
-    }
+  
   
 }
 

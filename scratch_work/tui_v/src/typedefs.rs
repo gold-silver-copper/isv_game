@@ -62,12 +62,9 @@ pub fn locate_square(e_pos: &MyPoint, w_radius: i64, h_radius: i64) -> AABB<MyPo
     )
 }
 
-#[derive(Debug,Default)]
-pub struct ActionQueue {
+pub type ActionMap = HashMap<EntityID,GameAction>;
 
-    pub action_map: HashMap<EntityID,GameAction>
 
-}
 
 
 
