@@ -4,7 +4,7 @@ pub struct Voxel {
     pub floor: Option<Floor>,
     pub roof: Option<Roof>,
     pub furniture: Option<Furniture>,
-    pub entity_map: HashMap<EntityID, EntityType>,
+    pub entity_set: HashSet<EntityID>,
     pub voxel_pos: MyPoint,
 }
 
@@ -21,12 +21,12 @@ impl Voxel {
         };
 
         if visible {
-            for (ent, etyp) in &self.entity_map {
-                let pik = etyp.to_graphic_triple();
+            for ent in &self.entity_set {
+            /*    let pik = etyp.to_graphic_triple();
 
                 if plus_furn.0 != "@" {
                     plus_furn = (pik.0, pik.1, plus_furn.2);
-                }
+                } */
             }
             plus_furn
         } else {
@@ -51,12 +51,12 @@ impl Voxel {
         if furn_blocks {
             return true;
         } else {
-            for (ent, etyp) in &self.entity_map {
-                let pik = etyp.blocks_movement();
+            for ent in &self.entity_set {
+                /*let pik = etyp.blocks_movement();
 
                 if pik {
                     return true;
-                }
+                } */
             }
             return false;
         }

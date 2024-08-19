@@ -29,7 +29,7 @@ impl Default for GameMap {
                         floor: Some(floor),
                         furniture: Some(WALL_FURNITURE),
                         roof: None,
-                        entity_map: HashMap::new(),
+                        entity_set: HashSet::new(),
                         voxel_pos: (x, y),
                     });
                 } else if x < 15 && y > 8 {
@@ -38,7 +38,7 @@ impl Default for GameMap {
                         floor: Some(floor),
                         furniture: None,
                         roof: Some(TEGULA_ROOF),
-                        entity_map: HashMap::new(),
+                        entity_set: HashSet::new(),
                         voxel_pos: (x, y),
                     });
                 } else {
@@ -47,7 +47,7 @@ impl Default for GameMap {
                         floor: Some(floor),
                         furniture: None,
                         roof: None,
-                        entity_map: HashMap::new(),
+                        entity_set: HashSet::new(),
                         voxel_pos: (x, y),
                     });
                 }
@@ -144,8 +144,8 @@ impl GameMap {
                     };
 
                     let boop = if fov.contains(&bp) {
-                        for (ent, typ) in &lv.entity_map {
-                            visible_ents.push((ent.clone(), typ.clone()));
+                        for ent in &lv.entity_set {
+                            visible_ents.push(ent.clone());
                         }
 
                         lv.to_graphic(true)

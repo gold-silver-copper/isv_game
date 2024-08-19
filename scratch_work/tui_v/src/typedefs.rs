@@ -72,7 +72,7 @@ pub type ActionMap = HashMap<EntityID,GameAction>;
 #[derive(Debug)]
 pub struct RenderPacket {
     pub voxel_grid: Vec<Vec<GraphicTriple>>,
-    pub ent_vec: Vec<(EntityID, EntityType)>,
+    pub ent_vec: Vec<EntityID>,
 }
 impl RenderPacket {
     pub fn new() -> Self {

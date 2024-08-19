@@ -2,6 +2,7 @@ use crate::*;
 // ANCHOR: app
 #[derive(Debug, Default)]
 pub struct App {
+    entity_counter: i64,
    
     exit: bool,
     game_map: GameMap,
