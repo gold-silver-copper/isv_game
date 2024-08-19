@@ -9,7 +9,7 @@ pub struct App {
     game_map: GameMap,
     action_map: ActionMap,
     local_player_id: EntityID,
-    local_player_pos: MyPoint,
+    
 }
 
 impl App {
@@ -28,11 +28,10 @@ impl App {
     }
 
     pub fn init(&mut self) {
-
-        let pik = (5,5);
+        let pik = (5, 5);
 
         self.local_player_id = self.spawn_player_at(&pik);
-        self.local_player_pos = pik;
+     
     }
 
     fn handle_events(&mut self) -> Result<()> {
@@ -59,21 +58,38 @@ impl App {
                 self.action_map
                     .insert(lid, GameAction::Go(CardinalDirection::South));
             }
+            KeyCode::Char('a') => {
+                self.action_map
+                    .insert(lid, GameAction::Go(CardinalDirection::West));
+            }
+            KeyCode::Char('d') => {
+                self.action_map
+                    .insert(lid, GameAction::Go(CardinalDirection::East));
+            }
             _ => {}
         }
         Ok(())
     }
 
     fn handle_movement(&mut self, eid: &EntityID, cd: &CardinalDirection) -> Result<()> {
-
         let xyik = cd.to_xyz();
-        let e_pos = self.components.positions.get(eid);
-        let destination = (
-            self.local_player_pos.0 + xyik.0,
-            self.local_player_pos.1 + xyik.1,
-        );
+        if let Some(e_pos) = self.components.positions.get_mut(eid) {
+            let destination = (e_pos.0 + xyik.0, e_pos.1 + xyik.1);
+           // println!("epos got");
 
-       
+            if let Some(dest_vox) = self.game_map.get_mut_voxel_at(&destination) {
+                if !dest_vox.blocks_movement(&self.components.ent_types) {
+                   // println!("dest no block");
+                    dest_vox.entity_set.insert(eid.clone());
+
+                    if let Some(origin_vox) = self.game_map.get_mut_voxel_at(e_pos) {
+                        origin_vox.entity_set.remove(eid);
+                    }
+                    *e_pos = destination;
+                }
+            }
+        }
+
         Ok(())
     }
 
@@ -90,24 +106,22 @@ impl App {
             }
         }
 
-      
-
         Ok(())
     }
 
     pub fn spawn_player_at(&mut self, point: &MyPoint) -> EntityID {
         let eid = self.get_unique_eid();
-        self.components.positions.insert(eid.clone(),point.clone());
-        self.components.ent_types.insert(eid.clone(),EntityType::Animalia);
+        self.components.positions.insert(eid.clone(), point.clone());
+        self.components
+            .ent_types
+            .insert(eid.clone(), EntityType::Animalia);
 
         let voxik = self
             .game_map
             .get_mut_voxel_at(point)
             .expect("cant spawn ent in empty voxel");
 
-
-
-            voxik.entity_set.insert(eid.clone());
+        voxik.entity_set.insert(eid.clone());
 
         eid.clone()
     }
@@ -123,11 +137,11 @@ impl App {
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let client_pos = self.local_player_pos.clone();
+        let client_pos = self.components.positions.get(&self.local_player_id).unwrap_or(&(0,0));
 
         let client_render = self
             .game_map
-            .create_client_render_packet_for_entity(&client_pos, &area);
+            .create_client_render_packet_for_entity(&client_pos, &area, &self.components.ent_types);
 
         let client_graphics = client_render.voxel_grid;
         let client_visible_ents = client_render.ent_vec;

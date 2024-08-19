@@ -9,7 +9,7 @@ pub struct Voxel {
 }
 
 impl Voxel {
-    pub fn to_graphic(&self, visible: bool) -> GraphicTriple {
+    pub fn to_graphic(&self, visible: bool, ent_types: &HashMap<EntityID, EntityType>) -> GraphicTriple {
         let mut floor = match &self.floor {
             Some(fl) => fl.to_graphic_triple(),
             None => (" ", RatColor::Black, RatColor::Black),
@@ -22,11 +22,12 @@ impl Voxel {
 
         if visible {
             for ent in &self.entity_set {
-                /*    let pik = etyp.to_graphic_triple();
+                   if let Some(etyp) = ent_types.get(ent) { let pik = etyp.to_graphic_triple();
 
-                if plus_furn.0 != "@" {
-                    plus_furn = (pik.0, pik.1, plus_furn.2);
-                } */
+                    if plus_furn.0 != "@" {
+                        plus_furn = (pik.0, pik.1, plus_furn.2);
+                    } }
+                  
             }
             plus_furn
         } else {
@@ -42,7 +43,7 @@ impl Voxel {
         }
     }
 
-    pub fn blocks_movement(&self) -> bool {
+    pub fn blocks_movement(&self, ent_types: &HashMap<EntityID, EntityType>) -> bool {
         let furn_blocks = match &self.furniture {
             Some(furn) => furn.blocks_movement(),
             None => false,
@@ -52,11 +53,12 @@ impl Voxel {
             return true;
         } else {
             for ent in &self.entity_set {
-                /*let pik = etyp.blocks_movement();
+                if let Some(etyp) = ent_types.get(ent) {let pik = etyp.blocks_movement();
 
-                if pik {
-                    return true;
-                } */
+                    if pik {
+                        return true;
+                    } }
+                
             }
             return false;
         }
