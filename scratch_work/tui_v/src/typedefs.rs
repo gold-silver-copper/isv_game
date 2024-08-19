@@ -18,10 +18,7 @@ pub struct Player;
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (&'static str, RatColor, RatColor);
 
-
-
 pub struct GraphicComponent(pub GraphicTriple);
-
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum GameAction {
@@ -34,8 +31,6 @@ pub enum GameAction {
     Go(CardinalDirection),
     Quit,
 }
-
-
 
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
     let mut result = (0, 0);
@@ -59,12 +54,7 @@ pub fn locate_square(e_pos: &MyPoint, w_radius: i64, h_radius: i64) -> AABB<MyPo
     )
 }
 
-pub type ActionMap = HashMap<EntityID,GameAction>;
-
-
-
-
-
+pub type ActionMap = HashMap<EntityID, GameAction>;
 
 #[derive(Debug)]
 pub struct RenderPacket {

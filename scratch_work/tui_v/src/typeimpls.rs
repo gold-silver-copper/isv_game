@@ -95,7 +95,7 @@ impl EntityType {
     pub fn blocks_movement(&self) -> bool {
         match &self {
             _ => true,
-          //  _ => false,
+            //  _ => false,
         }
     }
 }

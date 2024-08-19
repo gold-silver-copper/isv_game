@@ -1,6 +1,5 @@
 use tui_v::*;
 
-
 // ANCHOR: main
 fn main() -> Result<()> {
     color_eyre::install()?;

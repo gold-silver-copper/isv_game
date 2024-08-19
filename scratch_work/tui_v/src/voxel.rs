@@ -22,7 +22,7 @@ impl Voxel {
 
         if visible {
             for ent in &self.entity_set {
-            /*    let pik = etyp.to_graphic_triple();
+                /*    let pik = etyp.to_graphic_triple();
 
                 if plus_furn.0 != "@" {
                     plus_furn = (pik.0, pik.1, plus_furn.2);

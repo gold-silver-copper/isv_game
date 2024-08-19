@@ -7,12 +7,10 @@ pub struct GameMap {
 
 impl Default for GameMap {
     fn default() -> Self {
-
-
         let mut batchvec = Vec::new();
         for x in 0..MAP_SIZE {
             for y in 0..MAP_SIZE {
-                let val = x as f32/8.0;
+                let val = x as f32 / 8.0;
                 let floor = if val > 0.2 {
                     DIRT_FLOOR
                 } else if val > 0.0 {
@@ -57,19 +55,12 @@ impl Default for GameMap {
         let newtree = RTree::bulk_load(batchvec);
 
         GameMap {
-             voxeltile_grid: newtree,
+            voxeltile_grid: newtree,
         }
-
-
-
-
-
     }
 }
 
 impl GameMap {
-   
-
     pub fn set_voxel_at(&mut self, vox: &Voxel) {
         if let Some(boop) = self.voxeltile_grid.locate_at_point_mut(&vox.voxel_pos) {
             *boop = vox.clone();
