@@ -3,8 +3,7 @@ use crate::*;
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum EarthType {
     Dirt,
-    Clay,
-    Sand,
+   
 }
 
 #[derive(Clone, Debug, Display, PartialEq)]
@@ -12,13 +11,7 @@ pub enum EntityType {
     Animalia,
 }
 
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum ItemType {
-    Clothing,
-    Weapon,
-    Consumable,
-    Armor,
-}
+
 
 impl EntityType {
     pub fn to_complex_noun(&self) -> ComplexNoun {
@@ -34,22 +27,13 @@ impl EntityType {
         }
     }
 }
-
+// tegula imbrex
 #[derive(Clone, Debug, Display, PartialEq)]
-pub enum Roof {
-    Tegula(SolidMaterial),
-    Imbrex(SolidMaterial),
+pub enum Roof<M: Material> {
+    Tegula(M),
 }
 
 
-//make material a trait implemented for each material ie impl Material for Mineral
-#[derive(Clone, Debug, PartialEq)]
-pub enum SolidMaterial {
-    Wood(Tree),
-    Stone(Mineral),
-    Metal(Metal),
-    Terracotta(EarthType),
-}
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Tree {
@@ -57,18 +41,16 @@ pub enum Tree {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum Mineral {
-    Iaspis, //Gold
+pub enum Metal {
+   Gold
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub enum Metal {
-    Glinos, //Maple Tree
-}
+
+
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum Furniture {
-    Wall(SolidMaterial),
-    Door(SolidMaterial),
-    Trinket,
+    Wall(Tree),
+   
+   
 }

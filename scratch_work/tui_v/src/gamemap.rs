@@ -14,9 +14,9 @@ impl Default for GameMap {
                 let floor = if val > 0.2 {
                     DIRT_FLOOR
                 } else if val > 0.0 {
-                    CLAY_FLOOR
+                    DIRT_FLOOR
                 } else if val > -0.9 {
-                    SAND_FLOOR
+                    DIRT_FLOOR
                 } else {
                     WATER_FLOOR //water
                 };

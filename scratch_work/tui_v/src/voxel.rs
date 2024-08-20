@@ -105,8 +105,7 @@ pub enum Floor {
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum LiquidType {
     Water,
-    Lava,
-    Beer,
+  
 }
 
 pub fn dim(color: RatColor, factor: f32) -> RatColor {

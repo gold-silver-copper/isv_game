@@ -36,16 +36,14 @@ impl GraphicElement for Furniture {
     fn symbol(&self) -> &'static str {
         match &self {
             Furniture::Wall(_) => "#",
-            Furniture::Door(_) => "+",
-            Furniture::Trinket => " ",
+         
         }
     }
 
     fn fg_color(&self) -> RatColor {
         match &self {
             Furniture::Wall(sm) => sm.color(),
-            Furniture::Door(sm) => sm.color(),
-            Furniture::Trinket => RatColor::White,
+     
         }
     }
 
@@ -59,21 +57,21 @@ impl GraphicElement for Roof {
     fn symbol(&self) -> &'static str {
         match &self {
             Roof::Tegula(_) => "^",
-            Roof::Imbrex(_) => "=",
+      
         }
     }
 
     fn fg_color(&self) -> RatColor {
         match &self {
             Roof::Tegula(sm) => dim(sm.color(), 1.3),
-            Roof::Imbrex(sm) => dim(sm.color(), 1.3),
+        
         }
     }
 
     fn bg_color(&self) -> RatColor {
         match &self {
             Roof::Tegula(sm) => sm.color(),
-            Roof::Imbrex(sm) => sm.color(),
+       
         }
     }
 }
