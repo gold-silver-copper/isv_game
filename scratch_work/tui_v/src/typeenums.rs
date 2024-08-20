@@ -35,6 +35,7 @@ pub enum Roof{
 
 
 
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum Tree {
     Glinos, //Maple Tree
