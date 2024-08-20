@@ -9,7 +9,6 @@ pub struct App {
     game_map: GameMap,
     action_map: ActionMap,
     local_player_id: EntityID,
-    
 }
 
 impl App {
@@ -31,7 +30,6 @@ impl App {
         let pik = (5, 5);
 
         self.local_player_id = self.spawn_player_at(&pik);
-     
     }
 
     fn handle_events(&mut self) -> Result<()> {
@@ -75,11 +73,11 @@ impl App {
         let xyik = cd.to_xyz();
         if let Some(e_pos) = self.components.positions.get_mut(eid) {
             let destination = (e_pos.0 + xyik.0, e_pos.1 + xyik.1);
-           // println!("epos got");
+            // println!("epos got");
 
             if let Some(dest_vox) = self.game_map.get_mut_voxel_at(&destination) {
                 if !dest_vox.blocks_movement(&self.components.ent_types) {
-                   // println!("dest no block");
+                    // println!("dest no block");
                     dest_vox.entity_set.insert(eid.clone());
 
                     if let Some(origin_vox) = self.game_map.get_mut_voxel_at(e_pos) {
@@ -137,11 +135,17 @@ impl App {
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let client_pos = self.components.positions.get(&self.local_player_id).unwrap_or(&(0,0));
+        let client_pos = self
+            .components
+            .positions
+            .get(&self.local_player_id)
+            .unwrap_or(&(0, 0));
 
-        let client_render = self
-            .game_map
-            .create_client_render_packet_for_entity(&client_pos, &area, &self.components.ent_types);
+        let client_render = self.game_map.create_client_render_packet_for_entity(
+            &client_pos,
+            &area,
+            &self.components.ent_types,
+        );
 
         let client_graphics = client_render.voxel_grid;
         let client_visible_ents = client_render.ent_vec;

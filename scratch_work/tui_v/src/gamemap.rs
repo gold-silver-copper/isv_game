@@ -89,7 +89,7 @@ impl GameMap {
         &self,
         ent_pos_comp: &MyPoint,
         render_rect: &Rect,
-        ent_types: &HashMap<EntityID, EntityType>
+        ent_types: &HashMap<EntityID, EntityType>,
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
@@ -140,9 +140,9 @@ impl GameMap {
                             visible_ents.push(ent.clone());
                         }
 
-                        lv.to_graphic(true,ent_types)
+                        lv.to_graphic(true, ent_types)
                     } else {
-                        lv.to_graphic(false,ent_types)
+                        lv.to_graphic(false, ent_types)
                     };
 
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;

@@ -9,30 +9,35 @@ pub struct Voxel {
 }
 
 impl Voxel {
-    pub fn to_graphic(&self, visible: bool, ent_types: &HashMap<EntityID, EntityType>) -> GraphicTriple {
+    pub fn to_graphic(
+        &self,
+        visible: bool,
+        ent_types: &HashMap<EntityID, EntityType>,
+    ) -> GraphicTriple {
         let mut floor = match &self.floor {
             Some(fl) => fl.to_graphic_triple(),
             None => (" ", RatColor::Black, RatColor::Black),
         };
 
         let mut plus_furn: GraphicTriple = match &self.furniture {
-            Some(furn) => (furn.symbol(), furn.to_color(), floor.2.clone()),
+            Some(furn) => (furn.symbol(), furn.fg_color(), floor.2.clone()),
             None => floor,
         };
 
         if visible {
             for ent in &self.entity_set {
-                   if let Some(etyp) = ent_types.get(ent) { let pik = etyp.to_graphic_triple();
+                if let Some(etyp) = ent_types.get(ent) {
+                    let pik = etyp.to_graphic_triple();
 
                     if plus_furn.0 != "@" {
                         plus_furn = (pik.0, pik.1, plus_furn.2);
-                    } }
-                  
+                    }
+                }
             }
             plus_furn
         } else {
             let mut plus_roof: GraphicTriple = match &self.roof {
-                Some(roof) => (roof.symbol(), roof.to_fg_color(), roof.to_bg_color()),
+                Some(roof) => (roof.symbol(), roof.fg_color(), roof.bg_color()),
                 None => plus_furn,
             };
 
@@ -53,12 +58,13 @@ impl Voxel {
             return true;
         } else {
             for ent in &self.entity_set {
-                if let Some(etyp) = ent_types.get(ent) {let pik = etyp.blocks_movement();
+                if let Some(etyp) = ent_types.get(ent) {
+                    let pik = etyp.blocks_movement();
 
                     if pik {
                         return true;
-                    } }
-                
+                    }
+                }
             }
             return false;
         }

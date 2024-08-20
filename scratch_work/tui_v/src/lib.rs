@@ -56,8 +56,14 @@ pub use voxel::*;
 /*mod components;
 pub use components::*; */
 
-mod typeimpls;
-pub use typeimpls::*;
+mod blockable_trait;
+pub use blockable_trait::*;
 
 mod typeenums;
 pub use typeenums::*;
+
+mod graphic_trait;
+pub use graphic_trait::*;
+
+mod color_trait;
+pub use color_trait::*;
