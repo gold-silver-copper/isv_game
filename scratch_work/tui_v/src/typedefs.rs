@@ -13,12 +13,10 @@ pub const CLAY_FLOOR: Floor = Floor::Earth(EarthType::Clay);
 
 pub const WATER_FLOOR: Floor = Floor::Liquid(LiquidType::Water);
 
-pub struct Player;
 
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (&'static str, RatColor, RatColor);
 
-pub struct GraphicComponent(pub GraphicTriple);
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum GameAction {
@@ -33,11 +31,9 @@ pub enum GameAction {
 }
 
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
-    let mut result = (0, 0);
-    result.0 = p1.0 + p2.0;
-    result.1 = p1.1 + p2.1;
+   
 
-    result
+    (p1.0 + p2.0 , p1.1 + p2.1)
 }
 
 ///NOTICE THIS ARRAY IS INDEXED Y FIRST FOR PERFORMANCE

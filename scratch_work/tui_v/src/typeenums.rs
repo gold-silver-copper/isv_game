@@ -41,6 +41,8 @@ pub enum Roof {
     Imbrex(SolidMaterial),
 }
 
+
+//make material a trait implemented for each material ie impl Material for Mineral
 #[derive(Clone, Debug, PartialEq)]
 pub enum SolidMaterial {
     Wood(Tree),
