@@ -53,7 +53,7 @@ impl GraphicElement for Furniture {
 }
 
 // Implementing the trait for Roof
-impl GraphicElement for Roof {
+impl<T: Material + ToColor> GraphicElement for Roof<T>  {
     fn symbol(&self) -> &'static str {
         match &self {
             Roof::Tegula(_) => "^",

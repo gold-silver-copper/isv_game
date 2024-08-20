@@ -29,11 +29,9 @@ impl EntityType {
 }
 // tegula imbrex
 #[derive(Clone, Debug, Display, PartialEq)]
-pub enum Roof{
-    Tegula(Tree),
+pub enum Roof<T: Material + ToColor> {
+    Tegula(T),
 }
-
-
 
 
 #[derive(Clone, Debug, PartialEq)]

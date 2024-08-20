@@ -5,7 +5,7 @@ pub type EntityID = i64;
 pub const LOCAL_RANGE: i64 = 10000;
 pub const MAP_SIZE: i64 = 100;
 pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);
-pub const TEGULA_ROOF: Roof = Roof::Tegula(Tree::Glinos);
+pub const TEGULA_ROOF: Roof<Tree> = Roof::Tegula(Tree::Glinos);
 
 pub const DIRT_FLOOR: Floor = Floor::Earth(EarthType::Dirt);
 

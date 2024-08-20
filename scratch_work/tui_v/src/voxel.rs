@@ -1,14 +1,14 @@
 use crate::*;
 #[derive(Clone, Debug, PartialEq)]
-pub struct Voxel {
+pub struct Voxel<T: Material + ToColor>  {
     pub floor: Option<Floor>,
-    pub roof: Option<Roof>,
+    pub roof: Option<Roof<T>>,
     pub furniture: Option<Furniture>,
     pub entity_set: HashSet<EntityID>,
     pub voxel_pos: MyPoint,
 }
 
-impl Voxel {
+impl<T: Material + ToColor>  Voxel<T> {
     pub fn to_graphic(
         &self,
         visible: bool,
@@ -78,7 +78,7 @@ impl Voxel {
     }
 }
 
-impl RTreeObject for Voxel {
+impl<T: Material + ToColor>  RTreeObject for Voxel<T> {
     type Envelope = AABB<(i64, i64)>;
 
     fn envelope(&self) -> Self::Envelope {
@@ -86,7 +86,7 @@ impl RTreeObject for Voxel {
     }
 }
 
-impl PointDistance for Voxel {
+impl<T: Material + ToColor>  PointDistance for Voxel<T> {
     fn distance_2(&self, point: &(i64, i64)) -> i64 {
         self.voxel_pos.distance_2(point)
     }
