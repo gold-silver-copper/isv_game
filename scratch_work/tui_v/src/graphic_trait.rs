@@ -63,14 +63,14 @@ impl GraphicElement for Roof {
 
     fn fg_color(&self) -> RatColor {
         match &self {
-            Roof::Tegula(sm) => dim(sm.color(), 1.3),
+            Roof::Tegula(sm) => dim(sm.mat_color(), 1.3),
         
         }
     }
 
     fn bg_color(&self) -> RatColor {
         match &self {
-            Roof::Tegula(sm) => sm.color(),
+            Roof::Tegula(sm) => sm.mat_color(),
        
         }
     }
