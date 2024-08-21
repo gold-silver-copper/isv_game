@@ -5,6 +5,7 @@ pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
 }
 
+
 impl Default for GameMap {
     fn default() -> Self {
         let mut batchvec = Vec::new();
@@ -117,7 +118,7 @@ impl GameMap {
                 self,
             );
 
-            
+
             //    println!("FOV IS {:#?}",fov);
 
             let mut visible_ents = Vec::new();

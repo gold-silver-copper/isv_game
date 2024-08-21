@@ -32,7 +32,7 @@ impl GraphicElement for Floor {
 }
 
 // Implementing the trait for Furniture
-impl GraphicElement for Furniture {
+impl<T: ColoredMaterial> GraphicElement for Furniture<T> {
     fn symbol(&self) -> &'static str {
         match &self {
             Furniture::Wall(_) => "#",

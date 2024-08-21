@@ -1,14 +1,14 @@
 use crate::*;
 #[derive(Clone, Debug, PartialEq)]
-pub struct Voxel {
+pub struct Voxel<T: ColoredMaterial> {
     pub floor: Option<Floor>,
     pub roof: Option<Roof>,
-    pub furniture: Option<Furniture>,
+    pub furniture: Option<Furniture<T>>,
     pub entity_set: HashSet<EntityID>,
     pub voxel_pos: MyPoint,
 }
 
-impl Voxel {
+impl<T: ColoredMaterial> Voxel<T> {
     pub fn to_graphic(
         &self,
         visible: bool,

@@ -50,8 +50,8 @@ pub enum Metal {
 
 
 #[derive(Clone, Debug, Display, PartialEq)]
-pub enum Furniture {
-    Wall(Tree),
+pub enum Furniture<T: ColoredMaterial> {
+    Wall(T),
    
    
 }

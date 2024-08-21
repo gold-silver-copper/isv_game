@@ -7,7 +7,7 @@ pub trait Blockable {
 }
 
 
-impl Blockable for Furniture {
+impl<T: ColoredMaterial> Blockable for Furniture<T> {
     fn blocks_movement(&self) -> bool {
         match &self {
             Furniture::Wall(_) => true,

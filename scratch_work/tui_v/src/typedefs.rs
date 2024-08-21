@@ -17,6 +17,14 @@ pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (&'static str, RatColor, RatColor);
 
 
+// Define the marker trait that combines ToColor and Material
+pub trait ColoredMaterial: ToColor + Material {}
+
+// Provide a blanket implementation for any type that implements both ToColor and Material
+impl<T: ToColor + Material> ColoredMaterial for T {}
+
+
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum GameAction {
     Wait,
