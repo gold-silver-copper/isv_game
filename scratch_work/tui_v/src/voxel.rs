@@ -1,5 +1,5 @@
 use crate::*;
-#[derive(Clone, Debug, PartialEq)]
+#[derive()]
 pub struct Voxel {
     pub floor: Option<Floor>,
     pub roof: Option<Roof>,

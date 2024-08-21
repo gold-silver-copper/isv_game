@@ -1,6 +1,5 @@
 use crate::*;
 
-#[derive(Clone, Debug)]
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
 }
@@ -35,7 +34,7 @@ impl Default for GameMap {
                     batchvec.push(Voxel {
                         floor: Some(floor),
                         furniture: None,
-                        roof: Some(TEGULA_ROOF),
+                        roof: None, //should have roof here
                         entity_set: HashSet::new(),
                         voxel_pos: (x, y),
                     });
@@ -61,17 +60,17 @@ impl Default for GameMap {
 }
 
 impl GameMap {
-    pub fn set_voxel_at(&mut self, vox: &Voxel) {
+    pub fn set_voxel_at(&mut self, vox: Voxel) {
         if let Some(boop) = self.voxeltile_grid.locate_at_point_mut(&vox.voxel_pos) {
-            *boop = vox.clone();
+            *boop = vox;
         } else {
-            self.voxeltile_grid.insert(vox.clone())
+            self.voxeltile_grid.insert(vox)
         }
     }
 
-    pub fn get_voxel_at(&self, point: &MyPoint) -> Option<Voxel> {
+    pub fn get_voxel_at(&self, point: &MyPoint) -> Option<&Voxel> {
         if let Some(boop) = self.voxeltile_grid.locate_at_point(point) {
-            Some(boop.clone())
+            Some(boop)
         } else {
             None
         }
