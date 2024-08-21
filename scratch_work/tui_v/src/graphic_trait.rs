@@ -14,7 +14,6 @@ pub trait GraphicElement {
 impl GraphicElement for Floor {
     fn symbol(&self) -> &'static str {
         match &self {
-            
             Floor::Gravel(_) => ".",
         }
     }
@@ -25,7 +24,6 @@ impl GraphicElement for Floor {
 
     fn bg_color(&self) -> RatColor {
         match &self {
-           
             Floor::Gravel(ear) => ear.color(),
         }
     }
@@ -36,14 +34,12 @@ impl GraphicElement for Furniture {
     fn symbol(&self) -> &'static str {
         match &self {
             Furniture::Wall(_) => "#",
-         
         }
     }
 
     fn fg_color(&self) -> RatColor {
         match &self {
             Furniture::Wall(sm) => sm.color(),
-     
         }
     }
 
@@ -57,21 +53,18 @@ impl GraphicElement for Roof {
     fn symbol(&self) -> &'static str {
         match &self {
             Roof::Tegula(_) => "^",
-      
         }
     }
 
     fn fg_color(&self) -> RatColor {
         match &self {
             Roof::Tegula(sm) => dim(sm.color(), 1.3),
-        
         }
     }
 
     fn bg_color(&self) -> RatColor {
         match &self {
             Roof::Tegula(sm) => sm.color(),
-       
         }
     }
 }

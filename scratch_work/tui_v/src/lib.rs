@@ -68,6 +68,5 @@ pub use graphic_trait::*;
 mod color_trait;
 pub use color_trait::*;
 
-
 mod material_trait;
 pub use material_trait::*;

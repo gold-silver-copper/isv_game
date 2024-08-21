@@ -4,9 +4,6 @@ pub trait ToColor {
     fn color(&self) -> RatColor;
 }
 
-
-
-
 impl ToColor for Tree {
     fn color(&self) -> RatColor {
         match &self {
@@ -14,7 +11,6 @@ impl ToColor for Tree {
         }
     }
 }
-
 
 impl ToColor for Metal {
     fn color(&self) -> RatColor {

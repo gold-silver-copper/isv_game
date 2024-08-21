@@ -1,12 +1,9 @@
 use crate::*;
 
-
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum EntityType {
     Animalia,
 }
-
-
 
 impl EntityType {
     pub fn to_complex_noun(&self) -> ComplexNoun {
@@ -24,16 +21,13 @@ impl EntityType {
 }
 // tegula imbrex
 #[derive(Display)]
-pub enum Roof{
+pub enum Roof {
     Tegula(Box<dyn ColoredMaterial>),
 }
 
 pub enum Floor {
     Gravel(Box<dyn ColoredMaterial>),
 }
-
-
-
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Tree {
@@ -42,12 +36,9 @@ pub enum Tree {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Metal {
-   Gold
+    Gold,
 }
-
 
 pub enum Furniture {
     Wall(Box<dyn ColoredMaterial>),
-   
-   
 }

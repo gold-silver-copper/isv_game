@@ -1,6 +1,6 @@
 use crate::*;
 // ANCHOR: app
-#[derive( Default)]
+#[derive(Default)]
 pub struct App {
     entity_counter: i64,
     components: ComponentHolder,

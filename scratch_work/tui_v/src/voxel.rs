@@ -96,8 +96,6 @@ impl PointDistance for Voxel {
     }
 }
 
-
-
 pub fn dim(color: RatColor, factor: f32) -> RatColor {
     match color {
         RatColor::Rgb(r, g, b) => RatColor::Rgb(
