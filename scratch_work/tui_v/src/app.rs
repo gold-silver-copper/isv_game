@@ -1,17 +1,17 @@
 use crate::*;
 // ANCHOR: app
 #[derive(Debug, Default)]
-pub struct App {
+pub struct App<T: Material + ToColor> {
     entity_counter: i64,
     components: ComponentHolder,
 
     exit: bool,
-    game_map: GameMap,
+    game_map: GameMap<T>,
     action_map: ActionMap,
     local_player_id: EntityID,
 }
 
-impl App {
+impl<T: Material + ToColor> App<T> {
     pub fn run(&mut self, terminal: &mut tui::Tui) -> Result<()> {
         self.init();
         while !self.exit {

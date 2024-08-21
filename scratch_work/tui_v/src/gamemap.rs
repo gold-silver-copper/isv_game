@@ -1,11 +1,11 @@
 use crate::*;
 
 #[derive(Clone, Debug)]
-pub struct GameMap {
-    pub voxeltile_grid: RTree<Voxel>,
+pub struct GameMap<T: Material + ToColor>  {
+    pub voxeltile_grid: RTree<Voxel<T>>,
 }
 
-impl Default for GameMap {
+impl<T: Material + ToColor>  Default for GameMap<T> {
     fn default() -> Self {
         let mut batchvec = Vec::new();
         for x in 0..MAP_SIZE {
@@ -52,7 +52,7 @@ impl Default for GameMap {
             }
         }
 
-        let newtree = RTree::bulk_load(batchvec);
+        let newtree: RTree<Voxel<T>> = RTree::bulk_load(batchvec);
 
         GameMap {
             voxeltile_grid: newtree,
@@ -60,16 +60,16 @@ impl Default for GameMap {
     }
 }
 
-impl GameMap {
-    pub fn set_voxel_at(&mut self, vox: &Voxel) {
+impl<T: Material + ToColor>  GameMap<T> {
+    pub fn set_voxel_at(&mut self, vox: Voxel<T>) {
         if let Some(boop) = self.voxeltile_grid.locate_at_point_mut(&vox.voxel_pos) {
-            *boop = vox.clone();
+            *boop = vox;
         } else {
-            self.voxeltile_grid.insert(vox.clone())
+            self.voxeltile_grid.insert(vox)
         }
     }
 
-    pub fn get_voxel_at(&self, point: &MyPoint) -> Option<Voxel> {
+    pub fn get_voxel_at(&self, point: &MyPoint) -> Option<Voxel<T>> {
         if let Some(boop) = self.voxeltile_grid.locate_at_point(point) {
             Some(boop.clone())
         } else {
@@ -159,7 +159,7 @@ impl GameMap {
     }
 }
 
-impl BaseMap for GameMap {
+impl<T: Material + ToColor>  BaseMap for GameMap<T> {
     fn is_opaque(&self, idx: usize) -> bool {
         let bp = self.index_to_point2d(idx);
         let mp = (bp.x as i64, bp.y as i64);
