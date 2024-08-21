@@ -135,6 +135,12 @@ impl App {
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
+        let layout = Layout::new(
+            Direction::Horizontal,
+            [Constraint::Percentage(80), Constraint::Min(20)],
+        )
+        .split(area);
+
         let client_pos = self
             .components
             .positions
@@ -143,7 +149,7 @@ impl Widget for &App {
 
         let client_render = self.game_map.create_client_render_packet_for_entity(
             &client_pos,
-            &area,
+            &layout[0],
             &self.components.ent_types,
         );
 
@@ -152,7 +158,7 @@ impl Widget for &App {
         //    ui_resources.visible_ents = client_visible_ents;
 
         let mut render_lines = Vec::new();
-        let needed_height = area.height as i16;
+        let needed_height = layout[0].height as i16;
 
         if client_graphics.len() > 0 {
             for y in (0..needed_height) {
@@ -172,6 +178,11 @@ impl Widget for &App {
         Paragraph::new(Text::from(render_lines))
             .on_black()
             .block(Block::new())
-            .render(area, buf);
+            .render(layout[0], buf);
+
+            Paragraph::new(Text::from("hai"))
+            .on_black()
+            .block(Block::bordered())
+            .render(layout[1], buf);
     }
 }

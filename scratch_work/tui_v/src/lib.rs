@@ -8,6 +8,7 @@ pub use botanical_latin::*;
 pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};
 pub use ratatui::style::Color as RatColor;
 pub use ratatui::text::Span;
+use ratatui::{prelude::*, widgets::*};
 pub use ratatui::{
     backend::CrosstermBackend,
     buffer::Buffer,
