@@ -117,6 +117,7 @@ impl GameMap {
                 self,
             );
 
+            
             //    println!("FOV IS {:#?}",fov);
 
             let mut visible_ents = Vec::new();
