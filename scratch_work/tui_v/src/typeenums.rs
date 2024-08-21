@@ -1,8 +1,9 @@
 use crate::*;
 
-#[derive(Clone, Debug, Display, PartialEq)]
+#[derive( Display)]
 pub enum EntityType {
     Animalia,
+    Item(Box<dyn ItemTrait>),
 }
 
 impl EntityType {
@@ -38,6 +39,18 @@ pub enum Tree {
 pub enum Metal {
     Gold,
 }
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Weapon {
+    Sword,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Container {
+    Bag,
+}
+
+
 
 pub enum Furniture {
     Wall(Box<dyn ColoredMaterial>),

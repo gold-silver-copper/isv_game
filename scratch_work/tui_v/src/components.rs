@@ -1,8 +1,21 @@
 use crate::*;
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct ComponentHolder {
     pub positions: HashMap<EntityID, MyPoint>,
     pub ent_types: HashMap<EntityID, EntityType>,
-    pub inventories: HashMap<EntityID, Inventory>,
+    pub equipments: HashMap<EntityID, Equipment>,
+    pub containers:  HashMap<EntityID, Container>,
+}
+
+
+pub type Container = HashSet<EntityID>;
+
+
+pub struct Equipment {
+    wielding: HashSet<EntityID>,
+    wearing:HashSet<EntityID>,
+  
+
+
 }

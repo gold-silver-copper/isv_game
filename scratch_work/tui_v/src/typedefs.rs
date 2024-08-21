@@ -2,7 +2,7 @@ use crate::*;
 
 pub type CoordinateUnit = i64;
 pub type EntityID = i64;
-pub type Inventory = Vec<EntityID>;
+
 pub const LOCAL_RANGE: i64 = 10000;
 pub const MAP_SIZE: i64 = 100;
 //pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);

@@ -82,7 +82,8 @@ impl GraphicElement for EntityType {
     }
     fn symbol(&self) -> &'static str {
         match &self {
-            _ => "@",
+            EntityType::Animalia => "@",
+            EntityType::Item(x) => x.item_symbol() ,
         }
     }
 }

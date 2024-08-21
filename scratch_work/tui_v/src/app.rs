@@ -30,6 +30,7 @@ impl App {
         let pik = (5, 5);
 
         self.local_player_id = self.spawn_player_at(&pik);
+        self.spawn_item_at(&(5,8), Weapon::Sword);
     }
 
     fn handle_events(&mut self) -> Result<()> {
@@ -123,6 +124,27 @@ impl App {
 
         eid.clone()
     }
+
+    pub fn spawn_item_at<T: ItemTrait + 'static>(&mut self, point: &MyPoint, item: T) -> EntityID {
+        let eid = self.get_unique_eid();
+        self.components.positions.insert(eid.clone(), point.clone());
+        self.components
+            .ent_types
+            .insert(eid.clone(), EntityType::Item(Box::new(item)));
+
+            let voxik = self
+            .game_map
+            .get_mut_voxel_at(point)
+            .expect("cant spawn ent in empty voxel");
+
+        voxik.entity_set.insert(eid.clone());
+
+
+        eid
+
+    }
+
+
     pub fn get_unique_eid(&mut self) -> EntityID {
         self.entity_counter += 1;
         self.entity_counter.clone()
