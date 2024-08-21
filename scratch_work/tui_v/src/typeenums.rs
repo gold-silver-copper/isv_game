@@ -1,10 +1,5 @@
 use crate::*;
 
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum EarthType {
-    Dirt,
-   
-}
 
 #[derive(Clone, Debug, Display, PartialEq)]
 pub enum EntityType {
@@ -33,6 +28,10 @@ pub enum Roof{
     Tegula(Box<dyn ColoredMaterial>),
 }
 
+pub enum Floor {
+    Gravel(Box<dyn ColoredMaterial>),
+}
+
 
 
 
@@ -47,11 +46,8 @@ pub enum Metal {
 }
 
 
-
-
-#[derive(Clone, Debug, Display, PartialEq)]
 pub enum Furniture {
-    Wall(Tree),
+    Wall(Box<dyn ColoredMaterial>),
    
    
 }

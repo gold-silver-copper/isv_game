@@ -96,17 +96,7 @@ impl PointDistance for Voxel {
     }
 }
 
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum Floor {
-    Liquid(LiquidType),
-    Earth(EarthType),
-}
 
-#[derive(Clone, Debug, Display, PartialEq)]
-pub enum LiquidType {
-    Water,
-  
-}
 
 pub fn dim(color: RatColor, factor: f32) -> RatColor {
     match color {

@@ -4,13 +4,26 @@ pub type CoordinateUnit = i64;
 pub type EntityID = i64;
 pub const LOCAL_RANGE: i64 = 10000;
 pub const MAP_SIZE: i64 = 100;
-pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);
-//pub const TEGULA_ROOF: Roof = Roof::Tegula(Tree::Glinos);
-
-pub const DIRT_FLOOR: Floor = Floor::Earth(EarthType::Dirt);
+//pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);
 
 
-pub const WATER_FLOOR: Floor = Floor::Liquid(LiquidType::Water);
+
+pub fn wood_wall() -> Option<Furniture> {
+
+    Some(Furniture::Wall(Box::new(Tree::Glinos)))
+}
+
+pub fn tegula_roof() -> Option<Roof> {
+
+    Some(Roof::Tegula(Box::new(Metal::Gold)))
+}
+
+pub fn gravel_floor() -> Floor {
+
+    Floor::Gravel(Box::new(Tree::Glinos))
+}
+
+
 
 
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);

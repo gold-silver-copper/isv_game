@@ -15,20 +15,11 @@ impl ToColor for Tree {
     }
 }
 
-impl ToColor for LiquidType {
-    fn color(&self) -> RatColor {
-        match &self {
-            LiquidType::Water => RatColor::Rgb(35, 137, 218),
-           
-        }
-    }
-}
 
-impl ToColor for EarthType {
+impl ToColor for Metal {
     fn color(&self) -> RatColor {
         match &self {
-            EarthType::Dirt => RatColor::Rgb(145, 118, 83),
-       
+            Metal::Gold => RatColor::Rgb(10, 32, 95),
         }
     }
 }
