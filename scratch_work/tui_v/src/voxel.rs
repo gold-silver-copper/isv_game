@@ -42,7 +42,7 @@ impl Voxel {
             };
 
             plus_roof.1 = dim(plus_roof.1, 0.3);
-            plus_roof.2 = dim(plus_roof.2, 0.3);
+            plus_roof.2 = dim(plus_roof.2, 0.5);
 
             plus_roof
         }

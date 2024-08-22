@@ -19,13 +19,13 @@ impl GraphicElement for Floor {
     }
 
     fn fg_color(&self) -> RatColor {
-        dim(self.bg_color(), 1.2)
-    }
-
-    fn bg_color(&self) -> RatColor {
         match &self {
             Floor::Gravel(ear) => ear.color(),
         }
+    }
+
+    fn bg_color(&self) -> RatColor {
+        dim(self.fg_color(), 0.8)
     }
 }
 
@@ -44,7 +44,7 @@ impl GraphicElement for Furniture {
     }
 
     fn bg_color(&self) -> RatColor {
-        self.fg_color()
+        dim(self.fg_color(), 0.8)
     }
 }
 
