@@ -19,25 +19,27 @@ pub trait ItemTrait {
 impl ItemTrait for ItemType {
     fn weight(&self) -> i64 {
         match self {
-            ItemType::Weapon(wep) => {1},
-            ItemType::Container(cont) => {1}
+            ItemType::Weapon(wep) => 1,
+            ItemType::Container(cont) => 1,
         }
     }
     fn item_symbol(&self) -> &'static str {
         match self {
-            ItemType::Weapon(wep) => {"/"},
-            ItemType::Container(cont) => {"b"}
+            ItemType::Weapon(wep) => "/",
+            ItemType::Container(cont) => "b",
         }
     }
     fn item_name(&self) -> String {
         match self {
-            ItemType::Weapon(wep) => {format!("{wep}")},
-            ItemType::Container(cont) => {format!("{cont}")},
+            ItemType::Weapon(wep) => {
+                format!("{wep}")
+            }
+            ItemType::Container(cont) => {
+                format!("{cont}")
+            }
         }
     }
 }
-
-
 
 impl ContainerTrait for Container {
     fn space(&self) -> i64 {

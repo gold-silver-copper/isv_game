@@ -7,10 +7,8 @@ pub enum EntityType {
 }
 
 pub enum ItemType {
-
     Container(Container),
-    Weapon(Weapon)
-
+    Weapon(Weapon),
 }
 
 impl EntityType {
