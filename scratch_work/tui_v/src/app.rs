@@ -144,6 +144,24 @@ impl App {
 
     }
 
+    pub fn generate_info_paragraph(&self) -> Paragraph {
+
+        let mut lines = (Text::from(vec![
+       
+            Line::from("HAI"),
+          
+       
+        ]));
+
+        Paragraph::new(Text::from(lines))
+        .on_black()
+        .block(Block::bordered())
+        
+
+
+
+    }
+
 
     pub fn get_unique_eid(&mut self) -> EntityID {
         self.entity_counter += 1;
@@ -202,9 +220,7 @@ impl Widget for &App {
             .block(Block::new())
             .render(layout[0], buf);
 
-            Paragraph::new(Text::from("hai"))
-            .on_black()
-            .block(Block::bordered())
+            self.generate_info_paragraph()
             .render(layout[1], buf);
     }
 }
