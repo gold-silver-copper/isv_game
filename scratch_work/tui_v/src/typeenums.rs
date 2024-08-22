@@ -3,7 +3,14 @@ use crate::*;
 #[derive(Display)]
 pub enum EntityType {
     Animalia,
-    Item(Box<dyn ItemTrait>),
+    Item(ItemType),
+}
+
+pub enum ItemType {
+
+    Container(Container),
+    Weapon(Weapon)
+
 }
 
 impl EntityType {

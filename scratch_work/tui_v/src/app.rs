@@ -30,7 +30,7 @@ impl App {
         let pik = (5, 5);
 
         self.local_player_id = self.spawn_player_at(&pik);
-        self.spawn_item_at(&(5, 8), Weapon::Sword);
+        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
     }
 
     fn handle_events(&mut self) -> Result<()> {
@@ -110,9 +110,11 @@ impl App {
 
     pub fn spawn_player_at(&mut self, point: &MyPoint) -> EntityID {
         let pid = self.spawn_animal_at(point);
+        let iid = self.create_item(ItemType::Weapon(Weapon::Sword));
 
 
         let player_equip = self.components.equipments.get_mut(&pid).expect("MUST HAVE QUEIP");
+        player_equip.wielding.insert(iid);
 
 
         pid
@@ -138,13 +140,13 @@ impl App {
         eid.clone()
     }
 
-    pub fn create_item<T: ItemTrait + 'static>(&mut self,  item: T) -> EntityID {
+    pub fn create_item(&mut self,  item: ItemType) -> EntityID {
 
         let eid = self.get_unique_eid();
   
         self.components
             .ent_types
-            .insert(eid.clone(), EntityType::Item(Box::new(item)));
+            .insert(eid.clone(), EntityType::Item(item));
 
   
 
@@ -154,12 +156,12 @@ impl App {
 
     }
 
-    pub fn spawn_item_at<T: ItemTrait + 'static>(&mut self, point: &MyPoint, item: T) -> EntityID {
-        let eid = self.get_unique_eid();
+    pub fn set_ent_position(&mut self, eid: &EntityID, point: &MyPoint) {
+
+
+
         self.components.positions.insert(eid.clone(), point.clone());
-        self.components
-            .ent_types
-            .insert(eid.clone(), EntityType::Item(Box::new(item)));
+    
 
         let voxik = self
             .game_map
@@ -167,6 +169,15 @@ impl App {
             .expect("cant spawn ent in empty voxel");
 
         voxik.entity_set.insert(eid.clone());
+
+
+
+
+    }
+
+    pub fn spawn_item_at(&mut self, point: &MyPoint, item: ItemType) -> EntityID {
+        let eid = self.create_item(item);
+    self.set_ent_position(&eid, point);
 
         eid
     }
