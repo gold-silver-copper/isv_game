@@ -35,4 +35,3 @@ impl Blockable for EntityType {
         }
     }
 }
-

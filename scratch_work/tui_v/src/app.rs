@@ -30,7 +30,7 @@ impl App {
         let pik = (5, 5);
 
         self.local_player_id = self.spawn_player_at(&pik);
-        self.spawn_item_at(&(5,8), Weapon::Sword);
+        self.spawn_item_at(&(5, 8), Weapon::Sword);
     }
 
     fn handle_events(&mut self) -> Result<()> {
@@ -109,11 +109,24 @@ impl App {
     }
 
     pub fn spawn_player_at(&mut self, point: &MyPoint) -> EntityID {
+        let pid = self.spawn_animal_at(point);
+
+
+        let player_equip = self.components.equipments.get_mut(&pid).expect("MUST HAVE QUEIP");
+
+
+        pid
+    }
+
+    pub fn spawn_animal_at(&mut self, point: &MyPoint) -> EntityID {
         let eid = self.get_unique_eid();
         self.components.positions.insert(eid.clone(), point.clone());
         self.components
             .ent_types
             .insert(eid.clone(), EntityType::Animalia);
+        self.components
+            .equipments
+            .insert(eid.clone(), Equipment::default());
 
         let voxik = self
             .game_map
@@ -125,6 +138,22 @@ impl App {
         eid.clone()
     }
 
+    pub fn create_item<T: ItemTrait + 'static>(&mut self,  item: T) -> EntityID {
+
+        let eid = self.get_unique_eid();
+  
+        self.components
+            .ent_types
+            .insert(eid.clone(), EntityType::Item(Box::new(item)));
+
+  
+
+        eid
+
+
+
+    }
+
     pub fn spawn_item_at<T: ItemTrait + 'static>(&mut self, point: &MyPoint, item: T) -> EntityID {
         let eid = self.get_unique_eid();
         self.components.positions.insert(eid.clone(), point.clone());
@@ -132,36 +161,52 @@ impl App {
             .ent_types
             .insert(eid.clone(), EntityType::Item(Box::new(item)));
 
-            let voxik = self
+        let voxik = self
             .game_map
             .get_mut_voxel_at(point)
             .expect("cant spawn ent in empty voxel");
 
         voxik.entity_set.insert(eid.clone());
 
-
         eid
-
     }
 
     pub fn generate_info_paragraph(&self) -> Paragraph {
+        let player_equip = self
+            .components
+            .equipments
+            .get(&self.local_player_id)
+            .expect("PLAYER MUST HAVE EQUIPMENT COMPONENT");
+
+        let mut wield_string = String::new();
+
+        if player_equip.wielding.is_empty() {
+            wield_string = String::from("nothing")
+        } else {
+            for (item) in player_equip.wielding.iter() {
+                let item_type = self
+                    .components
+                    .ent_types
+                    .get(item)
+                    .expect("EVERY ITEM MUST HAVE AN ENTITY TYPE");
+                let item_name = match item_type {
+                    EntityType::Animalia => panic!("CANNOT WIELD ANIMALS... yet"),
+                    EntityType::Item(itemik) => itemik.item_name(),
+                };
+                wield_string.push_str(&format!(" {item_name}"));
+            }
+        }
 
         let mut lines = (Text::from(vec![
-       
             Line::from("HAI"),
-          
-       
+            Line::from("Wielding..."),
+            Line::from(wield_string),
         ]));
 
         Paragraph::new(Text::from(lines))
-        .on_black()
-        .block(Block::bordered())
-        
-
-
-
+            .on_black()
+            .block(Block::bordered())
     }
-
 
     pub fn get_unique_eid(&mut self) -> EntityID {
         self.entity_counter += 1;
@@ -220,7 +265,6 @@ impl Widget for &App {
             .block(Block::new())
             .render(layout[0], buf);
 
-            self.generate_info_paragraph()
-            .render(layout[1], buf);
+        self.generate_info_paragraph().render(layout[1], buf);
     }
 }

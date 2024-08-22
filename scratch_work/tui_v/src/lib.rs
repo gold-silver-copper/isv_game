@@ -8,7 +8,6 @@ pub use botanical_latin::*;
 pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};
 pub use ratatui::style::Color as RatColor;
 pub use ratatui::text::Span;
-use ratatui::{prelude::*, widgets::*};
 pub use ratatui::{
     backend::CrosstermBackend,
     buffer::Buffer,
@@ -27,6 +26,7 @@ pub use ratatui::{
     },
     Frame, Terminal,
 };
+use ratatui::{prelude::*, widgets::*};
 pub use rstar::{Envelope, PointDistance, RTree, RTreeObject, SelectionFunction, AABB};
 pub use std::collections::HashMap;
 pub use std::collections::HashSet;
@@ -71,7 +71,6 @@ pub use color_trait::*;
 
 mod material_trait;
 pub use material_trait::*;
-
 
 mod equipment_traits;
 pub use equipment_traits::*;
