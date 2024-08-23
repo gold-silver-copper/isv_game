@@ -117,7 +117,7 @@ impl App {
             .equipments
             .get_mut(&pid)
             .expect("MUST HAVE QUEIP");
-        player_equip.wielding.insert(iid);
+        player_equip.insert(iid);
 
         pid
     }
@@ -130,7 +130,7 @@ impl App {
             .insert(eid.clone(), EntityType::Animalia);
         self.components
             .equipments
-            .insert(eid.clone(), Equipment::default());
+            .insert(eid.clone(), EntSet::default());
 
         let voxik = self
             .game_map
@@ -179,10 +179,10 @@ impl App {
 
         let mut wield_string = String::new();
 
-        if player_equip.wielding.is_empty() {
+        if player_equip.is_empty() {
             wield_string = String::from("nothing")
         } else {
-            for (item) in player_equip.wielding.iter() {
+            for (item) in player_equip.iter() {
                 let item_type = self
                     .components
                     .ent_types
