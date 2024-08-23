@@ -9,5 +9,3 @@ pub struct ComponentHolder {
 }
 
 pub type EntSet = HashSet<EntityID>;
-
-

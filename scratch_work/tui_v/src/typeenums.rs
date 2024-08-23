@@ -5,6 +5,17 @@ pub enum EntityType {
     Animalia,
     Item(ItemType),
 }
+pub enum InputState {
+    Basic,
+    Grab,
+    Drop,
+}
+
+impl Default for InputState {
+    fn default() -> Self {
+        InputState::Basic
+    }
+}
 
 pub enum ItemType {
     Container(Container),

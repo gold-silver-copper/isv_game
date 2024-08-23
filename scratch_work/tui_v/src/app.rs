@@ -4,6 +4,7 @@ use crate::*;
 pub struct App {
     entity_counter: i64,
     components: ComponentHolder,
+    input_state: InputState,
 
     exit: bool,
     game_map: GameMap,
@@ -46,27 +47,32 @@ impl App {
 
     fn handle_key_event(&mut self, key_event: KeyEvent) -> Result<()> {
         let lid = self.local_player_id.clone();
-        match key_event.code {
-            KeyCode::Char('q') => self.exit(),
 
-            KeyCode::Char('w') => {
-                self.action_map
-                    .insert(lid, GameAction::Go(CardinalDirection::North));
-            }
-            KeyCode::Char('s') => {
-                self.action_map
-                    .insert(lid, GameAction::Go(CardinalDirection::South));
-            }
-            KeyCode::Char('a') => {
-                self.action_map
-                    .insert(lid, GameAction::Go(CardinalDirection::West));
-            }
-            KeyCode::Char('d') => {
-                self.action_map
-                    .insert(lid, GameAction::Go(CardinalDirection::East));
-            }
-            _ => {}
+        match self.input_state {
+            InputState::Basic => match key_event.code {
+                KeyCode::Char('q') => self.exit(),
+
+                KeyCode::Char('w') => {
+                    self.action_map
+                        .insert(lid, GameAction::Go(CardinalDirection::North));
+                }
+                KeyCode::Char('s') => {
+                    self.action_map
+                        .insert(lid, GameAction::Go(CardinalDirection::South));
+                }
+                KeyCode::Char('a') => {
+                    self.action_map
+                        .insert(lid, GameAction::Go(CardinalDirection::West));
+                }
+                KeyCode::Char('d') => {
+                    self.action_map
+                        .insert(lid, GameAction::Go(CardinalDirection::East));
+                }
+                _ => {}
+            },
+            _ => panic!("input state not implemented"),
         }
+
         Ok(())
     }
 
