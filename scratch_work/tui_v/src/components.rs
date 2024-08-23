@@ -14,4 +14,5 @@ pub type Container = HashSet<EntityID>;
 pub struct Equipment {
     pub wielding: HashSet<EntityID>,
     pub wearing: HashSet<EntityID>,
+    
 }
