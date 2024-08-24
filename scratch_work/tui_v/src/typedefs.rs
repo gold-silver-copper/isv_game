@@ -30,9 +30,9 @@ impl<T: ToColor + Material> ColoredMaterial for T {}
 #[derive(Clone, Debug, PartialEq)]
 pub enum GameAction {
     Wait,
-    Take(),
+    PickUp(EntityID),
     MeleeAttack(),
-    Drop(),
+    Drop(EntityID),
     Give(),
     Hit(),
     Go(CardinalDirection),

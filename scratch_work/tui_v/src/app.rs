@@ -22,6 +22,12 @@ impl App {
             terminal.draw(|frame| self.render_frame(frame))?;
             self.handle_events().wrap_err("handle events failed")?;
             self.handle_actions()?;
+            self.reload_ui();
+          
+       
+            
+           
+           
         }
         Ok(())
     }
@@ -72,12 +78,12 @@ impl App {
                         .insert(lid, GameAction::Go(CardinalDirection::East));
                 }
                 KeyCode::Char('i') => {
-                    self.generate_inventory_eid_vec();
+                 
                     self.item_list_state.select_first();
                     self.input_state = InputState::Inventory;
                 }
                 KeyCode::Char('g') => {
-                    self.generate_ground_item_eid_vec();
+         
                     self.item_list_state.select_first();
                     self.input_state = InputState::PickUp;
                 }
@@ -103,10 +109,10 @@ impl App {
                             let id_to_drop = id_to_drop.clone();
                             let lid = self.local_player_id.clone();
 
-                            self.drop_item_from_inv(&id_to_drop, &lid);
+                            self.action_map.insert(lid, GameAction::Drop(id_to_drop));
                         }
                     }
-                    self.generate_inventory_eid_vec();
+                  
                 }
 
                 _ => {}
@@ -131,10 +137,10 @@ impl App {
                             let id_to_drop = id_to_drop.clone();
                             let lid = self.local_player_id.clone();
 
-                            self.pickup_item_from_ground(&id_to_drop, &lid);
+                            self.action_map.insert(lid, GameAction::PickUp(id_to_drop));
                         }
                     }
-                    self.generate_ground_item_eid_vec();
+                  
                 }
 
                 _ => {}
@@ -166,6 +172,15 @@ impl App {
 
         Ok(())
     }
+    fn reload_ui(&mut self) {
+
+
+        match self.input_state {
+            InputState::Inventory => {  self.generate_inventory_eid_vec();}
+            InputState::PickUp => {  self.generate_ground_item_eid_vec();}
+            _ => ()
+        }
+    }
 
     fn handle_actions(&mut self) -> Result<()> {
         let a_map = self.action_map.clone();
@@ -176,6 +191,8 @@ impl App {
 
             match act {
                 GameAction::Go(cd) => self.handle_movement(&eid, &cd)?,
+                GameAction::Drop(iid) => self.drop_item_from_inv(&iid, &eid),
+                GameAction::PickUp(iid) => self.pickup_item_from_ground(&iid, &eid),
                 _ => panic!("meow"),
             }
         }
@@ -309,9 +326,7 @@ impl App {
         list
     }
 
-    pub fn gen_item_name_vec(&mut self,id_vec:&Vec<EntityID>) {
-
-
+    pub fn gen_item_name_vec(&mut self, id_vec: &Vec<EntityID>) {
         let mut itemnamevec = Vec::new();
 
         for itik in id_vec.iter() {
@@ -329,8 +344,6 @@ impl App {
             itemnamevec.push(itname);
         }
         self.item_name_vec = itemnamevec;
-
-
     }
     pub fn generate_inventory_eid_vec(&mut self) {
         let mut evec = Vec::new();
@@ -344,59 +357,49 @@ impl App {
             evec.push(itemik.clone());
         }
 
-       self.gen_item_name_vec(&evec);
+        self.gen_item_name_vec(&evec);
 
         self.item_eid_vec = evec;
     }
 
     pub fn generate_ground_item_eid_vec(&mut self) {
-
         let mut evec = Vec::new();
-        let player_pos = self.components.positions.get(&self.local_player_id).unwrap();
+        let player_pos = self
+            .components
+            .positions
+            .get(&self.local_player_id)
+            .unwrap();
         let player_vox = self.game_map.get_voxel_at(player_pos).unwrap();
 
         for boop in player_vox.entity_set.iter() {
-
             let booptype = self.components.ent_types.get(boop).unwrap();
             match booptype {
                 EntityType::Animalia => {}
-                EntityType::Item(x) => {evec.push(boop.clone());}
+                EntityType::Item(x) => {
+                    evec.push(boop.clone());
+                }
             }
-
-
         }
 
         self.gen_item_name_vec(&evec);
 
         self.item_eid_vec = evec;
-
-
-
-
     }
 
-    pub fn pickup_item_from_ground(&mut self, item: &EntityID,pickerupper:&EntityID) {
-
+    pub fn pickup_item_from_ground(&mut self, item: &EntityID, pickerupper: &EntityID) {
         if let Some(ent_pos) = self.components.positions.get(pickerupper) {
-
             if let Some(ent_vox) = self.game_map.get_mut_voxel_at(ent_pos) {
-
-
                 if ent_vox.entity_set.contains(item) {
-
                     ent_vox.entity_set.remove(item);
-                    self.components.equipments.get_mut(pickerupper).unwrap().inventory.insert(item.clone());
+                    self.components
+                        .equipments
+                        .get_mut(pickerupper)
+                        .unwrap()
+                        .inventory
+                        .insert(item.clone());
                 }
-
-
             }
-
-
-
         }
-
-
-
     }
 
     pub fn get_unique_eid(&mut self) -> EntityID {
