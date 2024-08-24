@@ -5,6 +5,8 @@ pub struct App {
     entity_counter: i64,
     components: ComponentHolder,
     input_state: InputState,
+    inventory_list_state: ListState,
+
 
     exit: bool,
     game_map: GameMap,
@@ -68,6 +70,24 @@ impl App {
                     self.action_map
                         .insert(lid, GameAction::Go(CardinalDirection::East));
                 }
+                KeyCode::Char('i') => {
+                    self.input_state = InputState::Inventory;
+                }
+                _ => {}
+            },
+            InputState::Inventory => match key_event.code {
+                KeyCode::Char('i') => {
+                    self.input_state = InputState::Basic;
+                }
+                KeyCode::Char('w') => {
+            
+                    self.inventory_list_state
+                        .select_previous();
+                }
+                KeyCode::Char('s') => {
+                    self.inventory_list_state
+                    .select_next();
+                }
                 _ => {}
             },
             _ => panic!("input state not implemented"),
@@ -117,13 +137,17 @@ impl App {
     pub fn spawn_player_at(&mut self, point: &MyPoint) -> EntityID {
         let pid = self.spawn_animal_at(point);
         let iid = self.create_item(ItemType::Weapon(Weapon::Sword));
+        let iid2 = self.create_item(ItemType::Clothing(Clothing::Toga));
+        let iid3 = self.create_item(ItemType::Weapon(Weapon::Mace));
 
         let player_equip = self
             .components
             .equipments
             .get_mut(&pid)
             .expect("MUST HAVE QUEIP");
-        player_equip.insert(iid);
+        player_equip.equipped.insert(iid);
+        player_equip.inventory.insert(iid2);
+        player_equip.inventory.insert(iid3);
 
         pid
     }
@@ -136,7 +160,7 @@ impl App {
             .insert(eid.clone(), EntityType::Animalia);
         self.components
             .equipments
-            .insert(eid.clone(), EntSet::default());
+            .insert(eid.clone(), Equipment::default());
 
         let voxik = self
             .game_map
@@ -185,10 +209,10 @@ impl App {
 
         let mut wield_string = String::new();
 
-        if player_equip.is_empty() {
+        if player_equip.equipped.is_empty() {
             wield_string = String::from("nothing")
         } else {
-            for (item) in player_equip.iter() {
+            for (item) in player_equip.equipped.iter() {
                 let item_type = self
                     .components
                     .ent_types
@@ -211,6 +235,17 @@ impl App {
         Paragraph::new(Text::from(lines))
             .on_black()
             .block(Block::bordered())
+    }
+
+    pub fn generate_inventory_list(&self) -> List {
+        let items = ["Item 1", "Item 2", "Item 3"];
+        let list = List::new(items)
+            .block(Block::bordered().title("List"))
+            .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
+            .highlight_symbol(">>")
+            .repeat_highlight_symbol(true);
+
+        list
     }
 
     pub fn get_unique_eid(&mut self) -> EntityID {
@@ -263,13 +298,28 @@ impl Widget for &App {
             }
         }
 
+        let mut list_state = self.inventory_list_state.clone();
+
+        match self.input_state {
+            InputState::Basic => {
+                self.generate_info_paragraph().render(layout[1], buf);
+            }
+            InputState::Inventory => {
+                ratatui::prelude::StatefulWidget::render(
+                    self.generate_inventory_list(),
+                    layout[1],
+                    buf,
+                    &mut list_state,
+                );
+            }
+            _ => panic!("INPUT STATE RENDER NOT IMPELEMNTED"),
+        }
+
         //neccesary beccause drawing is from the top
         render_lines.reverse();
         Paragraph::new(Text::from(render_lines))
             .on_black()
             .block(Block::new())
             .render(layout[0], buf);
-
-        self.generate_info_paragraph().render(layout[1], buf);
     }
 }

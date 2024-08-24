@@ -20,6 +20,7 @@ impl ItemTrait for ItemType {
     fn weight(&self) -> i64 {
         match self {
             ItemType::Weapon(wep) => 1,
+            ItemType::Clothing(cloth) => 1,
             ItemType::Container(cont) => 1,
         }
     }
@@ -27,6 +28,7 @@ impl ItemTrait for ItemType {
         match self {
             ItemType::Weapon(wep) => "/",
             ItemType::Container(cont) => "b",
+            ItemType::Clothing(cloth) => "t",
         }
     }
     fn item_name(&self) -> String {
@@ -36,6 +38,9 @@ impl ItemTrait for ItemType {
             }
             ItemType::Container(cont) => {
                 format!("{cont}")
+            }
+            ItemType::Clothing(cloth) => {
+                format!("{cloth}")
             }
         }
     }

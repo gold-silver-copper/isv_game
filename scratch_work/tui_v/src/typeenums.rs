@@ -7,7 +7,7 @@ pub enum EntityType {
 }
 pub enum InputState {
     Basic,
-    Grab,
+    Inventory,
     Drop,
 }
 
@@ -20,6 +20,7 @@ impl Default for InputState {
 pub enum ItemType {
     Container(Container),
     Weapon(Weapon),
+    Clothing(Clothing),
 }
 
 impl EntityType {
@@ -59,8 +60,12 @@ pub enum Metal {
 #[derive(Clone, Debug, PartialEq, Display)]
 pub enum Weapon {
     Sword,
+    Mace,
 }
-
+#[derive(Clone, Debug, PartialEq, Display)]
+pub enum Clothing {
+    Toga,
+}
 #[derive(Clone, Debug, PartialEq, Display)]
 pub enum Container {
     Bag,
