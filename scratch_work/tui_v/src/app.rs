@@ -59,87 +59,110 @@ impl App {
 
         match self.input_state {
             InputState::Basic => match key_event.code {
-                KeyCode::Char('q') => self.exit(),
+                KeyCode::Char(QUIT_BACK) => self.exit(),
 
-                KeyCode::Char('w') => {
+                KeyCode::Char(CURSOR_UP) => {
                     self.action_map
                         .insert(lid, GameAction::Go(CardinalDirection::North));
                 }
-                KeyCode::Char('s') => {
+                KeyCode::Char(CURSOR_DOWN) => {
                     self.action_map
                         .insert(lid, GameAction::Go(CardinalDirection::South));
                 }
-                KeyCode::Char('a') => {
+                KeyCode::Char(CURSOR_LEFT) => {
                     self.action_map
                         .insert(lid, GameAction::Go(CardinalDirection::West));
                 }
-                KeyCode::Char('d') => {
+                KeyCode::Char(CURSOR_RIGHT) => {
                     self.action_map
                         .insert(lid, GameAction::Go(CardinalDirection::East));
                 }
-                KeyCode::Char('i') => {
+                KeyCode::Char(INVENTORY_MENU) => {
                  
                     self.item_list_state.select_first();
                     self.input_state = InputState::Inventory;
                 }
-                KeyCode::Char('g') => {
+                KeyCode::Char(PICKUP_MENU) => {
          
                     self.item_list_state.select_first();
                     self.input_state = InputState::PickUp;
                 }
+                KeyCode::Char(EQUIPMENT_MENU) => {
+         
+                    self.item_list_state.select_first();
+                    self.input_state = InputState::Equipment;
+                }
                 _ => {}
             },
             InputState::Inventory => match key_event.code {
-                KeyCode::Char('i') => {
+                KeyCode::Char(INVENTORY_MENU) => {
                     self.input_state = InputState::Basic;
                 }
-                KeyCode::Char('w') => {
+                KeyCode::Char(CURSOR_UP) => {
                     self.item_list_state.select_previous();
                 }
-                KeyCode::Char('s') => {
+                KeyCode::Char(CURSOR_DOWN) => {
                     if let Some(invlen) = self.item_list_state.selected() {
                         if invlen < self.item_eid_vec.len() - 1 {
                             self.item_list_state.select_next();
                         }
                     }
                 }
-                KeyCode::Char('h') => {
-                    if let Some(sid) = self.item_list_state.selected() {
-                        if let Some(id_to_drop) = self.item_eid_vec.get(sid) {
-                            let id_to_drop = id_to_drop.clone();
-                            let lid = self.local_player_id.clone();
+                KeyCode::Char(DROP_UNEQUIP_ACTION) => {
+                    let (possible,selected_id) = self.manage_item_vec_input();
+                    if possible {self.action_map.insert(lid, GameAction::Drop(selected_id));}
+                  
+                }
+                KeyCode::Char(PICKUP_EQUIP_ACTION) => {
+                    let (possible,selected_id) = self.manage_item_vec_input();
+                    if possible {self.action_map.insert(lid, GameAction::Equip(selected_id));}
+                  
+                }
 
-                            self.action_map.insert(lid, GameAction::Drop(id_to_drop));
+                _ => {}
+            },
+            InputState::Equipment => match key_event.code {
+                KeyCode::Char(EQUIPMENT_MENU) => {
+                    self.input_state = InputState::Basic;
+                }
+                KeyCode::Char(CURSOR_UP) => {
+                    self.item_list_state.select_previous();
+                }
+                KeyCode::Char(CURSOR_DOWN) => {
+                    if let Some(invlen) = self.item_list_state.selected() {
+                        if invlen < self.item_eid_vec.len() - 1 {
+                            self.item_list_state.select_next();
                         }
                     }
+                }
+            
+                KeyCode::Char(DROP_UNEQUIP_ACTION) => {
+                    let (possible,selected_id) = self.manage_item_vec_input();
+                    if possible {self.action_map.insert(lid, GameAction::UnEquip(selected_id));}
                   
                 }
 
                 _ => {}
             },
             InputState::PickUp => match key_event.code {
-                KeyCode::Char('g') => {
+                KeyCode::Char(PICKUP_MENU) => {
                     self.input_state = InputState::Basic;
                 }
-                KeyCode::Char('w') => {
+                KeyCode::Char(CURSOR_UP) => {
                     self.item_list_state.select_previous();
                 }
-                KeyCode::Char('s') => {
+                KeyCode::Char(CURSOR_DOWN) => {
                     if let Some(invlen) = self.item_list_state.selected() {
                         if invlen < self.item_eid_vec.len() - 1 {
                             self.item_list_state.select_next();
                         }
                     }
                 }
-                KeyCode::Char('h') => {
-                    if let Some(sid) = self.item_list_state.selected() {
-                        if let Some(id_to_drop) = self.item_eid_vec.get(sid) {
-                            let id_to_drop = id_to_drop.clone();
-                            let lid = self.local_player_id.clone();
+                KeyCode::Char(PICKUP_EQUIP_ACTION) => {
 
-                            self.action_map.insert(lid, GameAction::PickUp(id_to_drop));
-                        }
-                    }
+                    let (possible,selected_id) = self.manage_item_vec_input();
+                    if possible {self.action_map.insert(lid, GameAction::PickUp(selected_id));}
+             
                   
                 }
 
@@ -149,6 +172,22 @@ impl App {
         }
 
         Ok(())
+    }
+
+    fn manage_item_vec_input(&self) -> (bool,EntityID) {
+
+        if let Some(sid) = self.item_list_state.selected() {
+            if let Some(id_to_pickup) = self.item_eid_vec.get(sid) {
+                let id_to_pickup = id_to_pickup.clone();
+                let lid = self.local_player_id.clone();
+
+                return     (true,id_to_pickup);
+
+               
+            }
+        }
+
+        (false,0)
     }
 
     fn handle_movement(&mut self, eid: &EntityID, cd: &CardinalDirection) -> Result<()> {
@@ -178,6 +217,7 @@ impl App {
         match self.input_state {
             InputState::Inventory => {  self.generate_inventory_eid_vec();}
             InputState::PickUp => {  self.generate_ground_item_eid_vec();}
+            InputState::Equipment => {  self.generate_equipped_eid_vec();}
             _ => ()
         }
     }
@@ -193,6 +233,8 @@ impl App {
                 GameAction::Go(cd) => self.handle_movement(&eid, &cd)?,
                 GameAction::Drop(iid) => self.drop_item_from_inv(&iid, &eid),
                 GameAction::PickUp(iid) => self.pickup_item_from_ground(&iid, &eid),
+                GameAction::Equip(iid) => self.equip_item_from_inv(&iid, &eid),
+                GameAction::UnEquip(iid) => self.unequip_item_from_equipped(&iid, &eid),
                 _ => panic!("meow"),
             }
         }
@@ -361,6 +403,22 @@ impl App {
 
         self.item_eid_vec = evec;
     }
+    pub fn generate_equipped_eid_vec(&mut self) {
+        let mut evec = Vec::new();
+        let player_equi = self
+            .components
+            .equipments
+            .get(&self.local_player_id)
+            .expect("must have equi");
+
+        for itemik in player_equi.equipped.iter() {
+            evec.push(itemik.clone());
+        }
+
+        self.gen_item_name_vec(&evec);
+
+        self.item_eid_vec = evec;
+    }
 
     pub fn generate_ground_item_eid_vec(&mut self) {
         let mut evec = Vec::new();
@@ -398,6 +456,31 @@ impl App {
                         .inventory
                         .insert(item.clone());
                 }
+            }
+        }
+    }
+
+    pub fn equip_item_from_inv(&mut self, item: &EntityID, equipper: &EntityID ) {
+
+        if let Some(boop) = self.components.equipments.get_mut(equipper) {
+            if boop.inventory.contains(item) {
+
+                boop.inventory.remove(item);
+                boop.equipped.insert(item.clone());
+
+
+            }
+        }
+    }
+    pub fn unequip_item_from_equipped(&mut self, item: &EntityID, equipper: &EntityID ) {
+
+        if let Some(boop) = self.components.equipments.get_mut(equipper) {
+            if boop.equipped.contains(item) {
+
+                boop.equipped.remove(item);
+                boop.inventory.insert(item.clone());
+
+
             }
         }
     }
@@ -469,6 +552,14 @@ impl Widget for &App {
             InputState::PickUp => {
                 ratatui::prelude::StatefulWidget::render(
                     self.render_item_list("Items on Ground"),
+                    layout[1],
+                    buf,
+                    &mut list_state,
+                );
+            }
+            InputState::Equipment => {
+                ratatui::prelude::StatefulWidget::render(
+                    self.render_item_list("Equipped Items"),
                     layout[1],
                     buf,
                     &mut list_state,
