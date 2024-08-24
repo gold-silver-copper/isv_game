@@ -92,6 +92,18 @@ impl App {
                         }
                     }
                 }
+                KeyCode::Char('h') => {
+                    if let Some(sid) = self.inventory_list_state.selected() {
+                        if let Some(id_to_drop) = self.inventory_eid_vec.get(sid) {
+                            let id_to_drop = id_to_drop.clone();
+                            let lid = self.local_player_id.clone();
+
+                            self.drop_item_from_inv(&id_to_drop, &lid);
+                        }
+                    }
+                    self.generate_inventory_eid_vec();
+                }
+
                 _ => {}
             },
             _ => panic!("input state not implemented"),
@@ -184,6 +196,17 @@ impl App {
             .insert(eid.clone(), EntityType::Item(item));
 
         eid
+    }
+
+    pub fn drop_item_from_inv(&mut self, item: &EntityID, holder: &EntityID) {
+        let holder_inv = self.components.equipments.get_mut(holder).unwrap();
+        let holder_pos = self.components.positions.get(holder).unwrap();
+
+        if holder_inv.inventory.contains(item) {
+            holder_inv.inventory.remove(item);
+            let holder_vox = self.game_map.get_mut_voxel_at(holder_pos).unwrap();
+            holder_vox.entity_set.insert(item.clone());
+        }
     }
 
     pub fn set_ent_position(&mut self, eid: &EntityID, point: &MyPoint) {
