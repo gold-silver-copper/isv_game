@@ -5,27 +5,25 @@ pub struct App {
     entity_counter: i64,
     components: ComponentHolder,
     input_state: InputState,
-    item_list_state: ListState,
-    item_eid_vec: Vec<EntityID>,
-    item_name_vec: Vec<String>,
-    show_popup: bool,
+
+    inv_vecs: ItemVecs,
 
     exit: bool,
     game_map: GameMap,
     action_map: ActionMap,
     local_player_id: EntityID,
 }
-
+#[derive(Default)]
 pub struct ItemVecs {
     inventory: Vec<EntityID>,
-    inventory_states:ListState,
-    inventory_names:  Vec<String>,
+    item_list_state: ListState,
+    inventory_names: Vec<String>,
     equipment: Vec<EntityID>,
-    equipment_states:ListState,
-    equipment_names:  Vec<String>,
+
+    equipment_names: Vec<String>,
     ground: Vec<EntityID>,
-    ground_states:ListState,
-    ground_names:  Vec<String>,
+
+    ground_names: Vec<String>,
 }
 
 impl App {
@@ -36,11 +34,6 @@ impl App {
             self.handle_events().wrap_err("handle events failed")?;
             self.handle_actions()?;
             self.reload_ui();
-          
-       
-            
-           
-           
         }
         Ok(())
     }
@@ -73,7 +66,6 @@ impl App {
         match self.input_state {
             InputState::Basic => match key_event.code {
                 KeyCode::Char(QUIT_BACK) => self.exit(),
-                KeyCode::Char('l') => self.show_popup =!self.show_popup,
 
                 KeyCode::Char(CURSOR_UP) => {
                     self.action_map
@@ -92,20 +84,10 @@ impl App {
                         .insert(lid, GameAction::Go(CardinalDirection::East));
                 }
                 KeyCode::Char(INVENTORY_MENU) => {
-                 
-                    self.item_list_state.select_first();
+                    self.inv_vecs.item_list_state.select_first();
                     self.input_state = InputState::Inventory;
                 }
-                KeyCode::Char(PICKUP_MENU) => {
-         
-                    self.item_list_state.select_first();
-                    self.input_state = InputState::PickUp;
-                }
-                KeyCode::Char(EQUIPMENT_MENU) => {
-         
-                    self.item_list_state.select_first();
-                    self.input_state = InputState::Equipment;
-                }
+
                 _ => {}
             },
             InputState::Inventory => match key_event.code {
@@ -113,95 +95,48 @@ impl App {
                     self.input_state = InputState::Basic;
                 }
                 KeyCode::Char(CURSOR_UP) => {
-                    self.item_list_state.select_previous();
+                    self.inv_vecs.item_list_state.select_previous();
                 }
                 KeyCode::Char(CURSOR_DOWN) => {
-                    if let Some(invlen) = self.item_list_state.selected() {
-                        if invlen < self.item_eid_vec.len() - 1 {
-                            self.item_list_state.select_next();
+                    if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
+                        if invlen < self.inv_vecs.inventory.len() - 1 {
+                            self.inv_vecs.item_list_state.select_next();
                         }
                     }
                 }
                 KeyCode::Char(DROP_UNEQUIP_ACTION) => {
-                    let (possible,selected_id) = self.manage_item_vec_input();
-                    if possible {self.action_map.insert(lid, GameAction::Drop(selected_id));}
-                  
-                }
-                KeyCode::Char(PICKUP_EQUIP_ACTION) => {
-                    let (possible,selected_id) = self.manage_item_vec_input();
-                    if possible {self.action_map.insert(lid, GameAction::Equip(selected_id));}
-                  
-                }
-
-                _ => {}
-            },
-            InputState::Equipment => match key_event.code {
-                KeyCode::Char(EQUIPMENT_MENU) => {
-                    self.input_state = InputState::Basic;
-                }
-                KeyCode::Char(CURSOR_UP) => {
-                    self.item_list_state.select_previous();
-                }
-                KeyCode::Char(CURSOR_DOWN) => {
-                    if let Some(invlen) = self.item_list_state.selected() {
-                        if invlen < self.item_eid_vec.len() - 1 {
-                            self.item_list_state.select_next();
-                        }
-                    }
-                }
-            
-                KeyCode::Char(DROP_UNEQUIP_ACTION) => {
-                    let (possible,selected_id) = self.manage_item_vec_input();
-                    if possible {self.action_map.insert(lid, GameAction::UnEquip(selected_id));}
-                  
-                }
-
-                _ => {}
-            },
-            InputState::PickUp => match key_event.code {
-                KeyCode::Char(PICKUP_MENU) => {
-                    self.input_state = InputState::Basic;
-                }
-                KeyCode::Char(CURSOR_UP) => {
-                    self.item_list_state.select_previous();
-                }
-                KeyCode::Char(CURSOR_DOWN) => {
-                    if let Some(invlen) = self.item_list_state.selected() {
-                        if invlen < self.item_eid_vec.len() - 1 {
-                            self.item_list_state.select_next();
-                        }
+                    let (possible, selected_id) = self.manage_item_vec_input();
+                    if possible {
+                        self.action_map.insert(lid, GameAction::Drop(selected_id));
                     }
                 }
                 KeyCode::Char(PICKUP_EQUIP_ACTION) => {
-
-                    let (possible,selected_id) = self.manage_item_vec_input();
-                    if possible {self.action_map.insert(lid, GameAction::PickUp(selected_id));}
-             
-                  
+                    let (possible, selected_id) = self.manage_item_vec_input();
+                    if possible {
+                        self.action_map.insert(lid, GameAction::Equip(selected_id));
+                    }
                 }
 
                 _ => {}
             },
+
             _ => panic!("input state not implemented"),
         }
 
         Ok(())
     }
 
-    fn manage_item_vec_input(&self) -> (bool,EntityID) {
-
-        if let Some(sid) = self.item_list_state.selected() {
-            if let Some(id_to_pickup) = self.item_eid_vec.get(sid) {
+    fn manage_item_vec_input(&self) -> (bool, EntityID) {
+        if let Some(sid) = self.inv_vecs.item_list_state.selected() {
+            if let Some(id_to_pickup) = self.inv_vecs.inventory.get(sid) {
                 let id_to_pickup = id_to_pickup.clone();
                 let lid = self.local_player_id.clone();
 
-                return     (true,id_to_pickup);
-
-               
+                return (true, id_to_pickup);
             }
         }
 
-        (false,0)
+        (false, 0)
     }
 
     fn handle_movement(&mut self, eid: &EntityID, cd: &CardinalDirection) -> Result<()> {
@@ -229,10 +164,13 @@ impl App {
 
 
         match self.input_state {
-            InputState::Inventory => {  self.generate_inventory_eid_vec();}
-            InputState::PickUp => {  self.generate_ground_item_eid_vec();}
-            InputState::Equipment => {  self.generate_equipped_eid_vec();}
-            _ => ()
+            InputState::Inventory => {
+                self.generate_inventory_eid_vec();
+                self.generate_equipped_eid_vec();
+                self.generate_ground_item_eid_vec();
+            }
+        
+            _ => (),
         }
     }
 
@@ -370,19 +308,26 @@ impl App {
             .block(Block::bordered())
     }
 
-    pub fn render_item_list(&self, title: &str) -> List {
-        let wut = self.item_name_vec.clone();
+    pub fn render_item_list(&self, title: &str, itemvectype: ItemVecType) -> List {
+        
+
+        let wut = match itemvectype {
+
+            ItemVecType::Equipped => self.inv_vecs.equipment_names.clone(),
+            ItemVecType::Inventory => self.inv_vecs.inventory_names.clone(),
+            ItemVecType::Ground => self.inv_vecs.ground_names.clone(),
+        };
 
         let list = List::new(wut)
             .block(Block::bordered().title(title.to_string()))
             .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
-            .highlight_symbol(">>")
+            .highlight_symbol(">")
             .repeat_highlight_symbol(true);
 
         list
     }
 
-    pub fn gen_item_name_vec(&mut self, id_vec: &Vec<EntityID>) {
+    pub fn gen_item_name_vec(&mut self, id_vec: &Vec<EntityID>) -> Vec<String> {
         let mut itemnamevec = Vec::new();
 
         for itik in id_vec.iter() {
@@ -399,7 +344,7 @@ impl App {
             };
             itemnamevec.push(itname);
         }
-        self.item_name_vec = itemnamevec;
+      itemnamevec
     }
     pub fn generate_inventory_eid_vec(&mut self) {
         let mut evec = Vec::new();
@@ -413,9 +358,9 @@ impl App {
             evec.push(itemik.clone());
         }
 
-        self.gen_item_name_vec(&evec);
+         self.inv_vecs.inventory_names = self.gen_item_name_vec(&evec);
 
-        self.item_eid_vec = evec;
+        self.inv_vecs.inventory = evec;
     }
     pub fn generate_equipped_eid_vec(&mut self) {
         let mut evec = Vec::new();
@@ -429,9 +374,9 @@ impl App {
             evec.push(itemik.clone());
         }
 
-        self.gen_item_name_vec(&evec);
+        self.inv_vecs.equipment_names =self.gen_item_name_vec(&evec);
 
-        self.item_eid_vec = evec;
+        self.inv_vecs.equipment = evec;
     }
 
     pub fn generate_ground_item_eid_vec(&mut self) {
@@ -453,9 +398,9 @@ impl App {
             }
         }
 
-        self.gen_item_name_vec(&evec);
+        self.inv_vecs.ground_names =self.gen_item_name_vec(&evec);
 
-        self.item_eid_vec = evec;
+        self.inv_vecs.ground = evec;
     }
 
     pub fn pickup_item_from_ground(&mut self, item: &EntityID, pickerupper: &EntityID) {
@@ -474,27 +419,19 @@ impl App {
         }
     }
 
-    pub fn equip_item_from_inv(&mut self, item: &EntityID, equipper: &EntityID ) {
-
+    pub fn equip_item_from_inv(&mut self, item: &EntityID, equipper: &EntityID) {
         if let Some(boop) = self.components.equipments.get_mut(equipper) {
             if boop.inventory.contains(item) {
-
                 boop.inventory.remove(item);
                 boop.equipped.insert(item.clone());
-
-
             }
         }
     }
-    pub fn unequip_item_from_equipped(&mut self, item: &EntityID, equipper: &EntityID ) {
-
+    pub fn unequip_item_from_equipped(&mut self, item: &EntityID, equipper: &EntityID) {
         if let Some(boop) = self.components.equipments.get_mut(equipper) {
             if boop.equipped.contains(item) {
-
                 boop.equipped.remove(item);
                 boop.inventory.insert(item.clone());
-
-
             }
         }
     }
@@ -503,8 +440,6 @@ impl App {
         self.entity_counter += 1;
         self.entity_counter.clone()
     }
-
-
 
     fn exit(&mut self) {
         self.exit = true;
@@ -551,9 +486,7 @@ impl Widget for &App {
             }
         }
 
-        let mut list_state = self.item_list_state.clone();
-
-   
+        let mut list_state = self.inv_vecs.item_list_state.clone();
 
         //neccesary beccause drawing is from the top
         render_lines.reverse();
@@ -561,60 +494,55 @@ impl Widget for &App {
             .on_black()
             .block(Block::new())
             .render(layout[0], buf);
-        let wut = Block::bordered().title("WUT");
+        self.generate_info_paragraph().render(layout[1], buf);
 
-            if self.show_popup {
+        match self.input_state {
+            InputState::Basic => (),
+
+            InputState::Inventory => {
                 let block = Block::bordered().title("Popup");
                 let pop_area = popup_area(layout[0], 80, 70);
                 let pop_layout = Layout::new(
                     Direction::Horizontal,
-                    [Constraint::Min(20),Constraint::Min(20), Constraint::Min(20)],
+                    [
+                        Constraint::Min(20),
+                        Constraint::Min(20),
+                        Constraint::Min(20),
+                    ],
                 )
                 .split(pop_area);
-                Clear.render(pop_area,buf); //this clears out the background
-                block.render(pop_area,buf); //this clears out the background
-
-                match self.input_state {
-                    InputState::Basic => {
-                        self.generate_info_paragraph().render(layout[1], buf);
-                    }
-                    InputState::Inventory => {
-                        ratatui::prelude::StatefulWidget::render(
-                            self.render_item_list("Inventory"),
-                            pop_layout[0],
-                            buf,
-                            &mut list_state,
-                        );
-                    }
-                    InputState::PickUp => {
-                        ratatui::prelude::StatefulWidget::render(
-                            self.render_item_list("Items on Ground"),
-                            layout[1],
-                            buf,
-                            &mut list_state,
-                        );
-                    }
-                    InputState::Equipment => {
-                        ratatui::prelude::StatefulWidget::render(
-                            self.render_item_list("Equipped Items"),
-                            layout[1],
-                            buf,
-                            &mut list_state,
-                        );
-                    }
-                    _ => panic!("INPUT STATE RENDER NOT IMPELEMNTED"),
-                }
-              
+                Clear.render(pop_area, buf); //this clears out the background
+                block.render(pop_area, buf); //this clears out the background
+                ratatui::prelude::StatefulWidget::render(
+                    self.render_item_list("Inventory",ItemVecType::Inventory),
+                    pop_layout[0],
+                    buf,
+                    &mut list_state,
+                );
+                ratatui::prelude::StatefulWidget::render(
+                    self.render_item_list("Equipped",ItemVecType::Equipped),
+                    pop_layout[1],
+                    buf,
+                    &mut list_state,
+                );
+                ratatui::prelude::StatefulWidget::render(
+                    self.render_item_list("Ground",ItemVecType::Ground),
+                    pop_layout[2],
+                    buf,
+                    &mut list_state,
+                );
             }
+
+            _ => panic!("INPUT STATE RENDER NOT IMPELEMNTED"),
+        }
     }
 }
 
-
-    /// helper function to create a centered rect using up certain percentage of the available rect `r`
-    fn popup_area(area: Rect, percent_x: u16, percent_y: u16) -> Rect {
-        let vertical = Layout::vertical([Constraint::Percentage(percent_y)]).flex(Flex::Center);
-        let horizontal = Layout::horizontal([Constraint::Percentage(percent_x)]).flex(Flex::Center);
-        let [area] = vertical.areas(area);
-        let [area] = horizontal.areas(area);
-        area
-    }
+/// helper function to create a centered rect using up certain percentage of the available rect `r`
+fn popup_area(area: Rect, percent_x: u16, percent_y: u16) -> Rect {
+    let vertical = Layout::vertical([Constraint::Percentage(percent_y)]).flex(Flex::Center);
+    let horizontal = Layout::horizontal([Constraint::Percentage(percent_x)]).flex(Flex::Center);
+    let [area] = vertical.areas(area);
+    let [area] = horizontal.areas(area);
+    area
+}

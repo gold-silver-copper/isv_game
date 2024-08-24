@@ -16,7 +16,7 @@ pub use ratatui::{
         execute,
         terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     },
-    layout::{Alignment, Rect,Flex},
+    layout::{Alignment, Flex, Rect},
     style::Stylize,
     symbols::border,
     text::{Line, Text},

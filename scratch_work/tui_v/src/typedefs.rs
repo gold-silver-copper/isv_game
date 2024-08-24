@@ -6,7 +6,6 @@ pub type EntityID = i64;
 pub const LOCAL_RANGE: i64 = 10000;
 pub const MAP_SIZE: i64 = 100;
 
-
 pub const CURSOR_UP: char = 'w';
 pub const CURSOR_DOWN: char = 's';
 pub const CURSOR_LEFT: char = 'a';
@@ -17,7 +16,6 @@ pub const PICKUP_MENU: char = 'p';
 pub const DROP_UNEQUIP_ACTION: char = 'h';
 pub const PICKUP_EQUIP_ACTION: char = 'j';
 pub const QUIT_BACK: char = 'q';
-
 
 //pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);
 

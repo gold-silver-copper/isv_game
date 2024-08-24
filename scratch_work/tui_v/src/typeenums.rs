@@ -12,6 +12,12 @@ pub enum InputState {
     PickUp,
 }
 
+pub enum ItemVecType {
+    Inventory,
+    Ground,
+    Equipped
+}
+
 impl Default for InputState {
     fn default() -> Self {
         InputState::Basic
