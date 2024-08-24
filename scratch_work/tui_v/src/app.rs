@@ -16,6 +16,18 @@ pub struct App {
     local_player_id: EntityID,
 }
 
+pub struct ItemVecs {
+    inventory: Vec<EntityID>,
+    inventory_states:ListState,
+    inventory_names:  Vec<String>,
+    equipment: Vec<EntityID>,
+    equipment_states:ListState,
+    equipment_names:  Vec<String>,
+    ground: Vec<EntityID>,
+    ground_states:ListState,
+    ground_names:  Vec<String>,
+}
+
 impl App {
     pub fn run(&mut self, terminal: &mut tui::Tui) -> Result<()> {
         self.init();
