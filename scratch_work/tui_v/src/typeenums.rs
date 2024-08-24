@@ -18,6 +18,12 @@ pub enum ItemVecType {
     Equipped
 }
 
+impl Default for ItemVecType {
+    fn default() -> Self {
+        ItemVecType::Ground
+    }
+}
+
 impl Default for InputState {
     fn default() -> Self {
         InputState::Basic
