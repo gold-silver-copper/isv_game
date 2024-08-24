@@ -8,6 +8,7 @@ pub struct App {
     item_list_state: ListState,
     item_eid_vec: Vec<EntityID>,
     item_name_vec: Vec<String>,
+    show_popup: bool,
 
     exit: bool,
     game_map: GameMap,
@@ -60,6 +61,7 @@ impl App {
         match self.input_state {
             InputState::Basic => match key_event.code {
                 KeyCode::Char(QUIT_BACK) => self.exit(),
+                KeyCode::Char('l') => self.show_popup =!self.show_popup,
 
                 KeyCode::Char(CURSOR_UP) => {
                     self.action_map
@@ -490,6 +492,8 @@ impl App {
         self.entity_counter.clone()
     }
 
+
+
     fn exit(&mut self) {
         self.exit = true;
     }
@@ -574,5 +578,23 @@ impl Widget for &App {
             .on_black()
             .block(Block::new())
             .render(layout[0], buf);
+
+            if self.show_popup {
+                let block = Block::bordered().title("Popup");
+                let pop_area = popup_area(layout[0], 60, 20);
+                Clear.render(pop_area,buf); //this clears out the background
+                block.render(pop_area,buf); //this clears out the background
+              
+            }
     }
 }
+
+
+    /// helper function to create a centered rect using up certain percentage of the available rect `r`
+    fn popup_area(area: Rect, percent_x: u16, percent_y: u16) -> Rect {
+        let vertical = Layout::vertical([Constraint::Percentage(percent_y)]).flex(Flex::Center);
+        let horizontal = Layout::horizontal([Constraint::Percentage(percent_x)]).flex(Flex::Center);
+        let [area] = vertical.areas(area);
+        let [area] = horizontal.areas(area);
+        area
+    }
