@@ -553,36 +553,7 @@ impl Widget for &App {
 
         let mut list_state = self.item_list_state.clone();
 
-        match self.input_state {
-            InputState::Basic => {
-                self.generate_info_paragraph().render(layout[1], buf);
-            }
-            InputState::Inventory => {
-                ratatui::prelude::StatefulWidget::render(
-                    self.render_item_list("Inventory"),
-                    layout[1],
-                    buf,
-                    &mut list_state,
-                );
-            }
-            InputState::PickUp => {
-                ratatui::prelude::StatefulWidget::render(
-                    self.render_item_list("Items on Ground"),
-                    layout[1],
-                    buf,
-                    &mut list_state,
-                );
-            }
-            InputState::Equipment => {
-                ratatui::prelude::StatefulWidget::render(
-                    self.render_item_list("Equipped Items"),
-                    layout[1],
-                    buf,
-                    &mut list_state,
-                );
-            }
-            _ => panic!("INPUT STATE RENDER NOT IMPELEMNTED"),
-        }
+   
 
         //neccesary beccause drawing is from the top
         render_lines.reverse();
@@ -590,12 +561,49 @@ impl Widget for &App {
             .on_black()
             .block(Block::new())
             .render(layout[0], buf);
+        let wut = Block::bordered().title("WUT");
 
             if self.show_popup {
                 let block = Block::bordered().title("Popup");
-                let pop_area = popup_area(layout[0], 60, 20);
+                let pop_area = popup_area(layout[0], 80, 70);
+                let pop_layout = Layout::new(
+                    Direction::Horizontal,
+                    [Constraint::Min(20),Constraint::Min(20), Constraint::Min(20)],
+                )
+                .split(pop_area);
                 Clear.render(pop_area,buf); //this clears out the background
                 block.render(pop_area,buf); //this clears out the background
+
+                match self.input_state {
+                    InputState::Basic => {
+                        self.generate_info_paragraph().render(layout[1], buf);
+                    }
+                    InputState::Inventory => {
+                        ratatui::prelude::StatefulWidget::render(
+                            self.render_item_list("Inventory"),
+                            pop_layout[0],
+                            buf,
+                            &mut list_state,
+                        );
+                    }
+                    InputState::PickUp => {
+                        ratatui::prelude::StatefulWidget::render(
+                            self.render_item_list("Items on Ground"),
+                            layout[1],
+                            buf,
+                            &mut list_state,
+                        );
+                    }
+                    InputState::Equipment => {
+                        ratatui::prelude::StatefulWidget::render(
+                            self.render_item_list("Equipped Items"),
+                            layout[1],
+                            buf,
+                            &mut list_state,
+                        );
+                    }
+                    _ => panic!("INPUT STATE RENDER NOT IMPELEMNTED"),
+                }
               
             }
     }
