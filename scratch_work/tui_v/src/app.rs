@@ -5,9 +5,9 @@ pub struct App {
     entity_counter: i64,
     components: ComponentHolder,
     input_state: InputState,
-    inventory_list_state: ListState,
-    inventory_eid_vec: Vec<EntityID>,
-    inventory_name_vec: Vec<String>,
+    item_list_state: ListState,
+    item_eid_vec: Vec<EntityID>,
+    item_name_vec: Vec<String>,
 
     exit: bool,
     game_map: GameMap,
@@ -73,8 +73,13 @@ impl App {
                 }
                 KeyCode::Char('i') => {
                     self.generate_inventory_eid_vec();
-                    self.inventory_list_state.select_first();
+                    self.item_list_state.select_first();
                     self.input_state = InputState::Inventory;
+                }
+                KeyCode::Char('g') => {
+                    self.generate_ground_item_eid_vec();
+                    self.item_list_state.select_first();
+                    self.input_state = InputState::PickUp;
                 }
                 _ => {}
             },
@@ -83,18 +88,18 @@ impl App {
                     self.input_state = InputState::Basic;
                 }
                 KeyCode::Char('w') => {
-                    self.inventory_list_state.select_previous();
+                    self.item_list_state.select_previous();
                 }
                 KeyCode::Char('s') => {
-                    if let Some(invlen) = self.inventory_list_state.selected() {
-                        if invlen < self.inventory_eid_vec.len() - 1 {
-                            self.inventory_list_state.select_next();
+                    if let Some(invlen) = self.item_list_state.selected() {
+                        if invlen < self.item_eid_vec.len() - 1 {
+                            self.item_list_state.select_next();
                         }
                     }
                 }
                 KeyCode::Char('h') => {
-                    if let Some(sid) = self.inventory_list_state.selected() {
-                        if let Some(id_to_drop) = self.inventory_eid_vec.get(sid) {
+                    if let Some(sid) = self.item_list_state.selected() {
+                        if let Some(id_to_drop) = self.item_eid_vec.get(sid) {
                             let id_to_drop = id_to_drop.clone();
                             let lid = self.local_player_id.clone();
 
@@ -102,6 +107,34 @@ impl App {
                         }
                     }
                     self.generate_inventory_eid_vec();
+                }
+
+                _ => {}
+            },
+            InputState::PickUp => match key_event.code {
+                KeyCode::Char('g') => {
+                    self.input_state = InputState::Basic;
+                }
+                KeyCode::Char('w') => {
+                    self.item_list_state.select_previous();
+                }
+                KeyCode::Char('s') => {
+                    if let Some(invlen) = self.item_list_state.selected() {
+                        if invlen < self.item_eid_vec.len() - 1 {
+                            self.item_list_state.select_next();
+                        }
+                    }
+                }
+                KeyCode::Char('h') => {
+                    if let Some(sid) = self.item_list_state.selected() {
+                        if let Some(id_to_drop) = self.item_eid_vec.get(sid) {
+                            let id_to_drop = id_to_drop.clone();
+                            let lid = self.local_player_id.clone();
+
+                            self.pickup_item_from_ground(&id_to_drop, &lid);
+                        }
+                    }
+                    self.generate_ground_item_eid_vec();
                 }
 
                 _ => {}
@@ -264,32 +297,24 @@ impl App {
             .block(Block::bordered())
     }
 
-    pub fn render_inventory_list(&self) -> List {
-        let wut = self.inventory_name_vec.clone();
+    pub fn render_item_list(&self, title: &str) -> List {
+        let wut = self.item_name_vec.clone();
 
         let list = List::new(wut)
-            .block(Block::bordered().title("Inventory"))
+            .block(Block::bordered().title(title.to_string()))
             .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
             .highlight_symbol(">>")
             .repeat_highlight_symbol(true);
 
         list
     }
-    pub fn generate_inventory_eid_vec(&mut self) {
-        let mut evec = Vec::new();
-        let player_inv = self
-            .components
-            .equipments
-            .get(&self.local_player_id)
-            .expect("must have equi");
 
-        for itemik in player_inv.inventory.iter() {
-            evec.push(itemik.clone());
-        }
+    pub fn gen_item_name_vec(&mut self,id_vec:&Vec<EntityID>) {
+
 
         let mut itemnamevec = Vec::new();
 
-        for itik in evec.iter() {
+        for itik in id_vec.iter() {
             let typik = self
                 .components
                 .ent_types
@@ -303,9 +328,75 @@ impl App {
             };
             itemnamevec.push(itname);
         }
-        self.inventory_name_vec = itemnamevec;
+        self.item_name_vec = itemnamevec;
 
-        self.inventory_eid_vec = evec;
+
+    }
+    pub fn generate_inventory_eid_vec(&mut self) {
+        let mut evec = Vec::new();
+        let player_inv = self
+            .components
+            .equipments
+            .get(&self.local_player_id)
+            .expect("must have equi");
+
+        for itemik in player_inv.inventory.iter() {
+            evec.push(itemik.clone());
+        }
+
+       self.gen_item_name_vec(&evec);
+
+        self.item_eid_vec = evec;
+    }
+
+    pub fn generate_ground_item_eid_vec(&mut self) {
+
+        let mut evec = Vec::new();
+        let player_pos = self.components.positions.get(&self.local_player_id).unwrap();
+        let player_vox = self.game_map.get_voxel_at(player_pos).unwrap();
+
+        for boop in player_vox.entity_set.iter() {
+
+            let booptype = self.components.ent_types.get(boop).unwrap();
+            match booptype {
+                EntityType::Animalia => {}
+                EntityType::Item(x) => {evec.push(boop.clone());}
+            }
+
+
+        }
+
+        self.gen_item_name_vec(&evec);
+
+        self.item_eid_vec = evec;
+
+
+
+
+    }
+
+    pub fn pickup_item_from_ground(&mut self, item: &EntityID,pickerupper:&EntityID) {
+
+        if let Some(ent_pos) = self.components.positions.get(pickerupper) {
+
+            if let Some(ent_vox) = self.game_map.get_mut_voxel_at(ent_pos) {
+
+
+                if ent_vox.entity_set.contains(item) {
+
+                    ent_vox.entity_set.remove(item);
+                    self.components.equipments.get_mut(pickerupper).unwrap().inventory.insert(item.clone());
+                }
+
+
+            }
+
+
+
+        }
+
+
+
     }
 
     pub fn get_unique_eid(&mut self) -> EntityID {
@@ -358,7 +449,7 @@ impl Widget for &App {
             }
         }
 
-        let mut list_state = self.inventory_list_state.clone();
+        let mut list_state = self.item_list_state.clone();
 
         match self.input_state {
             InputState::Basic => {
@@ -366,7 +457,15 @@ impl Widget for &App {
             }
             InputState::Inventory => {
                 ratatui::prelude::StatefulWidget::render(
-                    self.render_inventory_list(),
+                    self.render_item_list("Inventory"),
+                    layout[1],
+                    buf,
+                    &mut list_state,
+                );
+            }
+            InputState::PickUp => {
+                ratatui::prelude::StatefulWidget::render(
+                    self.render_item_list("Items on Ground"),
                     layout[1],
                     buf,
                     &mut list_state,

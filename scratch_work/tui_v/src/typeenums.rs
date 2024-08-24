@@ -8,7 +8,7 @@ pub enum EntityType {
 pub enum InputState {
     Basic,
     Inventory,
-    Drop,
+    PickUp,
 }
 
 impl Default for InputState {
