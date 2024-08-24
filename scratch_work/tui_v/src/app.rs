@@ -9,7 +9,6 @@ pub struct App {
     inventory_eid_vec: Vec<EntityID>,
     inventory_name_vec: Vec<String>,
 
-
     exit: bool,
     game_map: GameMap,
     action_map: ActionMap,
@@ -76,7 +75,6 @@ impl App {
                     self.generate_inventory_eid_vec();
                     self.inventory_list_state.select_first();
                     self.input_state = InputState::Inventory;
-                   
                 }
                 _ => {}
             },
@@ -85,14 +83,14 @@ impl App {
                     self.input_state = InputState::Basic;
                 }
                 KeyCode::Char('w') => {
-
-            
-                    self.inventory_list_state
-                        .select_previous();
+                    self.inventory_list_state.select_previous();
                 }
                 KeyCode::Char('s') => {
-                    self.inventory_list_state
-                    .select_next();
+                    if let Some(invlen) = self.inventory_list_state.selected() {
+                        if invlen < self.inventory_eid_vec.len() - 1 {
+                            self.inventory_list_state.select_next();
+                        }
+                    }
                 }
                 _ => {}
             },
@@ -245,11 +243,6 @@ impl App {
 
     pub fn render_inventory_list(&self) -> List {
         let wut = self.inventory_name_vec.clone();
-       
-
-      
-
-
 
         let list = List::new(wut)
             .block(Block::bordered().title("Inventory"))
@@ -259,41 +252,37 @@ impl App {
 
         list
     }
-    pub fn generate_inventory_eid_vec(&mut self)  {
-
-
+    pub fn generate_inventory_eid_vec(&mut self) {
         let mut evec = Vec::new();
-        let player_inv = self.components.equipments.get(&self.local_player_id).expect("must have equi");
-
+        let player_inv = self
+            .components
+            .equipments
+            .get(&self.local_player_id)
+            .expect("must have equi");
 
         for itemik in player_inv.inventory.iter() {
             evec.push(itemik.clone());
-
-
         }
-
 
         let mut itemnamevec = Vec::new();
 
         for itik in evec.iter() {
- 
-         let typik = self.components.ent_types.get(itik).expect("ent type must have");
-         let itname = match typik {
- 
-             EntityType::Animalia => {panic!("why do u have an animal in ur inventory")}
-             EntityType::Item(itemik) => {itemik.item_name()}
-         
-             
-         
-         };
-         itemnamevec.push(itname);
- 
+            let typik = self
+                .components
+                .ent_types
+                .get(itik)
+                .expect("ent type must have");
+            let itname = match typik {
+                EntityType::Animalia => {
+                    panic!("why do u have an animal in ur inventory")
+                }
+                EntityType::Item(itemik) => itemik.item_name(),
+            };
+            itemnamevec.push(itname);
         }
         self.inventory_name_vec = itemnamevec;
 
         self.inventory_eid_vec = evec;
-
-
     }
 
     pub fn get_unique_eid(&mut self) -> EntityID {
