@@ -96,6 +96,11 @@ impl App {
             InputState::Inventory => match key_event.code {
                 KeyCode::Char(INVENTORY_MENU) => {
                     self.input_state = InputState::Basic;
+                    self.inv_vecs.inv_list_state = ListState::default();
+                    self.inv_vecs.ground_list_state = ListState::default();
+                    self.inv_vecs.equip_list_state = ListState::default();
+                    self.inv_vecs.selected_menu = ItemVecType::default();
+
                 }
                 KeyCode::Char(CURSOR_UP) => match self.inv_vecs.selected_menu {
                     ItemVecType::Inventory => self.inv_vecs.inv_list_state.select_previous(),
