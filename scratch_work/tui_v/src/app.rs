@@ -17,9 +17,8 @@ pub struct App {
 pub struct ItemVecs {
     selected_menu: ItemVecType,
     inventory: Vec<EntityID>,
-    inv_list_state: ListState,
-    equip_list_state: ListState,
-    ground_list_state: ListState,
+    item_list_state: ListState,
+
     inventory_names: Vec<String>,
     equipment: Vec<EntityID>,
 
@@ -28,6 +27,7 @@ pub struct ItemVecs {
 
     ground_names: Vec<String>,
 }
+
 
 impl App {
     pub fn run(&mut self, terminal: &mut tui::Tui) -> Result<()> {
@@ -87,7 +87,7 @@ impl App {
                         .insert(lid, GameAction::Go(CardinalDirection::East));
                 }
                 KeyCode::Char(INVENTORY_MENU) => {
-                    self.inv_vecs.ground_list_state.select_first();
+                    self.inv_vecs.item_list_state.select_first();
                     self.input_state = InputState::Inventory;
                 }
 
@@ -96,78 +96,73 @@ impl App {
             InputState::Inventory => match key_event.code {
                 KeyCode::Char(INVENTORY_MENU) => {
                     self.input_state = InputState::Basic;
-                    self.inv_vecs.inv_list_state = ListState::default();
-                    self.inv_vecs.ground_list_state = ListState::default();
-                    self.inv_vecs.equip_list_state = ListState::default();
+                    self.inv_vecs.item_list_state = ListState::default();
+                  
                     self.inv_vecs.selected_menu = ItemVecType::default();
 
                 }
-                KeyCode::Char(CURSOR_UP) => match self.inv_vecs.selected_menu {
-                    ItemVecType::Inventory => self.inv_vecs.inv_list_state.select_previous(),
-                    ItemVecType::Equipped => self.inv_vecs.equip_list_state.select_previous(),
-                    ItemVecType::Ground => self.inv_vecs.ground_list_state.select_previous(),
-                },
+                KeyCode::Char(CURSOR_UP) => self.inv_vecs.item_list_state.select_previous(),
                 KeyCode::Char(CURSOR_RIGHT) => match self.inv_vecs.selected_menu {
                     ItemVecType::Inventory => {
                         self.inv_vecs.selected_menu = ItemVecType::Equipped;
-                        self.inv_vecs.inv_list_state = ListState::default();
-                        self.inv_vecs.ground_list_state = ListState::default();
-                        self.inv_vecs.equip_list_state.select_first();
+                
+                     
+                        self.inv_vecs.item_list_state.select_first();
                     }
                     ItemVecType::Equipped => {
                         self.inv_vecs.selected_menu = ItemVecType::Ground;
-                        self.inv_vecs.inv_list_state = ListState::default();
-                        self.inv_vecs.equip_list_state = ListState::default();
-                        self.inv_vecs.ground_list_state.select_first();
+              
+                     
+                        self.inv_vecs.item_list_state.select_first();
                     }
                     ItemVecType::Ground => {
                         self.inv_vecs.selected_menu = ItemVecType::Inventory;
-                        self.inv_vecs.ground_list_state = ListState::default();
-                        self.inv_vecs.equip_list_state = ListState::default();
-                        self.inv_vecs.inv_list_state.select_first();
+                 
+                     
+                        self.inv_vecs.item_list_state.select_first();
                     }
                 },
 
                 KeyCode::Char(CURSOR_LEFT) => match self.inv_vecs.selected_menu {
                     ItemVecType::Inventory => {
                         self.inv_vecs.selected_menu = ItemVecType::Ground;
-                        self.inv_vecs.inv_list_state = ListState::default();
-                        self.inv_vecs.equip_list_state = ListState::default();
-                        self.inv_vecs.ground_list_state.select_first();
+               
+                     
+                        self.inv_vecs.item_list_state.select_first();
                     }
                     ItemVecType::Equipped => {
                         self.inv_vecs.selected_menu = ItemVecType::Inventory;
-                        self.inv_vecs.ground_list_state = ListState::default();
-                        self.inv_vecs.equip_list_state = ListState::default();
-                        self.inv_vecs.inv_list_state.select_first();
+                  
+                     
+                        self.inv_vecs.item_list_state.select_first();
                     }
                     ItemVecType::Ground => {
                         self.inv_vecs.selected_menu = ItemVecType::Equipped;
-                        self.inv_vecs.inv_list_state = ListState::default();
-                        self.inv_vecs.ground_list_state = ListState::default();
-                        self.inv_vecs.equip_list_state.select_first();
+            
+                     
+                        self.inv_vecs.item_list_state.select_first();
                     }
                 },
 
                 KeyCode::Char(CURSOR_DOWN) => match self.inv_vecs.selected_menu {
                     ItemVecType::Inventory => {
-                        if let Some(invlen) = self.inv_vecs.inv_list_state.selected() {
+                        if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
                             if invlen < self.inv_vecs.inventory.len() - 1 {
-                                self.inv_vecs.inv_list_state.select_next();
+                                self.inv_vecs.item_list_state.select_next();
                             }
                         }
                     }
                     ItemVecType::Equipped => {
-                        if let Some(invlen) = self.inv_vecs.equip_list_state.selected() {
+                        if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
                             if invlen < self.inv_vecs.equipment.len() - 1 {
-                                self.inv_vecs.equip_list_state.select_next();
+                                self.inv_vecs.item_list_state.select_next();
                             }
                         }
                     }
                     ItemVecType::Ground => {
-                        if let Some(invlen) = self.inv_vecs.ground_list_state.selected() {
+                        if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
                             if invlen < self.inv_vecs.ground.len() - 1 {
-                                self.inv_vecs.ground_list_state.select_next();
+                                self.inv_vecs.item_list_state.select_next();
                             }
                         }
                     }
@@ -218,11 +213,7 @@ impl App {
     }
 
     fn manage_item_vec_input(&self, itemvectype: &ItemVecType) -> (bool, EntityID) {
-        let boop = match itemvectype {
-            ItemVecType::Equipped => self.inv_vecs.equip_list_state.selected(),
-            ItemVecType::Inventory => self.inv_vecs.inv_list_state.selected(),
-            ItemVecType::Ground => self.inv_vecs.ground_list_state.selected(),
-        };
+        let boop =self.inv_vecs.item_list_state.selected();
 
         if let Some(sid) = boop {
             let moop = match itemvectype {
@@ -270,21 +261,23 @@ impl App {
                 self.generate_equipped_eid_vec();
                 self.generate_ground_item_eid_vec();
 
-                if let Some(sel_len) = self.inv_vecs.equip_list_state.selected_mut() {
-                    if *sel_len > self.inv_vecs.equipment.len() - 1 {
-                        *sel_len = self.inv_vecs.equipment.len() - 1;
+               let boopik =  match self.inv_vecs.selected_menu {
+
+                ItemVecType::Equipped => self.inv_vecs.equipment.len() ,
+                ItemVecType::Inventory => self.inv_vecs.inventory.len() ,
+                ItemVecType::Ground => self.inv_vecs.ground.len() ,
+
+
+
+
+                };
+
+                if let Some(sel_len) = self.inv_vecs.item_list_state.selected_mut() {
+                    if *sel_len > boopik - 1 {
+                        *sel_len = boopik - 1;
                     }
                 }
-                if let Some(sel_len) = self.inv_vecs.inv_list_state.selected_mut() {
-                    if *sel_len > self.inv_vecs.inventory.len() - 1 {
-                        *sel_len = self.inv_vecs.inventory.len() - 1;
-                    }
-                }
-                if let Some(sel_len) = self.inv_vecs.ground_list_state.selected_mut() {
-                    if *sel_len > self.inv_vecs.ground.len() - 1 {
-                        *sel_len = self.inv_vecs.ground.len() - 1;
-                    }
-                }
+        
             }
 
             _ => (),
@@ -601,9 +594,20 @@ impl Widget for &App {
             }
         }
 
-        let mut inv_state = self.inv_vecs.inv_list_state.clone();
-        let mut ground_state = self.inv_vecs.ground_list_state.clone();
-        let mut equip_state = self.inv_vecs.equip_list_state.clone();
+        let mut inv_state = match self.inv_vecs.selected_menu {
+            ItemVecType::Inventory => self.inv_vecs.item_list_state.clone(),
+            _ => ListState::default()
+        };
+        let mut equip_state = match self.inv_vecs.selected_menu {
+            ItemVecType::Equipped => self.inv_vecs.item_list_state.clone(),
+            _ => ListState::default()
+        };
+        let mut ground_state = match self.inv_vecs.selected_menu {
+            ItemVecType::Ground => self.inv_vecs.item_list_state.clone(),
+            _ => ListState::default()
+        };
+
+       
 
         //neccesary beccause drawing is from the top
         render_lines.reverse();
