@@ -338,6 +338,7 @@ impl App {
         self.components
             .equipments
             .insert(eid.clone(), Equipment::default());
+        self.components.healths.insert(eid.clone(), Health::default());
 
         let voxik = self
             .game_map
