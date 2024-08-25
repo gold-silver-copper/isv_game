@@ -8,14 +8,12 @@ pub enum EntityType {
 pub enum InputState {
     Basic,
     Inventory,
-    Equipment,
-    PickUp,
 }
 
 pub enum ItemVecType {
     Inventory,
     Ground,
-    Equipped
+    Equipped,
 }
 
 impl Default for ItemVecType {

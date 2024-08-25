@@ -97,74 +97,111 @@ impl App {
                 KeyCode::Char(INVENTORY_MENU) => {
                     self.input_state = InputState::Basic;
                 }
-                KeyCode::Char(CURSOR_UP) => {
-
-                    match self.inv_vecs.selected_menu {
-                        ItemVecType::Inventory =>    self.inv_vecs.inv_list_state.select_previous(),
-                        ItemVecType::Equipped =>    self.inv_vecs.equip_list_state.select_previous(),
-                        ItemVecType::Ground =>    self.inv_vecs.ground_list_state.select_previous(),
-                    }
-
-
-                 
-                }
-                KeyCode::Char(CURSOR_RIGHT) => {
-
-                    match self.inv_vecs.selected_menu {
-                        ItemVecType::Inventory =>    {self.inv_vecs.selected_menu = ItemVecType::Equipped;
+                KeyCode::Char(CURSOR_UP) => match self.inv_vecs.selected_menu {
+                    ItemVecType::Inventory => self.inv_vecs.inv_list_state.select_previous(),
+                    ItemVecType::Equipped => self.inv_vecs.equip_list_state.select_previous(),
+                    ItemVecType::Ground => self.inv_vecs.ground_list_state.select_previous(),
+                },
+                KeyCode::Char(CURSOR_RIGHT) => match self.inv_vecs.selected_menu {
+                    ItemVecType::Inventory => {
+                        self.inv_vecs.selected_menu = ItemVecType::Equipped;
                         self.inv_vecs.inv_list_state = ListState::default();
                         self.inv_vecs.ground_list_state = ListState::default();
-                        self.inv_vecs.equip_list_state.select_first();},
-                        ItemVecType::Equipped =>   {self.inv_vecs.selected_menu = ItemVecType::Ground;
-                            self.inv_vecs.inv_list_state = ListState::default();
-                            self.inv_vecs.equip_list_state = ListState::default();
-                            self.inv_vecs.ground_list_state.select_first();},
-                        ItemVecType::Ground =>   {self.inv_vecs.selected_menu = ItemVecType::Inventory;
-                            self.inv_vecs.ground_list_state = ListState::default();
-                            self.inv_vecs.equip_list_state = ListState::default();
-                            self.inv_vecs.inv_list_state.select_first();},
+                        self.inv_vecs.equip_list_state.select_first();
                     }
-
-
-                 
-                }
-                KeyCode::Char(CURSOR_DOWN) => {
-
-                    match self.inv_vecs.selected_menu {
-                        ItemVecType::Inventory =>    {
-                            if let Some(invlen) = self.inv_vecs.inv_list_state.selected() {
-                                if invlen < self.inv_vecs.inventory.len() - 1 {
-                                    self.inv_vecs.inv_list_state.select_next();
-                                }
-                            }},
-                        ItemVecType::Equipped =>    {
-                            if let Some(invlen) = self.inv_vecs.equip_list_state.selected() {
-                                if invlen < self.inv_vecs.equipment.len() - 1 {
-                                    self.inv_vecs.equip_list_state.select_next();
-                                }
-                            }},
-                        ItemVecType::Ground =>    {
-                            if let Some(invlen) = self.inv_vecs.ground_list_state.selected() {
-                                if invlen < self.inv_vecs.ground.len() - 1 {
-                                    self.inv_vecs.ground_list_state.select_next();
-                                }
-                            }},
+                    ItemVecType::Equipped => {
+                        self.inv_vecs.selected_menu = ItemVecType::Ground;
+                        self.inv_vecs.inv_list_state = ListState::default();
+                        self.inv_vecs.equip_list_state = ListState::default();
+                        self.inv_vecs.ground_list_state.select_first();
                     }
-
-
-                }
-                KeyCode::Char(DROP_UNEQUIP_ACTION) => {
-                    let (possible, selected_id) = self.manage_item_vec_input(&self.inv_vecs.selected_menu);
-                    if possible {
-                        self.action_map.insert(lid, GameAction::Drop(selected_id));
+                    ItemVecType::Ground => {
+                        self.inv_vecs.selected_menu = ItemVecType::Inventory;
+                        self.inv_vecs.ground_list_state = ListState::default();
+                        self.inv_vecs.equip_list_state = ListState::default();
+                        self.inv_vecs.inv_list_state.select_first();
                     }
-                }
-                KeyCode::Char(PICKUP_EQUIP_ACTION) => {
-                    let (possible, selected_id) = self.manage_item_vec_input(&self.inv_vecs.selected_menu);
-                    if possible {
-                        self.action_map.insert(lid, GameAction::Equip(selected_id));
+                },
+
+                KeyCode::Char(CURSOR_LEFT) => match self.inv_vecs.selected_menu {
+                    ItemVecType::Inventory => {
+                        self.inv_vecs.selected_menu = ItemVecType::Ground;
+                        self.inv_vecs.inv_list_state = ListState::default();
+                        self.inv_vecs.equip_list_state = ListState::default();
+                        self.inv_vecs.ground_list_state.select_first();
                     }
-                }
+                    ItemVecType::Equipped => {
+                        self.inv_vecs.selected_menu = ItemVecType::Inventory;
+                        self.inv_vecs.ground_list_state = ListState::default();
+                        self.inv_vecs.equip_list_state = ListState::default();
+                        self.inv_vecs.inv_list_state.select_first();
+                    }
+                    ItemVecType::Ground => {
+                        self.inv_vecs.selected_menu = ItemVecType::Equipped;
+                        self.inv_vecs.inv_list_state = ListState::default();
+                        self.inv_vecs.ground_list_state = ListState::default();
+                        self.inv_vecs.equip_list_state.select_first();
+                    }
+                },
+
+                KeyCode::Char(CURSOR_DOWN) => match self.inv_vecs.selected_menu {
+                    ItemVecType::Inventory => {
+                        if let Some(invlen) = self.inv_vecs.inv_list_state.selected() {
+                            if invlen < self.inv_vecs.inventory.len() - 1 {
+                                self.inv_vecs.inv_list_state.select_next();
+                            }
+                        }
+                    }
+                    ItemVecType::Equipped => {
+                        if let Some(invlen) = self.inv_vecs.equip_list_state.selected() {
+                            if invlen < self.inv_vecs.equipment.len() - 1 {
+                                self.inv_vecs.equip_list_state.select_next();
+                            }
+                        }
+                    }
+                    ItemVecType::Ground => {
+                        if let Some(invlen) = self.inv_vecs.ground_list_state.selected() {
+                            if invlen < self.inv_vecs.ground.len() - 1 {
+                                self.inv_vecs.ground_list_state.select_next();
+                            }
+                        }
+                    }
+                },
+                KeyCode::Char(DROP_UNEQUIP_ACTION) => match self.inv_vecs.selected_menu {
+                    ItemVecType::Equipped => {
+                        let (possible, selected_id) =
+                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
+                        if possible {
+                            self.action_map
+                                .insert(lid, GameAction::UnEquip(selected_id));
+                        }
+                    }
+                    ItemVecType::Inventory => {
+                        let (possible, selected_id) =
+                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
+                        if possible {
+                            self.action_map.insert(lid, GameAction::Drop(selected_id));
+                        }
+                    }
+                    _ => (),
+                },
+                KeyCode::Char(PICKUP_EQUIP_ACTION) => match self.inv_vecs.selected_menu {
+                    ItemVecType::Ground => {
+                        let (possible, selected_id) =
+                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
+                        if possible {
+                            self.action_map.insert(lid, GameAction::PickUp(selected_id));
+                        }
+                    }
+                    ItemVecType::Inventory => {
+                        let (possible, selected_id) =
+                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
+                        if possible {
+                            self.action_map.insert(lid, GameAction::Equip(selected_id));
+                        }
+                    }
+                    _ => (),
+                },
 
                 _ => {}
             },
@@ -176,16 +213,20 @@ impl App {
     }
 
     fn manage_item_vec_input(&self, itemvectype: &ItemVecType) -> (bool, EntityID) {
-
         let boop = match itemvectype {
-
             ItemVecType::Equipped => self.inv_vecs.equip_list_state.selected(),
             ItemVecType::Inventory => self.inv_vecs.inv_list_state.selected(),
             ItemVecType::Ground => self.inv_vecs.ground_list_state.selected(),
         };
 
         if let Some(sid) = boop {
-            if let Some(id_to_pickup) = self.inv_vecs.inventory.get(sid) {
+            let moop = match itemvectype {
+                ItemVecType::Equipped => self.inv_vecs.equipment.get(sid),
+                ItemVecType::Inventory => self.inv_vecs.inventory.get(sid),
+                ItemVecType::Ground => self.inv_vecs.ground.get(sid),
+            };
+
+            if let Some(id_to_pickup) = moop {
                 let id_to_pickup = id_to_pickup.clone();
                 let lid = self.local_player_id.clone();
 
@@ -218,15 +259,29 @@ impl App {
         Ok(())
     }
     fn reload_ui(&mut self) {
-
-
         match self.input_state {
             InputState::Inventory => {
                 self.generate_inventory_eid_vec();
                 self.generate_equipped_eid_vec();
                 self.generate_ground_item_eid_vec();
+
+                if let Some(sel_len) = self.inv_vecs.equip_list_state.selected_mut() {
+                    if *sel_len > self.inv_vecs.equipment.len() - 1 {
+                        *sel_len = self.inv_vecs.equipment.len() - 1;
+                    }
+                }
+                if let Some(sel_len) = self.inv_vecs.inv_list_state.selected_mut() {
+                    if *sel_len > self.inv_vecs.inventory.len() - 1 {
+                        *sel_len = self.inv_vecs.inventory.len() - 1;
+                    }
+                }
+                if let Some(sel_len) = self.inv_vecs.ground_list_state.selected_mut() {
+                    if *sel_len > self.inv_vecs.ground.len() - 1 {
+                        *sel_len = self.inv_vecs.ground.len() - 1;
+                    }
+                }
             }
-        
+
             _ => (),
         }
     }
@@ -366,10 +421,7 @@ impl App {
     }
 
     pub fn render_item_list(&self, title: &str, itemvectype: ItemVecType) -> List {
-        
-
         let wut = match itemvectype {
-
             ItemVecType::Equipped => self.inv_vecs.equipment_names.clone(),
             ItemVecType::Inventory => self.inv_vecs.inventory_names.clone(),
             ItemVecType::Ground => self.inv_vecs.ground_names.clone(),
@@ -401,7 +453,7 @@ impl App {
             };
             itemnamevec.push(itname);
         }
-      itemnamevec
+        itemnamevec
     }
     pub fn generate_inventory_eid_vec(&mut self) {
         let mut evec = Vec::new();
@@ -415,7 +467,7 @@ impl App {
             evec.push(itemik.clone());
         }
 
-         self.inv_vecs.inventory_names = self.gen_item_name_vec(&evec);
+        self.inv_vecs.inventory_names = self.gen_item_name_vec(&evec);
 
         self.inv_vecs.inventory = evec;
     }
@@ -431,7 +483,7 @@ impl App {
             evec.push(itemik.clone());
         }
 
-        self.inv_vecs.equipment_names =self.gen_item_name_vec(&evec);
+        self.inv_vecs.equipment_names = self.gen_item_name_vec(&evec);
 
         self.inv_vecs.equipment = evec;
     }
@@ -455,7 +507,7 @@ impl App {
             }
         }
 
-        self.inv_vecs.ground_names =self.gen_item_name_vec(&evec);
+        self.inv_vecs.ground_names = self.gen_item_name_vec(&evec);
 
         self.inv_vecs.ground = evec;
     }
@@ -573,19 +625,19 @@ impl Widget for &App {
                 Clear.render(pop_area, buf); //this clears out the background
                 block.render(pop_area, buf); //this clears out the background
                 ratatui::prelude::StatefulWidget::render(
-                    self.render_item_list("Inventory",ItemVecType::Inventory),
+                    self.render_item_list("Inventory", ItemVecType::Inventory),
                     pop_layout[1],
                     buf,
                     &mut inv_state,
                 );
                 ratatui::prelude::StatefulWidget::render(
-                    self.render_item_list("Equipped",ItemVecType::Equipped),
+                    self.render_item_list("Equipped", ItemVecType::Equipped),
                     pop_layout[2],
                     buf,
                     &mut equip_state,
                 );
                 ratatui::prelude::StatefulWidget::render(
-                    self.render_item_list("Ground",ItemVecType::Ground),
+                    self.render_item_list("Ground", ItemVecType::Ground),
                     pop_layout[0],
                     buf,
                     &mut ground_state,
