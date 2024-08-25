@@ -28,7 +28,6 @@ pub struct ItemVecs {
     ground_names: Vec<String>,
 }
 
-
 impl App {
     pub fn run(&mut self, terminal: &mut tui::Tui) -> Result<()> {
         self.init();
@@ -97,28 +96,24 @@ impl App {
                 KeyCode::Char(INVENTORY_MENU) => {
                     self.input_state = InputState::Basic;
                     self.inv_vecs.item_list_state = ListState::default();
-                  
-                    self.inv_vecs.selected_menu = ItemVecType::default();
 
+                    self.inv_vecs.selected_menu = ItemVecType::default();
                 }
                 KeyCode::Char(CURSOR_UP) => self.inv_vecs.item_list_state.select_previous(),
                 KeyCode::Char(CURSOR_RIGHT) => match self.inv_vecs.selected_menu {
                     ItemVecType::Inventory => {
                         self.inv_vecs.selected_menu = ItemVecType::Equipped;
-                
-                     
+
                         self.inv_vecs.item_list_state.select_first();
                     }
                     ItemVecType::Equipped => {
                         self.inv_vecs.selected_menu = ItemVecType::Ground;
-              
-                     
+
                         self.inv_vecs.item_list_state.select_first();
                     }
                     ItemVecType::Ground => {
                         self.inv_vecs.selected_menu = ItemVecType::Inventory;
-                 
-                     
+
                         self.inv_vecs.item_list_state.select_first();
                     }
                 },
@@ -126,20 +121,17 @@ impl App {
                 KeyCode::Char(CURSOR_LEFT) => match self.inv_vecs.selected_menu {
                     ItemVecType::Inventory => {
                         self.inv_vecs.selected_menu = ItemVecType::Ground;
-               
-                     
+
                         self.inv_vecs.item_list_state.select_first();
                     }
                     ItemVecType::Equipped => {
                         self.inv_vecs.selected_menu = ItemVecType::Inventory;
-                  
-                     
+
                         self.inv_vecs.item_list_state.select_first();
                     }
                     ItemVecType::Ground => {
                         self.inv_vecs.selected_menu = ItemVecType::Equipped;
-            
-                     
+
                         self.inv_vecs.item_list_state.select_first();
                     }
                 },
@@ -213,7 +205,7 @@ impl App {
     }
 
     fn manage_item_vec_input(&self, itemvectype: &ItemVecType) -> (bool, EntityID) {
-        let boop =self.inv_vecs.item_list_state.selected();
+        let boop = self.inv_vecs.item_list_state.selected();
 
         if let Some(sid) = boop {
             let moop = match itemvectype {
@@ -261,15 +253,10 @@ impl App {
                 self.generate_equipped_eid_vec();
                 self.generate_ground_item_eid_vec();
 
-               let boopik =  match self.inv_vecs.selected_menu {
-
-                ItemVecType::Equipped => self.inv_vecs.equipment.len() ,
-                ItemVecType::Inventory => self.inv_vecs.inventory.len() ,
-                ItemVecType::Ground => self.inv_vecs.ground.len() ,
-
-
-
-
+                let boopik = match self.inv_vecs.selected_menu {
+                    ItemVecType::Equipped => self.inv_vecs.equipment.len(),
+                    ItemVecType::Inventory => self.inv_vecs.inventory.len(),
+                    ItemVecType::Ground => self.inv_vecs.ground.len(),
                 };
 
                 if let Some(sel_len) = self.inv_vecs.item_list_state.selected_mut() {
@@ -277,7 +264,6 @@ impl App {
                         *sel_len = boopik - 1;
                     }
                 }
-        
             }
 
             _ => (),
@@ -331,7 +317,9 @@ impl App {
         self.components
             .equipments
             .insert(eid.clone(), Equipment::default());
-        self.components.healths.insert(eid.clone(), Health::default());
+        self.components
+            .healths
+            .insert(eid.clone(), Health::default());
 
         let voxik = self
             .game_map
@@ -596,18 +584,16 @@ impl Widget for &App {
 
         let mut inv_state = match self.inv_vecs.selected_menu {
             ItemVecType::Inventory => self.inv_vecs.item_list_state.clone(),
-            _ => ListState::default()
+            _ => ListState::default(),
         };
         let mut equip_state = match self.inv_vecs.selected_menu {
             ItemVecType::Equipped => self.inv_vecs.item_list_state.clone(),
-            _ => ListState::default()
+            _ => ListState::default(),
         };
         let mut ground_state = match self.inv_vecs.selected_menu {
             ItemVecType::Ground => self.inv_vecs.item_list_state.clone(),
-            _ => ListState::default()
+            _ => ListState::default(),
         };
-
-       
 
         //neccesary beccause drawing is from the top
         render_lines.reverse();
