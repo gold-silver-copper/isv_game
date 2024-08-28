@@ -48,14 +48,21 @@ impl EntityType {
         }
     }
 }
+
+pub enum Material {
+    Metal(Metal),
+    Wood(Tree)
+    
+}
+
 // tegula imbrex
 #[derive(Display)]
 pub enum Roof {
-    Tegula(Box<dyn ColoredMaterial>),
+    Tegula(Material),
 }
 
 pub enum Floor {
-    Gravel(Box<dyn ColoredMaterial>),
+    Gravel(Material),
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -83,5 +90,5 @@ pub enum Container {
 }
 
 pub enum Furniture {
-    Wall(Box<dyn ColoredMaterial>),
+    Wall(Material),
 }

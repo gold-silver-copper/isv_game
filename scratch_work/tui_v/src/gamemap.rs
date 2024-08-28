@@ -11,20 +11,20 @@ impl Default for GameMap {
             for y in 0..MAP_SIZE {
                 let val = x as f32 / 8.0;
                 let floor = if val > 0.2 {
-                    gravel_floor()
+                    GRAVEL_FLOOR
                 } else if val > 0.0 {
-                    gravel_floor()
+                    GRAVEL_FLOOR
                 } else if val > -0.9 {
-                    gravel_floor()
+                    GRAVEL_FLOOR
                 } else {
-                    gravel_floor() //water
+                    GRAVEL_FLOOR //water
                 };
 
                 if x == 15 && y > 8 {
                     //Some(WALL_FURNITURE),
                     batchvec.push(Voxel {
                         floor: Some(floor),
-                        furniture: wood_wall(),
+                        furniture: Some(WOOD_WALL),
                         roof: None,
                         entity_set: HashSet::new(),
                         voxel_pos: (x, y),
@@ -34,7 +34,7 @@ impl Default for GameMap {
                     batchvec.push(Voxel {
                         floor: Some(floor),
                         furniture: None,
-                        roof: tegula_roof(), //should have roof here
+                        roof: Some(TEGULA_ROOF), //should have roof here
                         entity_set: HashSet::new(),
                         voxel_pos: (x, y),
                     });

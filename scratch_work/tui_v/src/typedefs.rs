@@ -19,25 +19,22 @@ pub const QUIT_BACK: char = 'q';
 
 //pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);
 
-pub fn wood_wall() -> Option<Furniture> {
-    Some(Furniture::Wall(Box::new(Tree::Glinos)))
-}
+pub const BASIC_WOOD_MATERIAL: Material = Material::Wood(Tree::Glinos);
+pub const BASIC_METAL_MATERIAL: Material = Material::Metal(Metal::Gold);
 
-pub fn tegula_roof() -> Option<Roof> {
-    Some(Roof::Tegula(Box::new(Metal::Gold)))
-}
+pub const WOOD_WALL: Furniture = Furniture::Wall(BASIC_WOOD_MATERIAL);
+pub const TEGULA_ROOF: Roof = Roof::Tegula(BASIC_METAL_MATERIAL);
+pub const GRAVEL_FLOOR:Floor = Floor::Gravel(BASIC_METAL_MATERIAL);
 
-pub fn gravel_floor() -> Floor {
-    Floor::Gravel(Box::new(Tree::Glinos))
-}
+
+
+
 
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (&'static str, RatColor, RatColor);
 
 // Define a marker trait
-pub trait ColoredMaterial: ToColor + Material {}
 
-impl<T: ToColor + Material> ColoredMaterial for T {}
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum GameAction {

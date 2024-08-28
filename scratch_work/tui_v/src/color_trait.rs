@@ -15,7 +15,16 @@ impl ToColor for Tree {
 impl ToColor for Metal {
     fn color(&self) -> RatColor {
         match &self {
-            Metal::Gold => RatColor::Rgb(10, 32, 95),
+            Metal::Gold => RatColor::Rgb(100, 32, 95),
+        }
+    }
+}
+
+impl ToColor for Material {
+    fn color(&self) -> RatColor {
+        match &self {
+            Material::Metal(met) => met.color(),
+            Material::Wood(wod) => wod.color(),
         }
     }
 }
