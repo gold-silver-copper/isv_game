@@ -55,6 +55,11 @@ pub enum Material {
     
 }
 
+pub enum ActionResult {
+    Success(GameAction),
+    Failure(GameAction)
+}
+
 // tegula imbrex
 #[derive(Display)]
 pub enum Roof {

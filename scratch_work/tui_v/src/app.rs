@@ -71,19 +71,19 @@ impl App {
 
                 KeyCode::Char(CURSOR_UP) => {
                     self.action_map
-                        .insert(lid, GameAction::Go(CardinalDirection::North));
+                        .push( GameAction::Go(lid,CardinalDirection::North));
                 }
                 KeyCode::Char(CURSOR_DOWN) => {
                     self.action_map
-                        .insert(lid, GameAction::Go(CardinalDirection::South));
+                        .push( GameAction::Go(lid,CardinalDirection::South));
                 }
                 KeyCode::Char(CURSOR_LEFT) => {
                     self.action_map
-                        .insert(lid, GameAction::Go(CardinalDirection::West));
+                        .push( GameAction::Go(lid,CardinalDirection::West));
                 }
                 KeyCode::Char(CURSOR_RIGHT) => {
                     self.action_map
-                        .insert(lid, GameAction::Go(CardinalDirection::East));
+                        .push( GameAction::Go(lid,CardinalDirection::East));
                 }
                 KeyCode::Char(INVENTORY_MENU) => {
                     self.inv_vecs.item_list_state.select_first();
@@ -165,14 +165,14 @@ impl App {
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
                             self.action_map
-                                .insert(lid, GameAction::UnEquip(selected_id));
+                                .push( GameAction::UnEquip(lid,selected_id));
                         }
                     }
                     ItemVecType::Inventory => {
                         let (possible, selected_id) =
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
-                            self.action_map.insert(lid, GameAction::Drop(selected_id));
+                            self.action_map.push( GameAction::Drop(lid,selected_id));
                         }
                     }
                     _ => (),
@@ -182,14 +182,14 @@ impl App {
                         let (possible, selected_id) =
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
-                            self.action_map.insert(lid, GameAction::PickUp(selected_id));
+                            self.action_map.push( GameAction::PickUp(lid,selected_id));
                         }
                     }
                     ItemVecType::Inventory => {
                         let (possible, selected_id) =
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
-                            self.action_map.insert(lid, GameAction::Equip(selected_id));
+                            self.action_map.push( GameAction::Equip(lid,selected_id));
                         }
                     }
                     _ => (),
@@ -272,17 +272,17 @@ impl App {
 
     fn handle_actions(&mut self) -> Result<()> {
         let a_map = self.action_map.clone();
-        self.action_map.drain();
+        self.action_map = Vec::new();
 
-        for (eid, act) in a_map {
+        for act in a_map {
             //println!("moving");
 
             match act {
-                GameAction::Go(cd) => self.handle_movement(&eid, &cd)?,
-                GameAction::Drop(iid) => self.drop_item_from_inv(&iid, &eid),
-                GameAction::PickUp(iid) => self.pickup_item_from_ground(&iid, &eid),
-                GameAction::Equip(iid) => self.equip_item_from_inv(&iid, &eid),
-                GameAction::UnEquip(iid) => self.unequip_item_from_equipped(&iid, &eid),
+                GameAction::Go(subj_id,cd) => self.handle_movement(&subj_id, &cd)?,
+                GameAction::Drop(subj_id,obj_id) => self.drop_item_from_inv(&obj_id, &subj_id,),
+                GameAction::PickUp(subj_id,obj_id) => self.pickup_item_from_ground(&obj_id, &subj_id,),
+                GameAction::Equip(subj_id,obj_id) => self.equip_item_from_inv(&obj_id, &subj_id,),
+                GameAction::UnEquip(subj_id,obj_id) => self.unequip_item_from_equipped(&obj_id, &subj_id,),
                 _ => panic!("meow"),
             }
         }

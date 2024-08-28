@@ -2,9 +2,13 @@ use crate::*;
 
 pub type CoordinateUnit = i64;
 pub type EntityID = i64;
+pub type Subject = EntityID;
+pub type DirectObject = EntityID;
+pub type IndirectObject = EntityID;
+pub type InstrumentObject = EntityID;
 
 pub const LOCAL_RANGE: i64 = 10000;
-pub const MAP_SIZE: i64 = 100;
+pub const MAP_SIZE: i64 = 1000;
 
 pub const CURSOR_UP: char = 'w';
 pub const CURSOR_DOWN: char = 's';
@@ -39,14 +43,14 @@ pub type GraphicTriple = (&'static str, RatColor, RatColor);
 #[derive(Clone, Debug, PartialEq)]
 pub enum GameAction {
     Wait,
-    PickUp(EntityID),
-    Equip(EntityID),
-    UnEquip(EntityID),
+    PickUp(Subject,DirectObject),
+    Equip(Subject,DirectObject),
+    UnEquip(Subject,DirectObject),
     MeleeAttack(),
-    Drop(EntityID),
+    Drop(Subject,DirectObject),
     Give(),
     Hit(),
-    Go(CardinalDirection),
+    Go(Subject,CardinalDirection),
     Quit,
 }
 
@@ -68,7 +72,7 @@ pub fn locate_square(e_pos: &MyPoint, w_radius: i64, h_radius: i64) -> AABB<MyPo
     )
 }
 
-pub type ActionMap = HashMap<EntityID, GameAction>;
+pub type ActionMap = Vec<GameAction>;
 
 #[derive(Debug)]
 pub struct RenderPacket {
