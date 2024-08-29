@@ -86,7 +86,7 @@ pub fn locate_square(e_pos: &MyPoint, w_radius: i64, h_radius: i64) -> AABB<MyPo
     )
 }
 
-pub type ActionMap = Vec<GameAction>;
+pub type ActionVec = Vec<GameAction>;
 
 #[derive(Debug)]
 pub struct RenderPacket {

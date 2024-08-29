@@ -9,19 +9,19 @@ impl App {
                 KeyCode::Char(QUIT_BACK) => self.exit(),
 
                 KeyCode::Char(CURSOR_UP) => {
-                    self.action_map
+                    self.action_vec
                         .push(GameAction::Go(lid, CardinalDirection::North));
                 }
                 KeyCode::Char(CURSOR_DOWN) => {
-                    self.action_map
+                    self.action_vec
                         .push(GameAction::Go(lid, CardinalDirection::South));
                 }
                 KeyCode::Char(CURSOR_LEFT) => {
-                    self.action_map
+                    self.action_vec
                         .push(GameAction::Go(lid, CardinalDirection::West));
                 }
                 KeyCode::Char(CURSOR_RIGHT) => {
-                    self.action_map
+                    self.action_vec
                         .push(GameAction::Go(lid, CardinalDirection::East));
                 }
                 KeyCode::Char(INVENTORY_MENU) => {
@@ -103,14 +103,14 @@ impl App {
                         let (possible, selected_id) =
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
-                            self.action_map.push(GameAction::UnEquip(lid, selected_id));
+                            self.action_vec.push(GameAction::UnEquip(lid, selected_id));
                         }
                     }
                     ItemVecType::Inventory => {
                         let (possible, selected_id) =
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
-                            self.action_map.push(GameAction::Drop(lid, selected_id));
+                            self.action_vec.push(GameAction::Drop(lid, selected_id));
                         }
                     }
                     _ => (),
@@ -120,14 +120,14 @@ impl App {
                         let (possible, selected_id) =
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
-                            self.action_map.push(GameAction::PickUp(lid, selected_id));
+                            self.action_vec.push(GameAction::PickUp(lid, selected_id));
                         }
                     }
                     ItemVecType::Inventory => {
                         let (possible, selected_id) =
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
-                            self.action_map.push(GameAction::Equip(lid, selected_id));
+                            self.action_vec.push(GameAction::Equip(lid, selected_id));
                         }
                     }
                     _ => (),

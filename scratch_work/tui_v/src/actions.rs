@@ -95,4 +95,143 @@ impl App {
         }
         return ActionResult::Failure(GameAction::UnEquip(subject_eid.clone(), item.clone()));
     }
+
+    pub fn generate_action_result_string(&self, act_resut:ActionResult) -> Line {
+
+        let line_text =  match act_resut {
+             ActionResult::Success(ga) => {
+                match ga {
+                     GameAction::Drop(subj,obj ) => {let pg = self.get_person_gender(subj);
+                     
+                     let pronoun = match pg.0 {
+                         Person::Second => {"ty".to_string()}
+                         Person::Third => {self.get_entity_name(&subj)}
+                         Person::First => {"ja".to_string()}
+ 
+                     };
+                     let dropped = self.get_entity_name(&obj);
+ 
+                     format!("{pronoun} brosil {dropped}")
+                     
+                     }
+                     GameAction::Equip(subj,obj ) => {let pg = self.get_person_gender(subj);
+                     
+                         let pronoun = match pg.0 {
+                             Person::Second => {"ty".to_string()}
+                             Person::Third => {self.get_entity_name(&subj)}
+                             Person::First => {"ja".to_string()}
+     
+                         };
+                         let dropped = self.get_entity_name(&obj);
+     
+                         format!("{pronoun} odel {dropped}")
+                         
+                         }
+                     GameAction::UnEquip(subj,obj ) => {let pg = self.get_person_gender(subj);
+                     
+                         let pronoun = match pg.0 {
+                             Person::Second => {"ty".to_string()}
+                             Person::Third => {self.get_entity_name(&subj)}
+                             Person::First => {"ja".to_string()}
+     
+                         };
+                         let dropped = self.get_entity_name(&obj);
+     
+                         format!("{pronoun} snjal {dropped}")
+                         
+                         }
+                     GameAction::Go(subj,cd ) => {let pg = self.get_person_gender(subj);
+                     
+                         let pronoun = match pg.0 {
+                             Person::Second => {"ty".to_string()}
+                             Person::Third => {self.get_entity_name(&subj)}
+                             Person::First => {"ja".to_string()}
+     
+                         };
+                         let dropped = cd.to_isv();
+     
+                         format!("{pronoun} poszol na {dropped}")
+                         
+                         }
+                     GameAction::PickUp(subj,obj ) => {let pg = self.get_person_gender(subj);
+                     
+                         let pronoun = match pg.0 {
+                             Person::Second => {"ty".to_string()}
+                             Person::Third => {self.get_entity_name(&subj)}
+                             Person::First => {"ja".to_string()}
+     
+                         };
+                         let dropped = self.get_entity_name(&obj);
+     
+                         format!("{pronoun} podbral {dropped}")
+                         
+                         }
+                    _ => panic!("NOT IMPLEMENTED")
+                 }
+                
+             }
+             ActionResult::Failure(ga) => {
+                   match ga {
+                     GameAction::Drop(subj,obj ) => {let pg = self.get_person_gender(subj);
+                     
+                         let pronoun = match pg.0 {
+                             Person::Second => {"ty".to_string()}
+                             Person::Third => {self.get_entity_name(&subj)}
+                             Person::First => {"ja".to_string()}
+     
+                         };
+                         let dropped = self.get_entity_name(&obj);
+     
+                         format!("{pronoun} brosil {dropped}")
+                         
+                         }
+                     GameAction::Equip(subj,obj ) => {let pg = self.get_person_gender(subj);
+                     
+                         let pronoun = match pg.0 {
+                             Person::Second => {"ty".to_string()}
+                             Person::Third => {self.get_entity_name(&subj)}
+                             Person::First => {"ja".to_string()}
+     
+                         };
+                         let dropped = self.get_entity_name(&obj);
+     
+                         format!("{pronoun} brosil {dropped}")
+                         
+                         }
+                     GameAction::UnEquip(subj,obj ) => {let pg = self.get_person_gender(subj);
+                     
+                         let pronoun = match pg.0 {
+                             Person::Second => {"ty".to_string()}
+                             Person::Third => {self.get_entity_name(&subj)}
+                             Person::First => {"ja".to_string()}
+     
+                         };
+                         let dropped = self.get_entity_name(&obj);
+     
+                         format!("{pronoun} brosil {dropped}")
+                         
+                         }
+                     GameAction::Go(subj,cd ) => {"ne mozzesz tuda idti".to_string()}
+                     GameAction::PickUp(subj,obj ) => {let pg = self.get_person_gender(subj);
+                     
+                         let pronoun = match pg.0 {
+                             Person::Second => {"ty".to_string()}
+                             Person::Third => {self.get_entity_name(&subj)}
+                             Person::First => {"ja".to_string()}
+     
+                         };
+                         let dropped = self.get_entity_name(&obj);
+     
+                         format!("{pronoun} brosil {dropped}")
+                         
+                         }
+                     _ => panic!("NOT IMPLEMENTED")
+                 }
+                 
+             }
+         };
+ 
+ 
+         Line::from(line_text)
+     }
 }
