@@ -28,29 +28,24 @@ pub const BASIC_METAL_MATERIAL: Material = Material::Metal(Metal::Gold);
 
 pub const WOOD_WALL: Furniture = Furniture::Wall(BASIC_WOOD_MATERIAL);
 pub const TEGULA_ROOF: Roof = Roof::Tegula(BASIC_METAL_MATERIAL);
-pub const GRAVEL_FLOOR:Floor = Floor::Gravel(BASIC_METAL_MATERIAL);
-
-
-
-
+pub const GRAVEL_FLOOR: Floor = Floor::Gravel(BASIC_METAL_MATERIAL);
 
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (&'static str, RatColor, RatColor);
 
 // Define a marker trait
 
-
 #[derive(Clone, Debug, PartialEq)]
 pub enum GameAction {
     Wait,
-    PickUp(Subject,DirectObject),
-    Equip(Subject,DirectObject),
-    UnEquip(Subject,DirectObject),
+    PickUp(Subject, DirectObject),
+    Equip(Subject, DirectObject),
+    UnEquip(Subject, DirectObject),
     MeleeAttack(),
-    Drop(Subject,DirectObject),
+    Drop(Subject, DirectObject),
     Give(),
     Hit(),
-    Go(Subject,CardinalDirection),
+    Go(Subject, CardinalDirection),
     Quit,
 }
 

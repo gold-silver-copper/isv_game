@@ -2,31 +2,32 @@ use crate::*;
 // ANCHOR: app
 #[derive(Default)]
 pub struct App {
-    entity_counter: i64,
-    components: ComponentHolder,
-    input_state: InputState,
-    action_results: Vec<ActionResult>,
+    pub entity_counter: i64,
+    pub components: ComponentHolder,
+    pub input_state: InputState,
+    pub action_results: Vec<ActionResult>,
 
-    inv_vecs: ItemVecs,
+    pub inv_vecs: ItemVecs,
 
-    exit: bool,
-    game_map: GameMap,
-    action_map: ActionMap,
-    local_player_id: EntityID,
+    pub exit: bool,
+    pub game_map: GameMap,
+    pub action_map: ActionMap,
+    pub local_player_id: EntityID,
 }
+
 #[derive(Default)]
 pub struct ItemVecs {
-    selected_menu: ItemVecType,
-    inventory: Vec<EntityID>,
-    item_list_state: ListState,
+    pub selected_menu: ItemVecType,
+    pub inventory: Vec<EntityID>,
+    pub item_list_state: ListState,
 
-    inventory_names: Vec<String>,
-    equipment: Vec<EntityID>,
+    pub inventory_names: Vec<String>,
+    pub equipment: Vec<EntityID>,
 
-    equipment_names: Vec<String>,
-    ground: Vec<EntityID>,
+    pub equipment_names: Vec<String>,
+    pub ground: Vec<EntityID>,
 
-    ground_names: Vec<String>,
+    pub ground_names: Vec<String>,
 }
 
 impl App {
@@ -41,7 +42,7 @@ impl App {
         Ok(())
     }
 
-    fn render_frame(&self, frame: &mut Frame) {
+    pub fn render_frame(&self, frame: &mut Frame) {
         frame.render_widget(self, frame.area());
     }
 
@@ -52,7 +53,7 @@ impl App {
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
     }
 
-    fn handle_events(&mut self) -> Result<()> {
+    pub fn handle_events(&mut self) -> Result<()> {
         match event::read()? {
             // it's important to check that the event is a key press event as
             // crossterm also emits key release and repeat events on Windows.
@@ -63,149 +64,7 @@ impl App {
         }
     }
 
-    fn handle_key_event(&mut self, key_event: KeyEvent) -> Result<()> {
-        let lid = self.local_player_id.clone();
-
-        match self.input_state {
-            InputState::Basic => match key_event.code {
-                KeyCode::Char(QUIT_BACK) => self.exit(),
-
-                KeyCode::Char(CURSOR_UP) => {
-                    self.action_map
-                        .push( GameAction::Go(lid,CardinalDirection::North));
-                }
-                KeyCode::Char(CURSOR_DOWN) => {
-                    self.action_map
-                        .push( GameAction::Go(lid,CardinalDirection::South));
-                }
-                KeyCode::Char(CURSOR_LEFT) => {
-                    self.action_map
-                        .push( GameAction::Go(lid,CardinalDirection::West));
-                }
-                KeyCode::Char(CURSOR_RIGHT) => {
-                    self.action_map
-                        .push( GameAction::Go(lid,CardinalDirection::East));
-                }
-                KeyCode::Char(INVENTORY_MENU) => {
-                    self.inv_vecs.item_list_state.select_first();
-                    self.input_state = InputState::Inventory;
-                }
-
-                _ => {}
-            },
-            InputState::Inventory => match key_event.code {
-                KeyCode::Char(INVENTORY_MENU) => {
-                    self.input_state = InputState::Basic;
-                    self.inv_vecs.item_list_state = ListState::default();
-
-                    self.inv_vecs.selected_menu = ItemVecType::default();
-                }
-                KeyCode::Char(CURSOR_UP) => self.inv_vecs.item_list_state.select_previous(),
-                KeyCode::Char(CURSOR_RIGHT) => match self.inv_vecs.selected_menu {
-                    ItemVecType::Inventory => {
-                        self.inv_vecs.selected_menu = ItemVecType::Equipped;
-
-                        self.inv_vecs.item_list_state.select_first();
-                    }
-                    ItemVecType::Equipped => {
-                        self.inv_vecs.selected_menu = ItemVecType::Ground;
-
-                        self.inv_vecs.item_list_state.select_first();
-                    }
-                    ItemVecType::Ground => {
-                        self.inv_vecs.selected_menu = ItemVecType::Inventory;
-
-                        self.inv_vecs.item_list_state.select_first();
-                    }
-                },
-
-                KeyCode::Char(CURSOR_LEFT) => match self.inv_vecs.selected_menu {
-                    ItemVecType::Inventory => {
-                        self.inv_vecs.selected_menu = ItemVecType::Ground;
-
-                        self.inv_vecs.item_list_state.select_first();
-                    }
-                    ItemVecType::Equipped => {
-                        self.inv_vecs.selected_menu = ItemVecType::Inventory;
-
-                        self.inv_vecs.item_list_state.select_first();
-                    }
-                    ItemVecType::Ground => {
-                        self.inv_vecs.selected_menu = ItemVecType::Equipped;
-
-                        self.inv_vecs.item_list_state.select_first();
-                    }
-                },
-
-                KeyCode::Char(CURSOR_DOWN) => match self.inv_vecs.selected_menu {
-                    ItemVecType::Inventory => {
-                        if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen < self.inv_vecs.inventory.len() - 1 {
-                                self.inv_vecs.item_list_state.select_next();
-                            }
-                        }
-                    }
-                    ItemVecType::Equipped => {
-                        if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen < self.inv_vecs.equipment.len() - 1 {
-                                self.inv_vecs.item_list_state.select_next();
-                            }
-                        }
-                    }
-                    ItemVecType::Ground => {
-                        if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen < self.inv_vecs.ground.len() - 1 {
-                                self.inv_vecs.item_list_state.select_next();
-                            }
-                        }
-                    }
-                },
-                KeyCode::Char(DROP_UNEQUIP_ACTION) => match self.inv_vecs.selected_menu {
-                    ItemVecType::Equipped => {
-                        let (possible, selected_id) =
-                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
-                        if possible {
-                            self.action_map
-                                .push( GameAction::UnEquip(lid,selected_id));
-                        }
-                    }
-                    ItemVecType::Inventory => {
-                        let (possible, selected_id) =
-                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
-                        if possible {
-                            self.action_map.push( GameAction::Drop(lid,selected_id));
-                        }
-                    }
-                    _ => (),
-                },
-                KeyCode::Char(PICKUP_EQUIP_ACTION) => match self.inv_vecs.selected_menu {
-                    ItemVecType::Ground => {
-                        let (possible, selected_id) =
-                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
-                        if possible {
-                            self.action_map.push( GameAction::PickUp(lid,selected_id));
-                        }
-                    }
-                    ItemVecType::Inventory => {
-                        let (possible, selected_id) =
-                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
-                        if possible {
-                            self.action_map.push( GameAction::Equip(lid,selected_id));
-                        }
-                    }
-                    _ => (),
-                },
-
-                _ => {}
-            },
-
-            _ => panic!("input state not implemented"),
-        }
-
-        Ok(())
-    }
-
-    fn manage_item_vec_input(&self, itemvectype: &ItemVecType) -> (bool, EntityID) {
+    pub fn manage_item_vec_input(&self, itemvectype: &ItemVecType) -> (bool, EntityID) {
         let boop = self.inv_vecs.item_list_state.selected();
 
         if let Some(sid) = boop {
@@ -226,31 +85,7 @@ impl App {
         (false, 0)
     }
 
-    fn handle_movement(&mut self, eid: &EntityID, cd: &CardinalDirection) -> ActionResult {
-        let xyik = cd.to_xyz();
-        if let Some(e_pos) = self.components.positions.get_mut(eid) {
-            let destination = (e_pos.0 + xyik.0, e_pos.1 + xyik.1);
-            // println!("epos got");
-
-            if let Some(dest_vox) = self.game_map.get_mut_voxel_at(&destination) {
-                if !dest_vox.blocks_movement(&self.components.ent_types) {
-                    // println!("dest no block");
-                    dest_vox.entity_set.insert(eid.clone());
-
-                    if let Some(origin_vox) = self.game_map.get_mut_voxel_at(e_pos) {
-                        origin_vox.entity_set.remove(eid);
-                    }
-                    *e_pos = destination;
-                    return ActionResult::Success(GameAction::Go(eid.clone(), cd.clone()));
-                }
-            }
-        }
-
-        ActionResult::Failure(GameAction::Go(eid.clone(), cd.clone()))
-
-    
-    }
-    fn reload_ui(&mut self) {
+    pub fn reload_ui(&mut self) {
         match self.input_state {
             InputState::Inventory => {
                 self.generate_inventory_eid_vec();
@@ -274,28 +109,37 @@ impl App {
         }
     }
 
-    fn handle_actions(&mut self) -> Result<()> {
+    pub fn handle_actions(&mut self) -> Result<()> {
         let a_map = self.action_map.clone();
         self.action_map = Vec::new();
 
         for act in a_map {
             //println!("moving");
 
-           let act_result =  match act {
-                GameAction::Go(subj_id,cd) => (subj_id.clone(),self.handle_movement(&subj_id, &cd)),
-                GameAction::Drop(subj_id,obj_id) => (subj_id.clone(),self.drop_item_from_inv(&obj_id, &subj_id,)),
-                GameAction::PickUp(subj_id,obj_id) => (subj_id.clone(),self.pickup_item_from_ground(&obj_id, &subj_id,)),
-                GameAction::Equip(subj_id,obj_id) => (subj_id.clone(),self.equip_item_from_inv(&obj_id, &subj_id,)),
-                GameAction::UnEquip(subj_id,obj_id) => (subj_id.clone(),self.unequip_item_from_equipped(&obj_id, &subj_id,)),
+            let act_result = match act {
+                GameAction::Go(subj_id, cd) => {
+                    (subj_id.clone(), self.handle_movement(&subj_id, &cd))
+                }
+                GameAction::Drop(subj_id, obj_id) => {
+                    (subj_id.clone(), self.drop_item_from_inv(&subj_id,&obj_id))
+                }
+                GameAction::PickUp(subj_id, obj_id) => (
+                    subj_id.clone(),
+                    self.pickup_item_from_ground(&subj_id,&obj_id),
+                ),
+                GameAction::Equip(subj_id, obj_id) => {
+                    (subj_id.clone(), self.equip_item_from_inv(&subj_id,&obj_id))
+                }
+                GameAction::UnEquip(subj_id, obj_id) => (
+                    subj_id.clone(),
+                    self.unequip_item_from_equipped(&subj_id,&obj_id),
+                ),
                 _ => panic!("meow"),
             };
 
             if act_result.0 == self.local_player_id {
                 self.action_results.push(act_result.1);
             }
-
-           
-
         }
 
         Ok(())
@@ -350,19 +194,6 @@ impl App {
             .insert(eid.clone(), EntityType::Item(item));
 
         eid
-    }
-
-    pub fn drop_item_from_inv(&mut self, item: &EntityID, holder: &EntityID) -> ActionResult {
-        let holder_inv = self.components.equipments.get_mut(holder).unwrap();
-        let holder_pos = self.components.positions.get(holder).unwrap();
-
-        if holder_inv.inventory.contains(item) {
-            holder_inv.inventory.remove(item);
-            let holder_vox = self.game_map.get_mut_voxel_at(holder_pos).unwrap();
-            holder_vox.entity_set.insert(item.clone());
-            return      ActionResult::Success(GameAction::Drop(holder.clone(), item.clone()));
-        }
-        ActionResult::Failure(GameAction::Drop(holder.clone(), item.clone()))
     }
 
     pub fn set_ent_position(&mut self, eid: &EntityID, point: &MyPoint) {
@@ -420,13 +251,56 @@ impl App {
             .block(Block::bordered())
     }
     pub fn generate_event_paragraph(&self) -> Paragraph {
-      
+        let mut line_vec = Vec::new();
 
-        let mut lines = (Text::from(vec![
-            Line::from("HAI"),
-            Line::from("Wielding..."),
-            Line::from("boop"),
-        ]));
+        //should add visible events too later
+        let mut events_copy = self.action_results.clone();
+
+        for x in 0..20 {
+
+            let boop = events_copy.pop();
+            if let Some(actik) = boop {
+
+                match actik {
+                    ActionResult::Success(ga) => {
+                      let response_string =  match ga {
+                            GameAction::Drop(subj,obj ) => {"ty brosajesz"}
+                            GameAction::Equip(subj,obj ) => {"ty odivajesz"}
+                            GameAction::UnEquip(subj,obj ) => {"ty razdivajesz"}
+                            GameAction::Go(subj,cd ) => {"ty idjosz"}
+                            GameAction::PickUp(subj,obj ) => {"ty podbirajesz"}
+                            GameAction::Wait => {"ty brosajesz"}
+                            GameAction::MeleeAttack() => {"ty brosajesz"}
+                            GameAction::Give() => {"ty brosajesz"}
+                            GameAction::Hit() => {"ty brosajesz"}
+                            GameAction::Quit => {"ty brosajesz"}
+                        };
+                        line_vec.push(Line::from(response_string));
+                    }
+                    ActionResult::Failure(ga) => {
+                        let response_string =  match ga {
+                            GameAction::Drop(subj,obj ) => {"ty brosajesz"}
+                            GameAction::Equip(subj,obj ) => {"ty brosajesz"}
+                            GameAction::UnEquip(subj,obj ) => {"ty brosajesz"}
+                            GameAction::Go(subj,cd ) => {"ty brosajesz"}
+                            GameAction::PickUp(subj,obj ) => {"ty brosajesz"}
+                            GameAction::Wait => {"ty brosajesz"}
+                            GameAction::MeleeAttack() => {"ty brosajesz"}
+                            GameAction::Give() => {"ty brosajesz"}
+                            GameAction::Hit() => {"ty brosajesz"}
+                            GameAction::Quit => {"ty brosajesz"}
+                        };
+                        line_vec.push(Line::from(response_string));
+                    }
+                }
+
+            }
+
+
+        }
+
+      //  line_vec.reverse();
+        let mut lines = (Text::from(line_vec));
 
         Paragraph::new(Text::from(lines))
             .on_black()
@@ -525,51 +399,12 @@ impl App {
         self.inv_vecs.ground = evec;
     }
 
-    pub fn pickup_item_from_ground(&mut self, item: &EntityID, subject_eid: &EntityID) ->ActionResult{
-        if let Some(ent_pos) = self.components.positions.get(subject_eid) {
-            if let Some(ent_vox) = self.game_map.get_mut_voxel_at(ent_pos) {
-                if ent_vox.entity_set.contains(item) {
-                    ent_vox.entity_set.remove(item);
-                    self.components
-                        .equipments
-                        .get_mut(subject_eid)
-                        .unwrap()
-                        .inventory
-                        .insert(item.clone());
-                    return      ActionResult::Success(GameAction::PickUp(subject_eid.clone(), item.clone()));
-                }
-            }
-        }
-        ActionResult::Failure(GameAction::PickUp(subject_eid.clone(), item.clone()))
-    }
-
-    pub fn equip_item_from_inv(&mut self, item: &EntityID, subject_eid: &EntityID) -> ActionResult {
-        if let Some(boop) = self.components.equipments.get_mut(subject_eid) {
-            if boop.inventory.contains(item) {
-                boop.inventory.remove(item);
-                boop.equipped.insert(item.clone());
-                return      ActionResult::Success(GameAction::Equip(subject_eid.clone(), item.clone()));
-            }
-        }
-        return      ActionResult::Failure(GameAction::Equip(subject_eid.clone(), item.clone()));
-    }
-    pub fn unequip_item_from_equipped(&mut self, item: &EntityID, subject_eid: &EntityID) -> ActionResult{
-        if let Some(boop) = self.components.equipments.get_mut(subject_eid) {
-            if boop.equipped.contains(item) {
-                boop.equipped.remove(item);
-                boop.inventory.insert(item.clone());
-                return      ActionResult::Success(GameAction::UnEquip(subject_eid.clone(), item.clone()));
-            }
-        }
-        return      ActionResult::Failure(GameAction::UnEquip(subject_eid.clone(), item.clone()));
-    }
-
     pub fn get_unique_eid(&mut self) -> EntityID {
         self.entity_counter += 1;
         self.entity_counter.clone()
     }
 
-    fn exit(&mut self) {
+    pub fn exit(&mut self) {
         self.exit = true;
     }
 }
@@ -582,18 +417,17 @@ impl Widget for &App {
         )
         .split(area);
 
-    let left_layout = layout[0];
-    let side_info_layout = layout[1];
+        let left_layout = layout[0];
+        let side_info_layout = layout[1];
 
+        let second_layout = Layout::new(
+            Direction::Vertical,
+            [Constraint::Percentage(80), Constraint::Min(10)],
+        )
+        .split(left_layout);
 
-    let second_layout = Layout::new(
-        Direction::Vertical,
-        [Constraint::Percentage(80), Constraint::Min(10)],
-    )
-    .split(left_layout);
-
-    let game_screen_layout = second_layout[0];
-    let event_layout = second_layout[1];
+        let game_screen_layout = second_layout[0];
+        let event_layout = second_layout[1];
 
         let client_pos = self
             .components
@@ -646,7 +480,7 @@ impl Widget for &App {
             .on_black()
             .block(Block::new())
             .render(game_screen_layout, buf);
-        
+
         self.generate_info_paragraph().render(side_info_layout, buf);
         self.generate_event_paragraph().render(event_layout, buf);
 

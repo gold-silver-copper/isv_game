@@ -41,7 +41,8 @@ pub use components::*;
 
 mod tui;
 pub use tui::*;
-
+mod actions;
+pub use actions::*;
 mod app;
 pub use app::*;
 
@@ -69,7 +70,8 @@ pub use graphic_trait::*;
 mod color_trait;
 pub use color_trait::*;
 
-
+mod input;
+pub use input::*;
 
 mod equipment_traits;
 pub use equipment_traits::*;
