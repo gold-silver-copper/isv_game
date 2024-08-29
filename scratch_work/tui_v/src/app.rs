@@ -406,6 +406,19 @@ impl App {
             .on_black()
             .block(Block::bordered())
     }
+    pub fn generate_event_paragraph(&self) -> Paragraph {
+      
+
+        let mut lines = (Text::from(vec![
+            Line::from("HAI"),
+            Line::from("Wielding..."),
+            Line::from("boop"),
+        ]));
+
+        Paragraph::new(Text::from(lines))
+            .on_black()
+            .block(Block::bordered())
+    }
 
     pub fn render_item_list(&self, title: &str, itemvectype: ItemVecType) -> List {
         let wut = match itemvectype {
@@ -550,6 +563,19 @@ impl Widget for &App {
         )
         .split(area);
 
+    let left_layout = layout[0];
+    let side_info_layout = layout[1];
+
+
+    let second_layout = Layout::new(
+        Direction::Vertical,
+        [Constraint::Percentage(80), Constraint::Min(10)],
+    )
+    .split(left_layout);
+
+    let game_screen_layout = second_layout[0];
+    let event_layout = second_layout[1];
+
         let client_pos = self
             .components
             .positions
@@ -558,7 +584,7 @@ impl Widget for &App {
 
         let client_render = self.game_map.create_client_render_packet_for_entity(
             &client_pos,
-            &layout[0],
+            &game_screen_layout,
             &self.components.ent_types,
         );
 
@@ -567,7 +593,7 @@ impl Widget for &App {
         //    ui_resources.visible_ents = client_visible_ents;
 
         let mut render_lines = Vec::new();
-        let needed_height = layout[0].height as i16;
+        let needed_height = game_screen_layout.height as i16;
 
         if client_graphics.len() > 0 {
             for y in (0..needed_height) {
@@ -600,15 +626,17 @@ impl Widget for &App {
         Paragraph::new(Text::from(render_lines))
             .on_black()
             .block(Block::new())
-            .render(layout[0], buf);
-        self.generate_info_paragraph().render(layout[1], buf);
+            .render(game_screen_layout, buf);
+        
+        self.generate_info_paragraph().render(side_info_layout, buf);
+        self.generate_event_paragraph().render(event_layout, buf);
 
         match self.input_state {
             InputState::Basic => (),
 
             InputState::Inventory => {
                 let block = Block::bordered().title("Popup");
-                let pop_area = popup_area(layout[0], 80, 70);
+                let pop_area = popup_area(game_screen_layout, 80, 70);
                 let pop_layout = Layout::new(
                     Direction::Horizontal,
                     [

@@ -8,7 +8,7 @@ pub type IndirectObject = EntityID;
 pub type InstrumentObject = EntityID;
 
 pub const LOCAL_RANGE: i64 = 10000;
-pub const MAP_SIZE: i64 = 1000;
+pub const MAP_SIZE: i64 = 100;
 
 pub const CURSOR_UP: char = 'w';
 pub const CURSOR_DOWN: char = 's';
