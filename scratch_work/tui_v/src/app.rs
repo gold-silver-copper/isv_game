@@ -6,6 +6,7 @@ pub struct App {
     pub components: ComponentHolder,
     pub input_state: InputState,
     pub action_results: Vec<ActionResult>,
+    pub visible_ents: Vec<EntityID>,
 
     pub inv_vecs: ItemVecs,
 
@@ -36,6 +37,7 @@ impl App {
         while !self.exit {
             terminal.draw(|frame| self.render_frame(frame))?;
             self.handle_events().wrap_err("handle events failed")?;
+            self.handle_ai();
             self.handle_actions()?;
             self.reload_ui();
         }
@@ -50,6 +52,7 @@ impl App {
         let pik = (5, 5);
 
         self.local_player_id = self.spawn_player_at(&pik);
+        let ai_guy = self.spawn_animal_at(&(7,7));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
     }
 
@@ -85,12 +88,38 @@ impl App {
         (false, 0)
     }
 
+
+    pub fn handle_ai(&mut self) {
+
+
+        let mut conscious_ents = Vec::new();
+
+        for boop in &self.components.ent_types {
+
+            if (boop.1 == &EntityType::Human) && (boop.0 != &self.local_player_id) {
+                conscious_ents.push(boop.0.clone());
+            }
+        }
+
+        for meow in conscious_ents {
+
+            self.action_map.push(GameAction::Go(meow, CardinalDirection::East));
+        }
+
+        
+
+    }
+
     pub fn reload_ui(&mut self) {
+        self.generate_render_info();
+
+
         match self.input_state {
             InputState::Inventory => {
                 self.generate_inventory_eid_vec();
                 self.generate_equipped_eid_vec();
                 self.generate_ground_item_eid_vec();
+             
 
                 let boopik = match self.inv_vecs.selected_menu {
                     ItemVecType::Equipped => self.inv_vecs.equipment.len(),
@@ -137,7 +166,7 @@ impl App {
                 _ => panic!("meow"),
             };
 
-            if act_result.0 == self.local_player_id {
+            if (act_result.0 == self.local_player_id ) || (self.visible_ents.contains(&act_result.0)) {
                 self.action_results.push(act_result.1);
             }
         }
@@ -168,7 +197,7 @@ impl App {
         self.components.positions.insert(eid.clone(), point.clone());
         self.components
             .ent_types
-            .insert(eid.clone(), EntityType::Animalia);
+            .insert(eid.clone(), EntityType::Human);
         self.components
             .equipments
             .insert(eid.clone(), Equipment::default());
@@ -233,7 +262,7 @@ impl App {
                     .get(item)
                     .expect("EVERY ITEM MUST HAVE AN ENTITY TYPE");
                 let item_name = match item_type {
-                    EntityType::Animalia => panic!("CANNOT WIELD ANIMALS... yet"),
+                    EntityType::Human => panic!("CANNOT WIELD ANIMALS... yet"),
                     EntityType::Item(itemik) => itemik.item_name(),
                 };
                 wield_string.push_str(&format!(" {item_name}"));
@@ -250,6 +279,170 @@ impl App {
             .on_black()
             .block(Block::bordered())
     }
+
+    pub fn get_person_gender(&self,subj:EntityID) -> (Person,Gender) {
+        let person = if subj == self.local_player_id { Person::Second
+
+        }
+        else {Person::Third};
+
+        (person,Gender::Masculine)
+    }
+
+    pub fn get_entity_name(&self,subj: &EntityID) -> String {
+
+        let ent_typ = self.components.ent_types.get(subj).unwrap();
+
+        let stringik = match ent_typ {
+
+            EntityType::Human => "John".to_string(),
+            EntityType::Item(itemik) => itemik.item_name(),
+        };
+
+        stringik
+
+
+    }
+
+    pub fn generate_action_result_string(&self, act_resut:ActionResult) -> Line {
+
+       let line_text =  match act_resut {
+            ActionResult::Success(ga) => {
+               match ga {
+                    GameAction::Drop(subj,obj ) => {let pg = self.get_person_gender(subj);
+                    
+                    let pronoun = match pg.0 {
+                        Person::Second => {"ty".to_string()}
+                        Person::Third => {self.get_entity_name(&subj)}
+                        Person::First => {"ja".to_string()}
+
+                    };
+                    let dropped = self.get_entity_name(&obj);
+
+                    format!("{pronoun} brosil {dropped}")
+                    
+                    }
+                    GameAction::Equip(subj,obj ) => {let pg = self.get_person_gender(subj);
+                    
+                        let pronoun = match pg.0 {
+                            Person::Second => {"ty".to_string()}
+                            Person::Third => {self.get_entity_name(&subj)}
+                            Person::First => {"ja".to_string()}
+    
+                        };
+                        let dropped = self.get_entity_name(&obj);
+    
+                        format!("{pronoun} brosil {dropped}")
+                        
+                        }
+                    GameAction::UnEquip(subj,obj ) => {let pg = self.get_person_gender(subj);
+                    
+                        let pronoun = match pg.0 {
+                            Person::Second => {"ty".to_string()}
+                            Person::Third => {self.get_entity_name(&subj)}
+                            Person::First => {"ja".to_string()}
+    
+                        };
+                        let dropped = self.get_entity_name(&obj);
+    
+                        format!("{pronoun} brosil {dropped}")
+                        
+                        }
+                    GameAction::Go(subj,cd ) => {let pg = self.get_person_gender(subj);
+                    
+                        let pronoun = match pg.0 {
+                            Person::Second => {"ty".to_string()}
+                            Person::Third => {self.get_entity_name(&subj)}
+                            Person::First => {"ja".to_string()}
+    
+                        };
+                        let dropped = cd.to_isv();
+    
+                        format!("{pronoun} brosil {dropped}")
+                        
+                        }
+                    GameAction::PickUp(subj,obj ) => {let pg = self.get_person_gender(subj);
+                    
+                        let pronoun = match pg.0 {
+                            Person::Second => {"ty".to_string()}
+                            Person::Third => {self.get_entity_name(&subj)}
+                            Person::First => {"ja".to_string()}
+    
+                        };
+                        let dropped = self.get_entity_name(&obj);
+    
+                        format!("{pronoun} brosil {dropped}")
+                        
+                        }
+                   _ => panic!("NOT IMPLEMENTED")
+                }
+               
+            }
+            ActionResult::Failure(ga) => {
+                  match ga {
+                    GameAction::Drop(subj,obj ) => {let pg = self.get_person_gender(subj);
+                    
+                        let pronoun = match pg.0 {
+                            Person::Second => {"ty".to_string()}
+                            Person::Third => {self.get_entity_name(&subj)}
+                            Person::First => {"ja".to_string()}
+    
+                        };
+                        let dropped = self.get_entity_name(&obj);
+    
+                        format!("{pronoun} brosil {dropped}")
+                        
+                        }
+                    GameAction::Equip(subj,obj ) => {let pg = self.get_person_gender(subj);
+                    
+                        let pronoun = match pg.0 {
+                            Person::Second => {"ty".to_string()}
+                            Person::Third => {self.get_entity_name(&subj)}
+                            Person::First => {"ja".to_string()}
+    
+                        };
+                        let dropped = self.get_entity_name(&obj);
+    
+                        format!("{pronoun} brosil {dropped}")
+                        
+                        }
+                    GameAction::UnEquip(subj,obj ) => {let pg = self.get_person_gender(subj);
+                    
+                        let pronoun = match pg.0 {
+                            Person::Second => {"ty".to_string()}
+                            Person::Third => {self.get_entity_name(&subj)}
+                            Person::First => {"ja".to_string()}
+    
+                        };
+                        let dropped = self.get_entity_name(&obj);
+    
+                        format!("{pronoun} brosil {dropped}")
+                        
+                        }
+                    GameAction::Go(subj,cd ) => {"ne mozzesz tuda idti".to_string()}
+                    GameAction::PickUp(subj,obj ) => {let pg = self.get_person_gender(subj);
+                    
+                        let pronoun = match pg.0 {
+                            Person::Second => {"ty".to_string()}
+                            Person::Third => {self.get_entity_name(&subj)}
+                            Person::First => {"ja".to_string()}
+    
+                        };
+                        let dropped = self.get_entity_name(&obj);
+    
+                        format!("{pronoun} brosil {dropped}")
+                        
+                        }
+                    _ => panic!("NOT IMPLEMENTED")
+                }
+                
+            }
+        };
+
+
+        Line::from(line_text)
+    }
+
     pub fn generate_event_paragraph(&self) -> Paragraph {
         let mut line_vec = Vec::new();
 
@@ -261,38 +454,7 @@ impl App {
             let boop = events_copy.pop();
             if let Some(actik) = boop {
 
-                match actik {
-                    ActionResult::Success(ga) => {
-                      let response_string =  match ga {
-                            GameAction::Drop(subj,obj ) => {"ty brosajesz"}
-                            GameAction::Equip(subj,obj ) => {"ty odivajesz"}
-                            GameAction::UnEquip(subj,obj ) => {"ty razdivajesz"}
-                            GameAction::Go(subj,cd ) => {"ty idjosz"}
-                            GameAction::PickUp(subj,obj ) => {"ty podbirajesz"}
-                            GameAction::Wait => {"ty brosajesz"}
-                            GameAction::MeleeAttack() => {"ty brosajesz"}
-                            GameAction::Give() => {"ty brosajesz"}
-                            GameAction::Hit() => {"ty brosajesz"}
-                            GameAction::Quit => {"ty brosajesz"}
-                        };
-                        line_vec.push(Line::from(response_string));
-                    }
-                    ActionResult::Failure(ga) => {
-                        let response_string =  match ga {
-                            GameAction::Drop(subj,obj ) => {"ty brosajesz"}
-                            GameAction::Equip(subj,obj ) => {"ty brosajesz"}
-                            GameAction::UnEquip(subj,obj ) => {"ty brosajesz"}
-                            GameAction::Go(subj,cd ) => {"ty brosajesz"}
-                            GameAction::PickUp(subj,obj ) => {"ty brosajesz"}
-                            GameAction::Wait => {"ty brosajesz"}
-                            GameAction::MeleeAttack() => {"ty brosajesz"}
-                            GameAction::Give() => {"ty brosajesz"}
-                            GameAction::Hit() => {"ty brosajesz"}
-                            GameAction::Quit => {"ty brosajesz"}
-                        };
-                        line_vec.push(Line::from(response_string));
-                    }
-                }
+                line_vec.push(Line::from(self.generate_action_result_string(actik)));
 
             }
 
@@ -333,7 +495,7 @@ impl App {
                 .get(itik)
                 .expect("ent type must have");
             let itname = match typik {
-                EntityType::Animalia => {
+                EntityType::Human => {
                     panic!("why do u have an animal in ur inventory")
                 }
                 EntityType::Item(itemik) => itemik.item_name(),
@@ -387,7 +549,7 @@ impl App {
         for boop in player_vox.entity_set.iter() {
             let booptype = self.components.ent_types.get(boop).unwrap();
             match booptype {
-                EntityType::Animalia => {}
+                EntityType::Human => {}
                 EntityType::Item(x) => {
                     evec.push(boop.clone());
                 }
@@ -402,6 +564,20 @@ impl App {
     pub fn get_unique_eid(&mut self) -> EntityID {
         self.entity_counter += 1;
         self.entity_counter.clone()
+    }
+
+    pub fn generate_render_info(&mut self) {
+
+        let client_pos = self
+        .components
+        .positions
+        .get(&self.local_player_id)
+        .unwrap_or(&(0, 0));
+
+        self.visible_ents = self.game_map.generate_visible_ents_from_point(client_pos);
+        //println!("{:#?}",self.visible_ents);
+       
+
     }
 
     pub fn exit(&mut self) {
@@ -442,8 +618,7 @@ impl Widget for &App {
         );
 
         let client_graphics = client_render.voxel_grid;
-        let client_visible_ents = client_render.ent_vec;
-        //    ui_resources.visible_ents = client_visible_ents;
+     
 
         let mut render_lines = Vec::new();
         let needed_height = game_screen_layout.height as i16;

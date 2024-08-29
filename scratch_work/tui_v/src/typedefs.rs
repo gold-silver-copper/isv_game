@@ -49,6 +49,25 @@ pub enum GameAction {
     Quit,
 }
 
+impl GameAction {
+    pub fn verb_string(&self,) -> &'static str {
+
+        match self {
+            GameAction::Drop(subj,obj ) => {"izbaviti"}
+            GameAction::Equip(subj,obj ) => {"odeti"}
+            GameAction::UnEquip(subj,obj ) => {"ty razdivajesz"}
+            GameAction::Go(subj,cd ) => {"ty idjosz"}
+            GameAction::PickUp(subj,obj ) => {"ty podbirajesz"}
+            GameAction::Wait => {"ty brosajesz"}
+            GameAction::MeleeAttack() => {"ty brosajesz"}
+            GameAction::Give() => {"ty brosajesz"}
+            GameAction::Hit() => {"ty brosajesz"}
+            GameAction::Quit => {"ty brosajesz"}
+        }
+
+    }
+}
+
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
     (p1.0 + p2.0, p1.1 + p2.1)
 }
@@ -72,13 +91,13 @@ pub type ActionMap = Vec<GameAction>;
 #[derive(Debug)]
 pub struct RenderPacket {
     pub voxel_grid: Vec<Vec<GraphicTriple>>,
-    pub ent_vec: Vec<EntityID>,
+   
 }
 impl RenderPacket {
     pub fn new() -> Self {
         RenderPacket {
             voxel_grid: Vec::new(),
-            ent_vec: Vec::new(),
+           
         }
     }
 }
@@ -100,4 +119,13 @@ impl CardinalDirection {
             CardinalDirection::East => (1, 0),
         }
     }
+    pub fn to_isv(&self) -> &'static str {
+        match self {
+            CardinalDirection::North => "sever",
+            CardinalDirection::West => "zapad",
+            CardinalDirection::South => "jug",
+            CardinalDirection::East => "vostok",
+        }
+    }
+
 }

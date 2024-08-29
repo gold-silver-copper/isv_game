@@ -1,8 +1,8 @@
 use crate::*;
 
-#[derive(Display)]
+#[derive(Display,PartialEq)]
 pub enum EntityType {
-    Animalia,
+    Human,
     Item(ItemType),
 }
 pub enum InputState {
@@ -27,7 +27,7 @@ impl Default for InputState {
         InputState::Basic
     }
 }
-
+#[derive(Display,PartialEq)]
 pub enum ItemType {
     Container(Container),
     Weapon(Weapon),
@@ -97,4 +97,41 @@ pub enum Container {
 
 pub enum Furniture {
     Wall(Material),
+}
+
+
+
+#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
+pub enum FishType {
+    Losos,
+    Tunec,
+    Karas,
+}
+
+#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
+pub enum BirdType {
+    Sova,
+    Vrabec,
+    Vran,
+    Gavran,
+    Kos,
+    Gųsę,
+}
+
+#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
+pub enum LizardType {
+    Gad,
+    Jaščer,
+    Iguana,
+    Vųž,
+    Žȯlv,
+}
+
+#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
+pub enum MammalType {
+    Los,
+    Jelenj,
+    Krava,
+    Pes,
+    Tigr,
 }

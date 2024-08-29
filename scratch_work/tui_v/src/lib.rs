@@ -4,7 +4,7 @@ pub use color_eyre::{
     Result,
 };
 // ANCHOR_END: new-imports
-pub use botanical_latin::*;
+
 pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};
 pub use ratatui::style::Color as RatColor;
 pub use ratatui::text::Span;
@@ -45,6 +45,8 @@ mod actions;
 pub use actions::*;
 mod app;
 pub use app::*;
+mod interslavic;
+pub use interslavic::*;
 
 mod gamemap;
 pub use gamemap::*;
