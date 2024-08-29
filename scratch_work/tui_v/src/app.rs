@@ -5,6 +5,7 @@ pub struct App {
     entity_counter: i64,
     components: ComponentHolder,
     input_state: InputState,
+    action_results: Vec<ActionResult>,
 
     inv_vecs: ItemVecs,
 
@@ -225,7 +226,7 @@ impl App {
         (false, 0)
     }
 
-    fn handle_movement(&mut self, eid: &EntityID, cd: &CardinalDirection) -> Result<()> {
+    fn handle_movement(&mut self, eid: &EntityID, cd: &CardinalDirection) -> ActionResult {
         let xyik = cd.to_xyz();
         if let Some(e_pos) = self.components.positions.get_mut(eid) {
             let destination = (e_pos.0 + xyik.0, e_pos.1 + xyik.1);
@@ -240,11 +241,14 @@ impl App {
                         origin_vox.entity_set.remove(eid);
                     }
                     *e_pos = destination;
+                    return ActionResult::Success(GameAction::Go(eid.clone(), cd.clone()));
                 }
             }
         }
 
-        Ok(())
+        ActionResult::Failure(GameAction::Go(eid.clone(), cd.clone()))
+
+    
     }
     fn reload_ui(&mut self) {
         match self.input_state {
@@ -277,14 +281,21 @@ impl App {
         for act in a_map {
             //println!("moving");
 
-            match act {
-                GameAction::Go(subj_id,cd) => self.handle_movement(&subj_id, &cd)?,
-                GameAction::Drop(subj_id,obj_id) => self.drop_item_from_inv(&obj_id, &subj_id,),
-                GameAction::PickUp(subj_id,obj_id) => self.pickup_item_from_ground(&obj_id, &subj_id,),
-                GameAction::Equip(subj_id,obj_id) => self.equip_item_from_inv(&obj_id, &subj_id,),
-                GameAction::UnEquip(subj_id,obj_id) => self.unequip_item_from_equipped(&obj_id, &subj_id,),
+           let act_result =  match act {
+                GameAction::Go(subj_id,cd) => (subj_id.clone(),self.handle_movement(&subj_id, &cd)),
+                GameAction::Drop(subj_id,obj_id) => (subj_id.clone(),self.drop_item_from_inv(&obj_id, &subj_id,)),
+                GameAction::PickUp(subj_id,obj_id) => (subj_id.clone(),self.pickup_item_from_ground(&obj_id, &subj_id,)),
+                GameAction::Equip(subj_id,obj_id) => (subj_id.clone(),self.equip_item_from_inv(&obj_id, &subj_id,)),
+                GameAction::UnEquip(subj_id,obj_id) => (subj_id.clone(),self.unequip_item_from_equipped(&obj_id, &subj_id,)),
                 _ => panic!("meow"),
+            };
+
+            if act_result.0 == self.local_player_id {
+                self.action_results.push(act_result.1);
             }
+
+           
+
         }
 
         Ok(())
@@ -341,7 +352,7 @@ impl App {
         eid
     }
 
-    pub fn drop_item_from_inv(&mut self, item: &EntityID, holder: &EntityID) {
+    pub fn drop_item_from_inv(&mut self, item: &EntityID, holder: &EntityID) -> ActionResult {
         let holder_inv = self.components.equipments.get_mut(holder).unwrap();
         let holder_pos = self.components.positions.get(holder).unwrap();
 
@@ -349,7 +360,9 @@ impl App {
             holder_inv.inventory.remove(item);
             let holder_vox = self.game_map.get_mut_voxel_at(holder_pos).unwrap();
             holder_vox.entity_set.insert(item.clone());
+            return      ActionResult::Success(GameAction::Drop(holder.clone(), item.clone()));
         }
+        ActionResult::Failure(GameAction::Drop(holder.clone(), item.clone()))
     }
 
     pub fn set_ent_position(&mut self, eid: &EntityID, point: &MyPoint) {
@@ -512,37 +525,43 @@ impl App {
         self.inv_vecs.ground = evec;
     }
 
-    pub fn pickup_item_from_ground(&mut self, item: &EntityID, pickerupper: &EntityID) {
-        if let Some(ent_pos) = self.components.positions.get(pickerupper) {
+    pub fn pickup_item_from_ground(&mut self, item: &EntityID, subject_eid: &EntityID) ->ActionResult{
+        if let Some(ent_pos) = self.components.positions.get(subject_eid) {
             if let Some(ent_vox) = self.game_map.get_mut_voxel_at(ent_pos) {
                 if ent_vox.entity_set.contains(item) {
                     ent_vox.entity_set.remove(item);
                     self.components
                         .equipments
-                        .get_mut(pickerupper)
+                        .get_mut(subject_eid)
                         .unwrap()
                         .inventory
                         .insert(item.clone());
+                    return      ActionResult::Success(GameAction::PickUp(subject_eid.clone(), item.clone()));
                 }
             }
         }
+        ActionResult::Failure(GameAction::PickUp(subject_eid.clone(), item.clone()))
     }
 
-    pub fn equip_item_from_inv(&mut self, item: &EntityID, equipper: &EntityID) {
-        if let Some(boop) = self.components.equipments.get_mut(equipper) {
+    pub fn equip_item_from_inv(&mut self, item: &EntityID, subject_eid: &EntityID) -> ActionResult {
+        if let Some(boop) = self.components.equipments.get_mut(subject_eid) {
             if boop.inventory.contains(item) {
                 boop.inventory.remove(item);
                 boop.equipped.insert(item.clone());
+                return      ActionResult::Success(GameAction::Equip(subject_eid.clone(), item.clone()));
             }
         }
+        return      ActionResult::Failure(GameAction::Equip(subject_eid.clone(), item.clone()));
     }
-    pub fn unequip_item_from_equipped(&mut self, item: &EntityID, equipper: &EntityID) {
-        if let Some(boop) = self.components.equipments.get_mut(equipper) {
+    pub fn unequip_item_from_equipped(&mut self, item: &EntityID, subject_eid: &EntityID) -> ActionResult{
+        if let Some(boop) = self.components.equipments.get_mut(subject_eid) {
             if boop.equipped.contains(item) {
                 boop.equipped.remove(item);
                 boop.inventory.insert(item.clone());
+                return      ActionResult::Success(GameAction::UnEquip(subject_eid.clone(), item.clone()));
             }
         }
+        return      ActionResult::Failure(GameAction::UnEquip(subject_eid.clone(), item.clone()));
     }
 
     pub fn get_unique_eid(&mut self) -> EntityID {
