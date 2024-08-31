@@ -121,6 +121,18 @@ pub type Noun = (String, Gender);
 pub type Adjective = String;
 pub type Verb = String;
 
+pub const VOWELS: &[char] = &[
+    'a', 'e', 'i', 'í', 'ó', 'o', 'u', 'å', 'ą', 'ę', 'ė', 'é', 'ȯ', 'ų', 
+    'ů', 'ú', 'ý', 'y', 'ě', 'A', 'E', 'I', 'O', 'U', 'á',
+];
+
+pub const HARD_CONSONANTS: &[char] = &[
+    'p', 'b', 'f', 'v', 'm', 's', 'z', 't', 'd', 'r', 'n', 'l', 'k', 'g', 'h',
+];
+
+
+
+
 impl ISV {
 
     pub fn guess_gender(word: &str) -> Gender {
@@ -147,6 +159,40 @@ impl ISV {
         let last_four = ISV::last_n_chars(word, 4);
         //the only exception is gost́ (m anim, not ost class conjugation)
         last_four == String::from("ost́")
+    }
+
+    pub fn get_stem(word: &str) -> String {
+        if ISV::is_vowel(&ISV::last_in_stringslice(word)) {
+            return String::from(ISV::stringslice_without_last(word));
+        } else {
+            return String::from(word);
+        }
+    }
+    pub fn is_vowel(c: &char) -> bool {
+        VOWELS.contains(c)
+    }
+
+    pub fn stem_of_word_is_soft(word: &str) -> bool {
+        ISV::ends_with_soft_consonant(&ISV::get_stem(word))
+    }
+    pub fn ends_with_soft_consonant(word: &str) -> bool {
+        ISV::is_soft_consonant(&ISV::last_in_stringslice(word))
+    }
+
+    pub fn is_hard_consonant(c: &char) -> bool {
+        HARD_CONSONANTS.contains(c)
+    }
+
+    pub fn is_soft_consonant(c: &char) -> bool {
+        !ISV::is_hard_consonant(c) && !ISV::is_vowel(c)
+    }
+    pub fn last_in_stringslice(s: &str) -> char {
+        s.to_string().pop().unwrap_or(' ')
+    }
+    pub fn stringslice_without_last(s: &str) -> String {
+        let mut stringik = s.to_string();
+        stringik.pop();
+        stringik
     }
 
 
