@@ -1,30 +1,31 @@
-#[derive(Debug,  Clone, Default)]
-pub struct ISV {
+use animate_nouns::ANIMATE_NOUNS;
 
-}
+mod animate_nouns;
+mod case_endings;
+use case_endings::*;
+
+#[derive(Debug, Clone, Default)]
+pub struct ISV {}
 #[derive(Debug, PartialEq, Clone)]
 pub struct ComplexNoun {
-  
     pub head_noun: String,
     pub adjective: Vec<String>,
-    
 }
 
 impl Default for ComplexNoun {
     fn default() -> Self {
         Self {
             head_noun: "exemplum".into(),
-         
+
             adjective: Vec::new(),
         }
     }
 }
 
-
 #[derive(Debug, PartialEq, Clone)]
 pub enum Number {
     Singular,
-    Plural
+    Plural,
 }
 #[derive(Debug, PartialEq, Clone)]
 pub enum Case {
@@ -34,13 +35,13 @@ pub enum Case {
     Loc,
     Dat,
     Ins,
-    Voc
+    //vocative will be handle seperately
 }
 #[derive(Debug, PartialEq, Clone)]
 pub enum Gender {
     Masculine,
     Feminine,
-    Neuter
+    Neuter,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -49,27 +50,6 @@ pub enum Person {
     Second,
     Third,
 }
-
-#[derive(Debug, PartialEq, Clone)]
-pub struct CaseEndings {
-    pub gender: Gender,
-    pub nom_sg: &'static str,
-    pub acc_sg: &'static str,
-    pub gen_sg: &'static str,
-    pub loc_sg: &'static str,
-    pub dat_sg: &'static str,
-    pub ins_sg: &'static str,
-    pub voc_sg: &'static str,
-
-    pub nom_pl: &'static str,
-    pub acc_pl: &'static str,
-    pub gen_pl: &'static str,
-    pub loc_pl: &'static str,
-    pub dat_pl: &'static str,
-    pub ins_pl: &'static str,
-    pub voc_pl: &'static str,
-}
-
 
 impl CaseEndings {
     pub fn ending(&self, case: &Case, number: &Number) -> &str {
@@ -81,7 +61,6 @@ impl CaseEndings {
                 Case::Loc => self.loc_sg,
                 Case::Dat => self.dat_sg,
                 Case::Ins => self.ins_sg,
-                Case::Voc => self.voc_sg,
             },
             Number::Plural => match case {
                 Case::Nom => self.nom_pl,
@@ -90,57 +69,77 @@ impl CaseEndings {
                 Case::Loc => self.loc_pl,
                 Case::Dat => self.dat_pl,
                 Case::Ins => self.ins_pl,
-                Case::Voc => self.voc_pl,
             },
         }
     }
 }
-
-
-pub const TEST_ENDINGS: CaseEndings = CaseEndings {
-    gender: Gender::Neuter,
-    nom_sg: "nom_sg",  // Nominative Singular
-    acc_sg: "acc_sg",  // Accusative Singular
-    gen_sg: "gen_sg",  // Genitive Singular
-    loc_sg: "loc_sg",  // Locative Singular
-    dat_sg: "dat_sg",  // Dative Singular
-    ins_sg: "ins_sg",  // Instrumental Singular
-    voc_sg: "voc_sg",  // Vocative Singular
-
-    nom_pl: "nom_pl",  // Nominative Plural
-    acc_pl: "acc_pl",  // Accusative Plural
-    gen_pl: "gen_pl",  // Genitive Plural
-    loc_pl: "loc_pl",  // Locative Plural
-    dat_pl: "dat_pl",  // Dative Plural
-    ins_pl: "ins_pl",  // Instrumental Plural
-    voc_pl: "voc_pl",  // Vocative Plural
-};
-
 
 pub type Noun = (String, Gender);
 pub type Adjective = String;
 pub type Verb = String;
 
 pub const VOWELS: &[char] = &[
-    'a', 'e', 'i', 'í', 'ó', 'o', 'u', 'å', 'ą', 'ę', 'ė', 'é', 'ȯ', 'ų', 
-    'ů', 'ú', 'ý', 'y', 'ě', 'A', 'E', 'I', 'O', 'U', 'á',
+    'a', 'e', 'i', 'í', 'ó', 'o', 'u', 'å', 'ą', 'ę', 'ė', 'é', 'ȯ', 'ų', 'ů', 'ú', 'ý', 'y', 'ě',
+    'A', 'E', 'I', 'O', 'U', 'á',
 ];
 
 pub const HARD_CONSONANTS: &[char] = &[
     'p', 'b', 'f', 'v', 'm', 's', 'z', 't', 'd', 'r', 'n', 'l', 'k', 'g', 'h',
 ];
 
-
-
-
 impl ISV {
+    pub fn guess_noun(word: &str, case: &Case, number: &Number) -> Noun {
+        let gender = ISV::guess_gender(word);
+        let word_is_animate = ISV::noun_is_animate(word);
+        let word_stem_is_soft = ISV::stem_of_noun_is_soft(word);
+        let word_stem = ISV::get_noun_stem(word, number);
+
+        let endings = if ISV::is_ost_class(word) {
+            &OST_ENDINGS
+        } else {
+            match gender {
+                Gender::Masculine => {
+                    if word_is_animate {
+                        if word_stem_is_soft {
+                            &ANIMATE_SOFT_ENDINGS
+                        } else {
+                            &ANIMATE_HARD_ENDINGS
+                        }
+                    } else {
+                        if word_stem_is_soft {
+                            &INANIMATE_SOFT_ENDINGS
+                        } else {
+                            &INANIMATE_HARD_ENDINGS
+                        }
+                    }
+                }
+                Gender::Feminine => {
+                    if word_stem_is_soft {
+                        &FEMININE_SOFT_ENDINGS
+                    } else {
+                        &FEMININE_HARD_ENDINGS
+                    }
+                }
+                Gender::Neuter => {
+                    if word_stem_is_soft {
+                        &NEUTER_SOFT_ENDINGS
+                    } else {
+                        &NEUTER_HARD_ENDINGS
+                    }
+                }
+            }
+        };
+
+        let ending = endings.ending(case, number);
+        let merged = format!("{}{}", word_stem, ending);
+        return (merged, gender.clone());
+    }
+    pub fn noun_is_animate(word: &str) -> bool {
+        ANIMATE_NOUNS.contains(&word)
+    }
 
     pub fn guess_gender(word: &str) -> Gender {
         let last_one = ISV::last_n_chars(word, 1);
-
-        let last_three = ISV::last_n_chars(word, 3);
-
-        assert_eq!("ost́", ISV::last_n_chars("kost́", 4));
 
         if ISV::is_ost_class(word) || (last_one == "a") || (last_one == "i") {
             return Gender::Feminine;
@@ -156,14 +155,19 @@ impl ISV {
         word[split_pos..].into()
     }
     pub fn is_ost_class(word: &str) -> bool {
-        let last_four = ISV::last_n_chars(word, 4);
-        //the only exception is gost́ (m anim, not ost class conjugation)
-        last_four == String::from("ost́")
+        word.ends_with("ost́")
     }
 
-    pub fn get_stem(word: &str) -> String {
+    pub fn get_noun_stem(word: &str, number: &Number) -> String {
+        if word.ends_with("anin") && number == &Number::Plural {
+            return ISV::string_without_last_n(word, 2);
+        }
+        if word.ends_with("anina") && number == &Number::Plural {
+            return ISV::string_without_last_n(word, 3);
+        }
+
         if ISV::is_vowel(&ISV::last_in_stringslice(word)) {
-            return String::from(ISV::stringslice_without_last(word));
+            return ISV::string_without_last_n(word, 1);
         } else {
             return String::from(word);
         }
@@ -172,8 +176,8 @@ impl ISV {
         VOWELS.contains(c)
     }
 
-    pub fn stem_of_word_is_soft(word: &str) -> bool {
-        ISV::ends_with_soft_consonant(&ISV::get_stem(word))
+    pub fn stem_of_noun_is_soft(word: &str) -> bool {
+        ISV::ends_with_soft_consonant(&ISV::get_noun_stem(word, &Number::Singular))
     }
     pub fn ends_with_soft_consonant(word: &str) -> bool {
         ISV::is_soft_consonant(&ISV::last_in_stringslice(word))
@@ -189,11 +193,12 @@ impl ISV {
     pub fn last_in_stringslice(s: &str) -> char {
         s.to_string().pop().unwrap_or(' ')
     }
-    pub fn stringslice_without_last(s: &str) -> String {
+    pub fn string_without_last_n(s: &str, n: i64) -> String {
         let mut stringik = s.to_string();
-        stringik.pop();
+        for _ in 0..n {
+            stringik.pop();
+        }
+
         stringik
     }
-
-
 }
