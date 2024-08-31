@@ -3,6 +3,8 @@ use animate_nouns::ANIMATE_NOUNS;
 mod animate_nouns;
 mod case_endings;
 use case_endings::*;
+mod verb_endings;
+pub use verb_endings::*;
 
 #[derive(Debug, Clone, Default)]
 pub struct ISV {}
@@ -50,6 +52,20 @@ pub enum Person {
     Second,
     Third,
 }
+#[derive(Debug, PartialEq, Clone)]
+pub enum Conjugation {
+    First,
+    Second,
+}
+#[derive(Debug, PartialEq, Clone)]
+pub enum Tense {
+    Present,
+    Imperfect,
+    Future,
+    Perfect,
+    PluPerfect,
+    Conditional,
+}
 
 impl CaseEndings {
     pub fn ending(&self, case: &Case, number: &Number) -> &str {
@@ -73,6 +89,18 @@ impl CaseEndings {
         }
     }
 }
+impl VerbEndings {
+    pub fn ending(&self, person: &Person, number: &Number) -> &str {
+        match (person, number) {
+            (Person::First, Number::Singular) => self.first_singular,
+            (Person::Second, Number::Singular) => self.second_singular,
+            (Person::Third, Number::Singular) => self.third_singular,
+            (Person::First, Number::Plural) => self.first_plural,
+            (Person::Second, Number::Plural) => self.second_plural,
+            (Person::Third, Number::Plural) => self.third_plural,
+        }
+    }
+}
 
 pub type Noun = (String, Gender);
 pub type Adjective = String;
@@ -87,8 +115,154 @@ pub const HARD_CONSONANTS: &[char] = &[
     'p', 'b', 'f', 'v', 'm', 's', 'z', 't', 'd', 'r', 'n', 'l', 'k', 'g', 'h',
 ];
 
+pub const J_MERGE_CHARS: &[&str] = &["st", "zd", "sk", "zg", "s", "z", "t", "d", "k", "g", "h"];
+
+//VERB STUFF
 impl ISV {
-    pub fn guess_noun(word: &str, case: &Case, number: &Number) -> Noun {
+    pub fn get_present_tense_stem(infinitive: &str) -> (String, Conjugation) {
+        let infinitive_stem = ISV::get_infinitive_stem(infinitive);
+
+        if ISV::is_consonant(&ISV::last_in_stringslice(&infinitive_stem)) {
+            (infinitive_stem, Conjugation::First)
+        } else if infinitive.ends_with("ovati") {
+            (infinitive.replace("ovati", "uj"), Conjugation::First)
+        } else if infinitive.ends_with("nųti") {
+            (infinitive.replace("nųti", "n"), Conjugation::First)
+        } else if infinitive.ends_with("ati") {
+            (
+                ISV::replace_last_occurence(infinitive, "ati", "aj"),
+                Conjugation::First,
+            )
+        } else if infinitive.ends_with("eti") {
+            (
+                ISV::replace_last_occurence(infinitive, "eti", "ej"),
+                Conjugation::First,
+            )
+        } else if infinitive.ends_with("ęti") {
+            (
+                ISV::replace_last_occurence(infinitive, "ęti", "n"),
+                Conjugation::First,
+            )
+        } else if infinitive.ends_with("yti") {
+            (
+                ISV::replace_last_occurence(infinitive, "yti", "yj"),
+                Conjugation::First,
+            )
+        } else if infinitive.ends_with("uti") {
+            (
+                ISV::replace_last_occurence(infinitive, "uti", "uj"),
+                Conjugation::First,
+            )
+        } else if infinitive.ends_with("iti") {
+            (
+                ISV::replace_last_occurence(infinitive, "iti", "i"),
+                Conjugation::Second,
+            )
+        } else if infinitive.ends_with("ěti") {
+            (
+                ISV::replace_last_occurence(infinitive, "ěti", "i"),
+                Conjugation::Second,
+            )
+        } else {
+            panic!("IMPROPER PERSENT TENSE STEM: {}", infinitive);
+        }
+    }
+    pub fn get_infinitive_stem(word: &str) -> String {
+        ISV::string_without_last_n(word, 2)
+    }
+
+    pub fn conjugate_verb(
+        word: &str,
+        person: &Person,
+        number: &Number,
+        gender: &Gender,
+        tense: &Tense,
+    ) -> Verb {
+        let (present_stem, conjugation) = ISV::get_present_tense_stem(word);
+        let infinitive_stem = ISV::get_infinitive_stem(word);
+
+        let endings = match conjugation {
+            Conjugation::First => &FIRST_CONJUGATION,
+            Conjugation::Second => &SECOND_CONJUGATION,
+        };
+
+        match tense {
+            Tense::Present => {
+                let ending = endings.ending(person, number);
+                let merged = ISV::iotation_merge(&present_stem, ending);
+                merged
+            }
+
+            _ => panic!("TENSE NOT IMPLEMENTED"),
+        }
+    }
+}
+
+// ADJECTIVE STUFF
+impl ISV {
+    pub fn decline_adj(
+        word: &str,
+        case: &Case,
+        number: &Number,
+        gender: &Gender,
+        animate: bool,
+    ) -> Adjective {
+        let stem_is_soft = ISV::stem_of_adj_is_soft(word);
+        let adj_stem = ISV::get_adj_stem(word);
+
+        let endings = match gender {
+            Gender::Masculine => {
+                if animate {
+                    if stem_is_soft {
+                        &ADJ_ANIMATE_SOFT_ENDINGS
+                    } else {
+                        &ADJ_ANIMATE_HARD_ENDINGS
+                    }
+                } else {
+                    if stem_is_soft {
+                        &ADJ_INANIMATE_SOFT_ENDINGS
+                    } else {
+                        &ADJ_INANIMATE_HARD_ENDINGS
+                    }
+                }
+            }
+            Gender::Feminine => {
+                if stem_is_soft {
+                    &ADJ_FEMININE_SOFT_ENDINGS
+                } else {
+                    &ADJ_FEMININE_HARD_ENDINGS
+                }
+            }
+            Gender::Neuter => {
+                if stem_is_soft {
+                    &ADJ_NEUTER_SOFT_ENDINGS
+                } else {
+                    &ADJ_NEUTER_HARD_ENDINGS
+                }
+            }
+        };
+        let ending = endings.ending(case, number);
+        let merged = format!("{}{}", adj_stem, ending);
+        return merged;
+    }
+
+    pub fn stem_of_adj_is_soft(word: &str) -> bool {
+        if word.ends_with("i") {
+            true
+        } else {
+            false
+        }
+    }
+    pub fn get_adj_stem(word: &str) -> String {
+        let mut adj_stem = word.to_string();
+        adj_stem.pop();
+        adj_stem
+    }
+}
+
+//NOUN STUFF
+impl ISV {
+    pub fn decline_noun(word: &str, case: &Case, number: &Number) -> Noun {
         let gender = ISV::guess_gender(word);
         let word_is_animate = ISV::noun_is_animate(word);
         let word_stem_is_soft = ISV::stem_of_noun_is_soft(word);
@@ -172,13 +346,53 @@ impl ISV {
             return String::from(word);
         }
     }
+    pub fn stem_of_noun_is_soft(word: &str) -> bool {
+        ISV::ends_with_soft_consonant(&ISV::get_noun_stem(word, &Number::Singular))
+    }
+}
+
+impl ISV {
+    pub fn replace_last_occurence(input: &str, pattern: &str, replacement: &str) -> String {
+        if let Some(last_index) = input.rfind(pattern) {
+            let (before_last, _after_last) = input.split_at(last_index);
+            format!("{}{}", before_last, replacement)
+        } else {
+            input.into()
+        }
+    }
+    pub fn iotation_merge(root: &str, suffix: &str) -> String {
+        if suffix.chars().nth(0) == Some('j') {
+            for entry in J_MERGE_CHARS {
+                if root.ends_with(entry) {
+                    let new_root = match *entry {
+                        "st" => ISV::replace_last_occurence(root, entry, "šć"),
+                        "zd" => ISV::replace_last_occurence(root, entry, "ždž"),
+                        "sk" => ISV::replace_last_occurence(root, entry, "šč"),
+                        "zg" => ISV::replace_last_occurence(root, entry, "žž"),
+                        "s" => ISV::replace_last_occurence(root, entry, "š"),
+                        "z" => ISV::replace_last_occurence(root, entry, "ž"),
+                        "t" => ISV::replace_last_occurence(root, entry, "ć"),
+                        "d" => ISV::replace_last_occurence(root, entry, "dž"),
+                        "k" => ISV::replace_last_occurence(root, entry, "č"),
+                        "g" => ISV::replace_last_occurence(root, entry, "ž"),
+                        "h" => ISV::replace_last_occurence(root, entry, "š"),
+                        _ => root.to_string(),
+                    };
+                    let new_suffix = suffix.get(1..).unwrap();
+                    return format!("{new_root}{new_suffix}");
+                }
+            }
+
+            format!("{root}{suffix}")
+        } else {
+            format!("{root}{suffix}")
+        }
+    }
+
     pub fn is_vowel(c: &char) -> bool {
         VOWELS.contains(c)
     }
 
-    pub fn stem_of_noun_is_soft(word: &str) -> bool {
-        ISV::ends_with_soft_consonant(&ISV::get_noun_stem(word, &Number::Singular))
-    }
     pub fn ends_with_soft_consonant(word: &str) -> bool {
         ISV::is_soft_consonant(&ISV::last_in_stringslice(word))
     }
@@ -192,6 +406,9 @@ impl ISV {
     }
     pub fn last_in_stringslice(s: &str) -> char {
         s.to_string().pop().unwrap_or(' ')
+    }
+    pub fn is_consonant(c: &char) -> bool {
+        !ISV::is_vowel(c)
     }
     pub fn string_without_last_n(s: &str, n: i64) -> String {
         let mut stringik = s.to_string();
