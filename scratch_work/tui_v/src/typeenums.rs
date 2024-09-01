@@ -1,6 +1,6 @@
 use crate::*;
 
-#[derive(Display,PartialEq)]
+#[derive(Display, PartialEq, Clone)]
 pub enum EntityType {
     Human,
     Item(ItemType),
@@ -27,10 +27,11 @@ impl Default for InputState {
         InputState::Basic
     }
 }
-#[derive(Display,PartialEq)]
+#[derive(Display, PartialEq, Clone)]
 pub enum ItemType {
-    Container(Container),
     Weapon(Weapon),
+    RangedWeapon(RangedWeapon),
+    Ammo(Ammo),
     Clothing(Clothing),
 }
 
@@ -53,13 +54,11 @@ pub enum Material {
     Metal(Metal),
     Wood(Tree),
 }
-#[derive(Display,Clone)]
+#[derive(Display, Clone)]
 pub enum ActionResult {
     Success(GameAction),
     Failure(GameAction),
 }
-
-
 
 // tegula imbrex
 #[derive(Display)]
@@ -87,19 +86,21 @@ pub enum Weapon {
     Mace,
 }
 #[derive(Clone, Debug, PartialEq, Display)]
-pub enum Clothing {
-    Toga,
+pub enum RangedWeapon {
+    Luk,
 }
 #[derive(Clone, Debug, PartialEq, Display)]
-pub enum Container {
-    Bag,
+pub enum Ammo {
+    Pulja,
+}
+#[derive(Clone, Debug, PartialEq, Display)]
+pub enum Clothing {
+    Toga,
 }
 
 pub enum Furniture {
     Wall(Material),
 }
-
-
 
 #[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
 pub enum FishType {

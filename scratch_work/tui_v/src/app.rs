@@ -280,7 +280,7 @@ impl App {
     }
 
     pub fn get_entity_name(&self, subj: &EntityID) -> String {
-        let ent_typ = self.components.ent_types.get(subj).unwrap();
+        let ent_typ = self.get_ent_type(subj);
 
         let stringik = match ent_typ {
             EntityType::Human => "John".to_string(),
@@ -362,6 +362,9 @@ impl App {
 
         self.inv_vecs.inventory = evec;
     }
+    pub fn get_ent_type(&self, eid: &EntityID) -> EntityType {
+        self.components.ent_types.get(eid).unwrap().clone()
+    }
     pub fn generate_equipped_eid_vec(&mut self) {
         let mut evec = Vec::new();
         let player_equi = self
@@ -389,7 +392,7 @@ impl App {
         let player_vox = self.game_map.get_voxel_at(player_pos).unwrap();
 
         for boop in player_vox.entity_set.iter() {
-            let booptype = self.components.ent_types.get(boop).unwrap();
+            let booptype = self.get_ent_type(boop);
             match booptype {
                 EntityType::Human => {}
                 EntityType::Item(x) => {

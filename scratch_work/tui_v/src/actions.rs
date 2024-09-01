@@ -71,6 +71,23 @@ impl App {
     pub fn equip_item_from_inv(&mut self, subject_eid: &EntityID, item: &EntityID) -> ActionResult {
         if let Some(boop) = self.components.equipments.get_mut(subject_eid) {
             if boop.inventory.contains(item) {
+                let item_type = self.components.ent_types.get(item).unwrap();
+
+                if let EntityType::Item(itemik) = item_type {
+                    match itemik {
+                        ItemType::Weapon(wep) => {}
+                        ItemType::Clothing(cloth) => {}
+                        ItemType::RangedWeapon(rang) => {}
+                        ItemType::Ammo(amm) => {
+                            for thing_equipped in &boop.equipped {
+                                let thing_equipped_type =
+                                    self.components.ent_types.get(thing_equipped).unwrap();
+                                // if let E
+                            }
+                        }
+                    }
+                }
+
                 boop.inventory.remove(item);
                 boop.equipped.insert(item.clone());
                 return ActionResult::Success(GameAction::Equip(subject_eid.clone(), item.clone()));
