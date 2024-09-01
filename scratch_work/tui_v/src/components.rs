@@ -6,6 +6,7 @@ pub struct ComponentHolder {
     pub ent_types: HashMap<EntityID, EntityType>,
     pub equipments: HashMap<EntityID, Equipment>,
     pub healths: HashMap<EntityID, Health>,
+    pub genders: HashMap<EntityID, Gender>,
 }
 
 pub type EntSet = HashSet<EntityID>;

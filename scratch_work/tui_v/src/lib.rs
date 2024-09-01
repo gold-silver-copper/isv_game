@@ -6,6 +6,7 @@ pub use color_eyre::{
 // ANCHOR_END: new-imports
 
 pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};
+pub use interslavic_rs::*;
 pub use ratatui::style::Color as RatColor;
 pub use ratatui::text::Span;
 pub use ratatui::{
@@ -45,8 +46,6 @@ mod actions;
 pub use actions::*;
 mod app;
 pub use app::*;
-mod interslavic;
-pub use interslavic::*;
 
 mod gamemap;
 pub use gamemap::*;

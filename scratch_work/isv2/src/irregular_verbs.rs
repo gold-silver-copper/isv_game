@@ -4,8 +4,12 @@ pub const PREFIXES: &[&str] = &[
     "o", "s", "u", "v", "",
 ];
 
-pub const IRREGULAR_STEMS: &[(&str, &str)] =
-    &[("briti", "brije"), ("biti", "bije"), ("brati", "bere")];
+pub const IRREGULAR_STEMS: &[(&str, &str)] = &[
+    ("briti", "brije"),
+    ("biti", "bije"),
+    ("brati", "bere"),
+    ("idti", "ide"),
+];
 
 pub fn irregular_present_stem(infinitive: &str) -> String {
     for (inf, third) in IRREGULAR_STEMS {

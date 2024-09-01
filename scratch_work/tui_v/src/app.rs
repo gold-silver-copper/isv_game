@@ -40,10 +40,8 @@ impl App {
             if !self.action_vec.is_empty() {
                 self.handle_ai();
                 self.handle_actions()?;
-
-
             }
-         
+
             self.reload_ui();
         }
         Ok(())
@@ -57,7 +55,7 @@ impl App {
         let pik = (5, 5);
 
         self.local_player_id = self.spawn_player_at(&pik);
-        let ai_guy = self.spawn_animal_at(&(7,7));
+        let ai_guy = self.spawn_human_at(&(7, 7));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
     }
 
@@ -93,38 +91,29 @@ impl App {
         (false, 0)
     }
 
-
     pub fn handle_ai(&mut self) {
-
-
         let mut conscious_ents = Vec::new();
 
         for boop in &self.components.ent_types {
-
             if (boop.1 == &EntityType::Human) && (boop.0 != &self.local_player_id) {
                 conscious_ents.push(boop.0.clone());
             }
         }
 
         for meow in conscious_ents {
-
-            self.action_vec.push(GameAction::Go(meow, CardinalDirection::East));
+            self.action_vec
+                .push(GameAction::Go(meow, CardinalDirection::East));
         }
-
-        
-
     }
 
     pub fn reload_ui(&mut self) {
         self.generate_render_info();
-
 
         match self.input_state {
             InputState::Inventory => {
                 self.generate_inventory_eid_vec();
                 self.generate_equipped_eid_vec();
                 self.generate_ground_item_eid_vec();
-             
 
                 let boopik = match self.inv_vecs.selected_menu {
                     ItemVecType::Equipped => self.inv_vecs.equipment.len(),
@@ -155,23 +144,24 @@ impl App {
                     (subj_id.clone(), self.handle_movement(&subj_id, &cd))
                 }
                 GameAction::Drop(subj_id, obj_id) => {
-                    (subj_id.clone(), self.drop_item_from_inv(&subj_id,&obj_id))
+                    (subj_id.clone(), self.drop_item_from_inv(&subj_id, &obj_id))
                 }
                 GameAction::PickUp(subj_id, obj_id) => (
                     subj_id.clone(),
-                    self.pickup_item_from_ground(&subj_id,&obj_id),
+                    self.pickup_item_from_ground(&subj_id, &obj_id),
                 ),
                 GameAction::Equip(subj_id, obj_id) => {
-                    (subj_id.clone(), self.equip_item_from_inv(&subj_id,&obj_id))
+                    (subj_id.clone(), self.equip_item_from_inv(&subj_id, &obj_id))
                 }
                 GameAction::UnEquip(subj_id, obj_id) => (
                     subj_id.clone(),
-                    self.unequip_item_from_equipped(&subj_id,&obj_id),
+                    self.unequip_item_from_equipped(&subj_id, &obj_id),
                 ),
                 _ => panic!("meow"),
             };
 
-            if (act_result.0 == self.local_player_id ) || (self.visible_ents.contains(&act_result.0)) {
+            if (act_result.0 == self.local_player_id) || (self.visible_ents.contains(&act_result.0))
+            {
                 self.action_results.push(act_result.1);
             }
         }
@@ -180,7 +170,7 @@ impl App {
     }
 
     pub fn spawn_player_at(&mut self, point: &MyPoint) -> EntityID {
-        let pid = self.spawn_animal_at(point);
+        let pid = self.spawn_human_at(point);
         let iid = self.create_item(ItemType::Weapon(Weapon::Sword));
         let iid2 = self.create_item(ItemType::Clothing(Clothing::Toga));
         let iid3 = self.create_item(ItemType::Weapon(Weapon::Mace));
@@ -197,12 +187,15 @@ impl App {
         pid
     }
 
-    pub fn spawn_animal_at(&mut self, point: &MyPoint) -> EntityID {
+    pub fn spawn_human_at(&mut self, point: &MyPoint) -> EntityID {
         let eid = self.get_unique_eid();
         self.components.positions.insert(eid.clone(), point.clone());
         self.components
             .ent_types
             .insert(eid.clone(), EntityType::Human);
+        self.components
+            .genders
+            .insert(eid.clone(), Gender::Masculine);
         self.components
             .equipments
             .insert(eid.clone(), Equipment::default());
@@ -285,31 +278,16 @@ impl App {
             .block(Block::bordered())
     }
 
-    pub fn get_person_gender(&self,subj:EntityID) -> (Person,Gender) {
-        let person = if subj == self.local_player_id { Person::Second
-
-        }
-        else {Person::Third};
-
-        (person,Gender::Masculine)
-    }
-
-    pub fn get_entity_name(&self,subj: &EntityID) -> String {
-
+    pub fn get_entity_name(&self, subj: &EntityID) -> String {
         let ent_typ = self.components.ent_types.get(subj).unwrap();
 
         let stringik = match ent_typ {
-
             EntityType::Human => "John".to_string(),
             EntityType::Item(itemik) => itemik.item_name(),
         };
 
         stringik
-
-
     }
-
-   
 
     pub fn generate_event_paragraph(&self) -> Paragraph {
         let mut line_vec = Vec::new();
@@ -318,18 +296,13 @@ impl App {
         let mut events_copy = self.action_results.clone();
 
         for x in 0..20 {
-
             let boop = events_copy.pop();
             if let Some(actik) = boop {
-
                 line_vec.push(Line::from(self.generate_action_result_string(actik)));
-
             }
-
-
         }
 
-      //  line_vec.reverse();
+        //  line_vec.reverse();
         let mut lines = (Text::from(line_vec));
 
         Paragraph::new(Text::from(lines))
@@ -435,17 +408,14 @@ impl App {
     }
 
     pub fn generate_render_info(&mut self) {
-
         let client_pos = self
-        .components
-        .positions
-        .get(&self.local_player_id)
-        .unwrap_or(&(0, 0));
+            .components
+            .positions
+            .get(&self.local_player_id)
+            .unwrap_or(&(0, 0));
 
         self.visible_ents = self.game_map.generate_visible_ents_from_point(client_pos);
         //println!("{:#?}",self.visible_ents);
-       
-
     }
 
     pub fn exit(&mut self) {
@@ -486,7 +456,6 @@ impl Widget for &App {
         );
 
         let client_graphics = client_render.voxel_grid;
-     
 
         let mut render_lines = Vec::new();
         let needed_height = game_screen_layout.height as i16;
