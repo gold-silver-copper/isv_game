@@ -75,22 +75,37 @@ impl App {
 
                 if let EntityType::Item(itemik) = item_type {
                     match itemik {
-                        ItemType::Weapon(wep) => {}
-                        ItemType::Clothing(cloth) => {}
-                        ItemType::RangedWeapon(rang) => {}
-                        ItemType::Ammo(amm) => {
+                        ItemType::Weapon(wep) => {
+                            let mut hand_space: i64 = 2;
                             for thing_equipped in &boop.equipped {
                                 let thing_equipped_type =
                                     self.components.ent_types.get(thing_equipped).unwrap();
-                                // if let E
+                                if let EntityType::Item(ItemType::Weapon(wepik)) =
+                                    thing_equipped_type
+                                {
+                                    let handiness = wepik.handedness();
+                                    hand_space = hand_space - handiness;
+                                }
                             }
+                            if wep.handedness() <= hand_space {
+                                boop.inventory.remove(item);
+                                boop.equipped.insert(item.clone());
+                                return ActionResult::Success(GameAction::Equip(
+                                    subject_eid.clone(),
+                                    item.clone(),
+                                ));
+                            }
+                        }
+                        ItemType::Clothing(cloth) => {}
+                        ItemType::RangedWeapon(rang) => {}
+                        ItemType::Ammo(amm) => {
+                            return ActionResult::Failure(GameAction::Equip(
+                                subject_eid.clone(),
+                                item.clone(),
+                            ));
                         }
                     }
                 }
-
-                boop.inventory.remove(item);
-                boop.equipped.insert(item.clone());
-                return ActionResult::Success(GameAction::Equip(subject_eid.clone(), item.clone()));
             }
         }
         return ActionResult::Failure(GameAction::Equip(subject_eid.clone(), item.clone()));

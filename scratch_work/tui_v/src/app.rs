@@ -57,6 +57,9 @@ impl App {
         self.local_player_id = self.spawn_player_at(&pik);
         let ai_guy = self.spawn_human_at(&(7, 7));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
+        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
+        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
+        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
     }
 
     pub fn handle_events(&mut self) -> Result<()> {

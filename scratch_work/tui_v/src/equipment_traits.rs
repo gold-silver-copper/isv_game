@@ -6,9 +6,9 @@ pub trait ItemTrait {
 }
 
 impl Weapon {
-    pub fn is_two_handed(&self) -> bool {
+    pub fn handedness(&self) -> i64 {
         match self {
-            _ => false,
+            _ => 1,
         }
     }
 }
