@@ -44,56 +44,58 @@ fn main() {
     );
     println!("{:#?}", guessed_adj);
 
-    let verbik = "klasti";
+    let verbiki = ["učiti", "briti", "sniti", "obriti"];
 
-    let guessed_verb = ISV::conjugate_verb(
-        verbik,
-        &Person::First,
-        &Number::Singular,
-        &Gender::Feminine,
-        &Tense::Present,
-    );
-    println!("{:#?}", guessed_verb);
-    let guessed_verb = ISV::conjugate_verb(
-        verbik,
-        &Person::Second,
-        &Number::Singular,
-        &Gender::Feminine,
-        &Tense::Present,
-    );
-    println!("{:#?}", guessed_verb);
-    let guessed_verb = ISV::conjugate_verb(
-        verbik,
-        &Person::Third,
-        &Number::Singular,
-        &Gender::Feminine,
-        &Tense::Present,
-    );
-    println!("{:#?}", guessed_verb);
-    let guessed_verb = ISV::conjugate_verb(
-        verbik,
-        &Person::First,
-        &Number::Plural,
-        &Gender::Feminine,
-        &Tense::Present,
-    );
-    println!("{:#?}", guessed_verb);
-    let guessed_verb = ISV::conjugate_verb(
-        verbik,
-        &Person::Second,
-        &Number::Plural,
-        &Gender::Feminine,
-        &Tense::Present,
-    );
-    println!("{:#?}", guessed_verb);
-    let guessed_verb = ISV::conjugate_verb(
-        verbik,
-        &Person::Third,
-        &Number::Plural,
-        &Gender::Feminine,
-        &Tense::Present,
-    );
-    println!("{:#?}", guessed_verb);
+    for verbik in verbiki {
+        let guessed_verb = ISV::conjugate_verb(
+            verbik,
+            &Person::First,
+            &Number::Singular,
+            &Gender::Feminine,
+            &Tense::Present,
+        );
+        println!("{:#?}", guessed_verb);
+        let guessed_verb = ISV::conjugate_verb(
+            verbik,
+            &Person::Second,
+            &Number::Singular,
+            &Gender::Feminine,
+            &Tense::Present,
+        );
+        println!("{:#?}", guessed_verb);
+        let guessed_verb = ISV::conjugate_verb(
+            verbik,
+            &Person::Third,
+            &Number::Singular,
+            &Gender::Feminine,
+            &Tense::Present,
+        );
+        println!("{:#?}", guessed_verb);
+        let guessed_verb = ISV::conjugate_verb(
+            verbik,
+            &Person::First,
+            &Number::Plural,
+            &Gender::Feminine,
+            &Tense::Present,
+        );
+        println!("{:#?}", guessed_verb);
+        let guessed_verb = ISV::conjugate_verb(
+            verbik,
+            &Person::Second,
+            &Number::Plural,
+            &Gender::Feminine,
+            &Tense::Present,
+        );
+        println!("{:#?}", guessed_verb);
+        let guessed_verb = ISV::conjugate_verb(
+            verbik,
+            &Person::Third,
+            &Number::Plural,
+            &Gender::Feminine,
+            &Tense::Present,
+        );
+        println!("{:#?}", guessed_verb);
+    }
 
     println!("{:#?}", ISV::string_without_last_n("hello", 2));
     //Output: "hibiscorum"

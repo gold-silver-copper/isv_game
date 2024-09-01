@@ -4,7 +4,9 @@ mod animate_nouns;
 mod case_endings;
 use case_endings::*;
 mod verb_endings;
-pub use verb_endings::*;
+use verb_endings::*;
+mod irregular_verbs;
+use irregular_verbs::*;
 
 #[derive(Debug, Clone, Default)]
 pub struct ISV {}
@@ -121,6 +123,42 @@ pub const J_MERGE_CHARS: &[&str] = &["st", "zd", "sk", "zg", "s", "z", "t", "d",
 impl ISV {
     pub fn get_present_tense_stem(infinitive: &str) -> (String, Conjugation) {
         let infinitive_stem = ISV::get_infinitive_stem(infinitive);
+        let irregular = irregular_present_stem(infinitive);
+
+        if irregular != "" {
+            if irregular.ends_with("me") {
+                return (
+                    ISV::replace_last_occurence(&irregular, "me", "m"),
+                    Conjugation::First,
+                );
+            }
+            if irregular.ends_with("ne") {
+                return (
+                    ISV::replace_last_occurence(&irregular, "ne", "n"),
+                    Conjugation::First,
+                );
+            }
+
+            if irregular.ends_with("je") {
+                return (
+                    ISV::replace_last_occurence(&irregular, "je", "j"),
+                    Conjugation::First,
+                );
+            }
+
+            if irregular.ends_with("e") {
+                return (
+                    ISV::replace_last_occurence(&irregular, "e", ""),
+                    Conjugation::First,
+                );
+            }
+            if irregular.ends_with("i") {
+                return (
+                    ISV::replace_last_occurence(&irregular, "i", ""),
+                    Conjugation::Second,
+                );
+            }
+        }
 
         if ISV::is_consonant(&ISV::last_in_stringslice(&infinitive_stem)) {
             (infinitive_stem, Conjugation::First)
@@ -155,12 +193,12 @@ impl ISV {
             )
         } else if infinitive.ends_with("iti") {
             (
-                ISV::replace_last_occurence(infinitive, "iti", "i"),
+                ISV::replace_last_occurence(infinitive, "iti", ""),
                 Conjugation::Second,
             )
         } else if infinitive.ends_with("ěti") {
             (
-                ISV::replace_last_occurence(infinitive, "ěti", "i"),
+                ISV::replace_last_occurence(infinitive, "ěti", ""),
                 Conjugation::Second,
             )
         } else {
