@@ -122,8 +122,8 @@ impl App {
                 };
 
                 if let Some(sel_len) = self.inv_vecs.item_list_state.selected_mut() {
-                    if *sel_len > boopik - 1 {
-                        *sel_len = boopik - 1;
+                    if *sel_len > boopik {
+                        *sel_len = boopik;
                     }
                 }
             }

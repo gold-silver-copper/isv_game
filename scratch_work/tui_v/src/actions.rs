@@ -119,21 +119,42 @@ impl App {
             ActionResult::Success(ga) => match ga {
                 GameAction::Drop(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    let object = ISV::decline_noun(
+                        &self.get_entity_name(&obj),
+                        &Case::Acc,
+                        &Number::Singular,
+                    );
+                    let verbik = ISV::l_participle("opustiti", &gender, &Number::Singular);
 
-                    format!("{pronoun} brosil {dropped}")
+                    format!("{pronoun} {verbik} {}", object.0)
                 }
                 GameAction::Equip(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    let object = ISV::decline_noun(
+                        &self.get_entity_name(&obj),
+                        &Case::Acc,
+                        &Number::Singular,
+                    );
+                    let verbik = ISV::conjugate_verb(
+                        "equipirovati",
+                        &person,
+                        &Number::Singular,
+                        &gender,
+                        &Tense::Present,
+                    );
 
-                    format!("{pronoun} odel {dropped}")
+                    format!("{pronoun} {verbik} {}", object.0)
                 }
                 GameAction::UnEquip(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    let object = ISV::decline_noun(
+                        &self.get_entity_name(&obj),
+                        &Case::Acc,
+                        &Number::Singular,
+                    );
+                    let verbik = ISV::l_participle("opustiti", &gender, &Number::Singular);
 
-                    format!("{pronoun} snjal {dropped}")
+                    format!("{pronoun} {verbik} {}", object.0)
                 }
                 GameAction::Go(subj, cd) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
@@ -143,9 +164,14 @@ impl App {
                 }
                 GameAction::PickUp(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    let object = ISV::decline_noun(
+                        &self.get_entity_name(&obj),
+                        &Case::Acc,
+                        &Number::Singular,
+                    );
+                    let verbik = ISV::l_participle("opustiti", &gender, &Number::Singular);
 
-                    format!("{pronoun} podbral {dropped}")
+                    format!("{pronoun} {verbik} {}", object.0)
                 }
                 _ => panic!("NOT IMPLEMENTED"),
             },

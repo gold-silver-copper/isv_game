@@ -247,10 +247,10 @@ impl ISV {
         } else {
             let infinitive_stem = ISV::get_infinitive_stem(word);
             match number {
-                Number::Singular => {
+                Number::Plural => {
                     format!("{}{}", infinitive_stem, "li")
                 }
-                Number::Plural => match gender {
+                Number::Singular => match gender {
                     Gender::Masculine => {
                         format!("{}{}", infinitive_stem, "l")
                     }
