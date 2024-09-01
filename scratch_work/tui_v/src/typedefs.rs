@@ -15,8 +15,7 @@ pub const CURSOR_DOWN: char = 's';
 pub const CURSOR_LEFT: char = 'a';
 pub const CURSOR_RIGHT: char = 'd';
 pub const INVENTORY_MENU: char = 'i';
-pub const EQUIPMENT_MENU: char = 'o';
-pub const PICKUP_MENU: char = 'p';
+pub const WAIT_KEY: char = 't';
 pub const DROP_UNEQUIP_ACTION: char = 'h';
 pub const PICKUP_EQUIP_ACTION: char = 'j';
 pub const QUIT_BACK: char = 'q';
@@ -37,35 +36,15 @@ pub type GraphicTriple = (&'static str, RatColor, RatColor);
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum GameAction {
-    Wait,
+    Wait(Subject),
     PickUp(Subject, DirectObject),
     Equip(Subject, DirectObject),
     UnEquip(Subject, DirectObject),
     MeleeAttack(),
     Drop(Subject, DirectObject),
     Give(),
-    Hit(),
+
     Go(Subject, CardinalDirection),
-    Quit,
-}
-
-impl GameAction {
-    pub fn verb_string(&self,) -> &'static str {
-
-        match self {
-            GameAction::Drop(subj,obj ) => {"izbaviti"}
-            GameAction::Equip(subj,obj ) => {"odeti"}
-            GameAction::UnEquip(subj,obj ) => {"ty razdivajesz"}
-            GameAction::Go(subj,cd ) => {"ty idjosz"}
-            GameAction::PickUp(subj,obj ) => {"ty podbirajesz"}
-            GameAction::Wait => {"ty brosajesz"}
-            GameAction::MeleeAttack() => {"ty brosajesz"}
-            GameAction::Give() => {"ty brosajesz"}
-            GameAction::Hit() => {"ty brosajesz"}
-            GameAction::Quit => {"ty brosajesz"}
-        }
-
-    }
 }
 
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
@@ -91,13 +70,11 @@ pub type ActionVec = Vec<GameAction>;
 #[derive(Debug)]
 pub struct RenderPacket {
     pub voxel_grid: Vec<Vec<GraphicTriple>>,
-   
 }
 impl RenderPacket {
     pub fn new() -> Self {
         RenderPacket {
             voxel_grid: Vec::new(),
-           
         }
     }
 }
@@ -127,5 +104,4 @@ impl CardinalDirection {
             CardinalDirection::East => "vostok",
         }
     }
-
 }

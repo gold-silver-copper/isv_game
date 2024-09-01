@@ -28,6 +28,9 @@ impl App {
                     self.inv_vecs.item_list_state.select_first();
                     self.input_state = InputState::Inventory;
                 }
+                KeyCode::Char(WAIT_KEY) => {
+                    self.action_vec.push(GameAction::Wait(lid));
+                }
 
                 _ => {}
             },

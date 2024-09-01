@@ -157,6 +157,7 @@ impl App {
                     subj_id.clone(),
                     self.unequip_item_from_equipped(&subj_id, &obj_id),
                 ),
+                GameAction::Wait(subj_id) => (subj_id.clone(), self.handle_wait(&subj_id)),
                 _ => panic!("meow"),
             };
 

@@ -1,6 +1,9 @@
 use crate::*;
 
 impl App {
+    pub fn handle_wait(&self, subject_eid: &EntityID) -> ActionResult {
+        ActionResult::Success(GameAction::Wait(subject_eid.clone()))
+    }
     pub fn handle_movement(
         &mut self,
         subject_eid: &EntityID,
@@ -172,6 +175,13 @@ impl App {
                     let verbik = ISV::l_participle("opustiti", &gender, &Number::Singular);
 
                     format!("{pronoun} {verbik} {}", object.0)
+                }
+                GameAction::Wait(subj) => {
+                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+
+                    let verbik = ISV::l_participle("počekati", &gender, &Number::Singular);
+
+                    format!("{pronoun} {verbik}")
                 }
                 _ => panic!("NOT IMPLEMENTED"),
             },
