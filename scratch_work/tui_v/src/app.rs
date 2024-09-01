@@ -102,7 +102,7 @@ impl App {
 
         for meow in conscious_ents {
             self.action_vec
-                .push(GameAction::Go(meow, CardinalDirection::East));
+                .push(GameAction::Go(meow, CardinalDirection::West));
         }
     }
 

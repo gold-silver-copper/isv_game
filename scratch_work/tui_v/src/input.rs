@@ -97,21 +97,21 @@ impl App {
                 KeyCode::Char(CURSOR_DOWN) => match self.inv_vecs.selected_menu {
                     ItemVecType::Inventory => {
                         if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen < self.inv_vecs.inventory.len() - 1 {
+                            if invlen < self.inv_vecs.inventory.len() {
                                 self.inv_vecs.item_list_state.select_next();
                             }
                         }
                     }
                     ItemVecType::Equipped => {
                         if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen < self.inv_vecs.equipment.len() - 1 {
+                            if invlen < self.inv_vecs.equipment.len() {
                                 self.inv_vecs.item_list_state.select_next();
                             }
                         }
                     }
                     ItemVecType::Ground => {
                         if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen < self.inv_vecs.ground.len() - 1 {
+                            if invlen < self.inv_vecs.ground.len() {
                                 self.inv_vecs.item_list_state.select_next();
                             }
                         }
