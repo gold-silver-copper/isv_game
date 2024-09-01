@@ -11,14 +11,18 @@ pub const LOCAL_RANGE: i64 = 10000;
 pub const MAP_SIZE: i64 = 100;
 
 pub const CURSOR_UP: char = 'w';
+pub const CURSOR_UP_LEFT: char = 'q';
+pub const CURSOR_UP_RIGHT: char = 'e';
 pub const CURSOR_DOWN: char = 's';
+pub const CURSOR_DOWN_LEFT: char = 'z';
+pub const CURSOR_DOWN_RIGHT: char = 'c';
 pub const CURSOR_LEFT: char = 'a';
 pub const CURSOR_RIGHT: char = 'd';
 pub const INVENTORY_MENU: char = 'i';
 pub const WAIT_KEY: char = 't';
 pub const DROP_UNEQUIP_ACTION: char = 'h';
 pub const PICKUP_EQUIP_ACTION: char = 'j';
-pub const QUIT_BACK: char = 'q';
+pub const QUIT_BACK: char = ']';
 
 //pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);
 
@@ -82,6 +86,10 @@ impl RenderPacket {
 #[derive(Clone, Debug, PartialEq)]
 pub enum CardinalDirection {
     North,
+    NorthEast,
+    NorthWest,
+    SouthEast,
+    SouthWest,
     West,
     South,
     East,
@@ -91,6 +99,10 @@ impl CardinalDirection {
     pub fn to_xyz(&self) -> MyPoint {
         match self {
             CardinalDirection::North => (0, 1),
+            CardinalDirection::NorthEast => (1, 1),
+            CardinalDirection::NorthWest => (-1, 1),
+            CardinalDirection::SouthEast => (1, -1),
+            CardinalDirection::SouthWest => (-1, -1),
             CardinalDirection::West => (-1, 0),
             CardinalDirection::South => (0, -1),
             CardinalDirection::East => (1, 0),
@@ -98,10 +110,14 @@ impl CardinalDirection {
     }
     pub fn to_isv(&self) -> &'static str {
         match self {
-            CardinalDirection::North => "sever",
+            CardinalDirection::North => "sěver",
             CardinalDirection::West => "zapad",
             CardinalDirection::South => "jug",
-            CardinalDirection::East => "vostok",
+            CardinalDirection::East => "vȯzhod",
+            CardinalDirection::NorthEast => "sěverovȯzhod",
+            CardinalDirection::NorthWest => "sěverozapad",
+            CardinalDirection::SouthEast => "jugovȯzhod",
+            CardinalDirection::SouthWest => "jugozapad",
         }
     }
 }

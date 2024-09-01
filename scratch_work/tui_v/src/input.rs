@@ -12,6 +12,22 @@ impl App {
                     self.action_vec
                         .push(GameAction::Go(lid, CardinalDirection::North));
                 }
+                KeyCode::Char(CURSOR_UP_LEFT) => {
+                    self.action_vec
+                        .push(GameAction::Go(lid, CardinalDirection::NorthWest));
+                }
+                KeyCode::Char(CURSOR_UP_RIGHT) => {
+                    self.action_vec
+                        .push(GameAction::Go(lid, CardinalDirection::NorthEast));
+                }
+                KeyCode::Char(CURSOR_DOWN_LEFT) => {
+                    self.action_vec
+                        .push(GameAction::Go(lid, CardinalDirection::SouthWest));
+                }
+                KeyCode::Char(CURSOR_DOWN_RIGHT) => {
+                    self.action_vec
+                        .push(GameAction::Go(lid, CardinalDirection::SouthEast));
+                }
                 KeyCode::Char(CURSOR_DOWN) => {
                     self.action_vec
                         .push(GameAction::Go(lid, CardinalDirection::South));
