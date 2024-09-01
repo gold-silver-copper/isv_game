@@ -234,6 +234,20 @@ impl ISV {
             _ => panic!("TENSE NOT IMPLEMENTED"),
         }
     }
+    pub fn l_participle(word: &str, gender: &Gender) -> Verb {
+        let infinitive_stem = ISV::get_infinitive_stem(word);
+        match gender {
+            Gender::Masculine => {
+                format!("{}{}", infinitive_stem, "l")
+            }
+            Gender::Feminine => {
+                format!("{}{}", infinitive_stem, "la")
+            }
+            Gender::Neuter => {
+                format!("{}{}", infinitive_stem, "lo")
+            }
+        }
+    }
 }
 
 // ADJECTIVE STUFF

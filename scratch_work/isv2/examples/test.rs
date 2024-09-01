@@ -97,6 +97,9 @@ fn main() {
         println!("{:#?}", guessed_verb);
     }
 
+    let lik = ISV::l_participle("buditi", &Gender::Feminine);
+    println!("{:#?}", lik);
+
     println!("{:#?}", ISV::string_without_last_n("hello", 2));
     //Output: "hibiscorum"
 }
