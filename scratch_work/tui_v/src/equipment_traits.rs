@@ -12,11 +12,34 @@ impl Weapon {
         }
     }
 }
+#[derive(Clone, Debug, PartialEq)]
+pub enum BodyPart {
+    Head,
+    HeadAccesory,
+    TorsoUnder,
+    TorsoMid,
+    TorsoOver,
+    Cloak,
+    Waist,
+    Legs,
+    Feet,
+    FeetOver,
+}
+
+impl Clothing {
+    pub fn body_part_covered(&self) -> BodyPart {
+        match self {
+            Clothing::Toga => BodyPart::Cloak,
+            Clothing::Helma => BodyPart::Head,
+        }
+    }
+}
 
 impl ItemTrait for ItemType {
     fn item_symbol(&self) -> &'static str {
         match self {
             ItemType::Weapon(wep) => "/",
+            ItemType::Accessory(acc) => "c",
 
             ItemType::Clothing(cloth) => "t",
             ItemType::RangedWeapon(cloth) => ")",
@@ -31,6 +54,9 @@ impl ItemTrait for ItemType {
 
             ItemType::Clothing(cloth) => {
                 format!("{cloth}")
+            }
+            ItemType::Accessory(acc) => {
+                format!("{acc}")
             }
             ItemType::RangedWeapon(cloth) => {
                 format!("{cloth}")

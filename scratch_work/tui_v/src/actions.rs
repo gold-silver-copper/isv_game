@@ -78,13 +78,10 @@ impl App {
                         ItemType::Weapon(wep) => {
                             let mut hand_space: i64 = 2;
                             for thing_equipped in &boop.equipped {
-                                let thing_equipped_type =
-                                    self.components.ent_types.get(thing_equipped).unwrap();
                                 if let EntityType::Item(ItemType::Weapon(wepik)) =
-                                    thing_equipped_type
+                                    self.components.ent_types.get(thing_equipped).unwrap()
                                 {
-                                    let handiness = wepik.handedness();
-                                    hand_space = hand_space - handiness;
+                                    hand_space = hand_space - wepik.handedness();
                                 }
                             }
                             if wep.handedness() <= hand_space {
@@ -96,9 +93,66 @@ impl App {
                                 ));
                             }
                         }
-                        ItemType::Clothing(cloth) => {}
-                        ItemType::RangedWeapon(rang) => {}
+                        ItemType::Accessory(acc) => {
+                            let mut accessory_space: i64 = 4;
+                            for thing_equipped in &boop.equipped {
+                                if let EntityType::Item(ItemType::Accessory(accik)) =
+                                    self.components.ent_types.get(thing_equipped).unwrap()
+                                {
+                                    accessory_space = accessory_space - 1;
+                                }
+                            }
+                            if 0 < accessory_space {
+                                boop.inventory.remove(item);
+                                boop.equipped.insert(item.clone());
+                                return ActionResult::Success(GameAction::Equip(
+                                    subject_eid.clone(),
+                                    item.clone(),
+                                ));
+                            }
+                        }
+                        ItemType::Clothing(cloth) => {
+                            let new_part_covered = cloth.body_part_covered();
+                            for thing_equipped in &boop.equipped {
+                                if let EntityType::Item(ItemType::Clothing(clothik)) =
+                                    self.components.ent_types.get(thing_equipped).unwrap()
+                                {
+                                    let exist_part_covered = clothik.body_part_covered();
+                                    if new_part_covered == exist_part_covered {
+                                        return ActionResult::Failure(GameAction::Equip(
+                                            subject_eid.clone(),
+                                            item.clone(),
+                                        ));
+                                    }
+                                }
+                            }
+                            boop.inventory.remove(item);
+                            boop.equipped.insert(item.clone());
+                            return ActionResult::Success(GameAction::Equip(
+                                subject_eid.clone(),
+                                item.clone(),
+                            ));
+                        }
+                        ItemType::RangedWeapon(rang) => {
+                            for thing_equipped in &boop.equipped {
+                                if let EntityType::Item(ItemType::RangedWeapon(ex_rang)) =
+                                    self.components.ent_types.get(thing_equipped).unwrap()
+                                {
+                                    return ActionResult::Failure(GameAction::Equip(
+                                        subject_eid.clone(),
+                                        item.clone(),
+                                    ));
+                                }
+                            }
+                            boop.inventory.remove(item);
+                            boop.equipped.insert(item.clone());
+                            return ActionResult::Success(GameAction::Equip(
+                                subject_eid.clone(),
+                                item.clone(),
+                            ));
+                        }
                         ItemType::Ammo(amm) => {
+                            //cant equip ammo it is used directly from inventory
                             return ActionResult::Failure(GameAction::Equip(
                                 subject_eid.clone(),
                                 item.clone(),

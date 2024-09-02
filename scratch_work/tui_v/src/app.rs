@@ -60,6 +60,14 @@ impl App {
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
+        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
+        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
+        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
+        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
+        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
+        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Luk));
+        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Luk));
+        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Luk));
     }
 
     pub fn handle_events(&mut self) -> Result<()> {
