@@ -1,7 +1,8 @@
+use crate::first_char;
 use crate::typeenums::*;
 
 pub trait ItemTrait {
-    fn item_symbol(&self) -> &'static str;
+    fn item_symbol(&self) -> String;
     fn item_name(&self) -> String;
 }
 
@@ -36,15 +37,10 @@ impl Clothing {
 }
 
 impl ItemTrait for ItemType {
-    fn item_symbol(&self) -> &'static str {
-        match self {
-            ItemType::Weapon(wep) => "/",
-            ItemType::Accessory(acc) => "c",
-
-            ItemType::Clothing(cloth) => "t",
-            ItemType::RangedWeapon(rang) => ")",
-            ItemType::Ammo(amm) => "-",
-        }
+    fn item_symbol(&self) -> String {
+        let nameik = self.item_name();
+        let a = first_char(&nameik);
+        a.to_lowercase()
     }
     fn item_name(&self) -> String {
         match self {

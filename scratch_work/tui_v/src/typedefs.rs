@@ -1,5 +1,9 @@
 use crate::*;
 
+pub fn first_char(s: &str) -> &str {
+    &s[..s.char_indices().skip(1).next().map_or(s.len(), |(i, _)| i)]
+}
+
 pub type CoordinateUnit = i64;
 pub type EntityID = i64;
 pub type Subject = EntityID;
@@ -34,7 +38,7 @@ pub const TEGULA_ROOF: Roof = Roof::Tegula(BASIC_METAL_MATERIAL);
 pub const GRAVEL_FLOOR: Floor = Floor::Gravel(BASIC_METAL_MATERIAL);
 
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
-pub type GraphicTriple = (&'static str, RatColor, RatColor);
+pub type GraphicTriple = (String, RatColor, RatColor);
 
 // Define a marker trait
 
@@ -72,17 +76,7 @@ pub fn locate_square(e_pos: &MyPoint, w_radius: i64, h_radius: i64) -> AABB<MyPo
 
 pub type ActionVec = Vec<GameAction>;
 
-#[derive(Debug)]
-pub struct RenderPacket {
-    pub voxel_grid: Vec<Vec<GraphicTriple>>,
-}
-impl RenderPacket {
-    pub fn new() -> Self {
-        RenderPacket {
-            voxel_grid: Vec::new(),
-        }
-    }
-}
+pub type RenderPacket = Vec<Vec<GraphicTriple>>;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum CardinalDirection {

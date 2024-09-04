@@ -94,9 +94,9 @@ impl App {
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
-        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Luk));
-        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Luk));
-        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Luk));
+        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Šuk));
+        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Šuk));
+        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Šuk));
     }
 
     pub fn handle_events(&mut self) -> Result<()> {
@@ -403,13 +403,11 @@ impl Widget for &App {
             .get(&self.local_player_id)
             .unwrap_or(&(0, 0));
 
-        let client_render = self.game_map.create_client_render_packet_for_entity(
+        let client_graphics = self.game_map.create_client_render_packet_for_entity(
             &client_pos,
             &game_screen_layout,
             &self.components.ent_types,
         );
-
-        let client_graphics = client_render.voxel_grid;
 
         let mut render_lines = Vec::new();
         let needed_height = game_screen_layout.height as i16;
@@ -418,7 +416,7 @@ impl Widget for &App {
             for y in (0..needed_height) {
                 let myspanvec: Vec<_> = client_graphics[y as usize]
                     .iter()
-                    .map(|x| Span::from(x.0).fg(x.1).bg(x.2))
+                    .map(|x| Span::from(x.0.clone()).fg(x.1).bg(x.2))
                     .collect();
 
                 let myline = ratatui::text::Line::from(myspanvec);

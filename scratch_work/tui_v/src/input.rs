@@ -97,21 +97,21 @@ impl App {
                 KeyCode::Char(CURSOR_DOWN) => match self.inv_vecs.selected_menu {
                     ItemVecType::Inventory => {
                         if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen < self.inv_vecs.inventory.len() {
+                            if invlen + 1 < self.inv_vecs.inventory.len() {
                                 self.inv_vecs.item_list_state.select_next();
                             }
                         }
                     }
                     ItemVecType::Equipped => {
                         if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen < self.inv_vecs.equipment.len() {
+                            if invlen + 1 < self.inv_vecs.equipment.len() {
                                 self.inv_vecs.item_list_state.select_next();
                             }
                         }
                     }
                     ItemVecType::Ground => {
                         if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen < self.inv_vecs.ground.len() {
+                            if invlen + 1 < self.inv_vecs.ground.len() {
                                 self.inv_vecs.item_list_state.select_next();
                             }
                         }
@@ -123,6 +123,7 @@ impl App {
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
                             self.action_vec.push(GameAction::UnEquip(lid, selected_id));
+                            self.inv_vecs.item_list_state.select_previous();
                         }
                     }
                     ItemVecType::Inventory => {
@@ -130,6 +131,7 @@ impl App {
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
                             self.action_vec.push(GameAction::Drop(lid, selected_id));
+                            self.inv_vecs.item_list_state.select_previous();
                         }
                     }
                     _ => (),
@@ -140,6 +142,7 @@ impl App {
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
                             self.action_vec.push(GameAction::PickUp(lid, selected_id));
+                            self.inv_vecs.item_list_state.select_previous();
                         }
                     }
                     ItemVecType::Inventory => {
@@ -147,6 +150,7 @@ impl App {
                             self.manage_item_vec_input(&self.inv_vecs.selected_menu);
                         if possible {
                             self.action_vec.push(GameAction::Equip(lid, selected_id));
+                            self.inv_vecs.item_list_state.select_previous();
                         }
                     }
                     _ => (),

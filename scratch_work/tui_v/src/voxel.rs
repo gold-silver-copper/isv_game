@@ -14,9 +14,9 @@ impl Voxel {
         visible: bool,
         ent_types: &HashMap<EntityID, EntityType>,
     ) -> GraphicTriple {
-        let mut floor = match &self.floor {
+        let floor = match &self.floor {
             Some(fl) => fl.to_graphic_triple(),
-            None => (" ", RatColor::Black, RatColor::Black),
+            None => (" ".into(), RatColor::Black, RatColor::Black),
         };
 
         let mut plus_furn: GraphicTriple = match &self.furniture {

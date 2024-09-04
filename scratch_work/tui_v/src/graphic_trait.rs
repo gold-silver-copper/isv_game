@@ -1,7 +1,7 @@
 use crate::*;
 
 pub trait GraphicElement {
-    fn symbol(&self) -> &'static str;
+    fn symbol(&self) -> String;
     fn fg_color(&self) -> RatColor;
     fn bg_color(&self) -> RatColor;
 
@@ -12,9 +12,9 @@ pub trait GraphicElement {
 
 // Implementing the trait for Floor
 impl GraphicElement for Floor {
-    fn symbol(&self) -> &'static str {
+    fn symbol(&self) -> String {
         match &self {
-            Floor::Gravel(_) => ".",
+            Floor::Gravel(_) => ".".into(),
         }
     }
 
@@ -31,9 +31,9 @@ impl GraphicElement for Floor {
 
 // Implementing the trait for Furniture
 impl GraphicElement for Furniture {
-    fn symbol(&self) -> &'static str {
+    fn symbol(&self) -> String {
         match &self {
-            Furniture::Wall(_) => "#",
+            Furniture::Wall(_) => "#".into(),
         }
     }
 
@@ -50,9 +50,9 @@ impl GraphicElement for Furniture {
 
 // Implementing the trait for Roof
 impl GraphicElement for Roof {
-    fn symbol(&self) -> &'static str {
+    fn symbol(&self) -> String {
         match &self {
-            Roof::Tegula(_) => "^",
+            Roof::Tegula(_) => "^".into(),
         }
     }
 
@@ -80,9 +80,9 @@ impl GraphicElement for EntityType {
             _ => RatColor::Black,
         }
     }
-    fn symbol(&self) -> &'static str {
+    fn symbol(&self) -> String {
         match &self {
-            EntityType::Human => "@",
+            EntityType::Human => "@".into(),
             EntityType::Item(x) => x.item_symbol(),
         }
     }

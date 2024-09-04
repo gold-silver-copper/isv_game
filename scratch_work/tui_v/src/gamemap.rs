@@ -179,9 +179,7 @@ impl GameMap {
 
             //merge grids
 
-            RenderPacket {
-                voxel_grid: voxel_grid,
-            }
+            voxel_grid
         }
     }
 }
