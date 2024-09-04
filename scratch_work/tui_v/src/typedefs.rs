@@ -44,6 +44,7 @@ pub enum GameAction {
     PickUp(Subject, DirectObject),
     Equip(Subject, DirectObject),
     UnEquip(Subject, DirectObject),
+    BumpAttack(Subject, DirectObject),
     MeleeAttack(),
     Drop(Subject, DirectObject),
     Give(),

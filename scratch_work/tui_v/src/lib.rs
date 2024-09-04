@@ -62,6 +62,9 @@ pub use components::*; */
 mod blockable_trait;
 pub use blockable_trait::*;
 
+mod weapon_impls;
+pub use weapon_impls::*;
+
 mod typeenums;
 pub use typeenums::*;
 

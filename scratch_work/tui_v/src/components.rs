@@ -17,14 +17,14 @@ pub struct Equipment {
 }
 
 pub struct Health {
-    current_health: i64,
-    max_health: i64,
+    pub current_health: i64,
+    pub max_health: i64,
 }
 
 impl Default for Health {
     fn default() -> Self {
         Health {
-            current_health: 80,
+            current_health: 3,
             max_health: 100,
         }
     }

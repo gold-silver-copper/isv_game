@@ -40,11 +40,32 @@ impl App {
             if !self.action_vec.is_empty() {
                 self.handle_ai();
                 self.handle_actions()?;
+                self.handle_deaths();
             }
 
             self.reload_ui();
         }
         Ok(())
+    }
+
+    pub fn handle_deaths(&mut self) {
+        for (eid, health) in &self.components.healths {
+            if health.current_health <= 0 {
+                if let Some(e_pos) = self.components.positions.remove(eid) {
+                    if let Some(voxik) = self.game_map.get_mut_voxel_at(&e_pos) {
+                        voxik.entity_set.remove(eid);
+                        if let Some(equi) = self.components.equipments.remove(eid) {
+                            for ano in equi.equipped {
+                                voxik.entity_set.insert(ano);
+                            }
+                            for ano in equi.inventory {
+                                voxik.entity_set.insert(ano);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     pub fn render_frame(&self, frame: &mut Frame) {
@@ -56,6 +77,14 @@ impl App {
 
         self.local_player_id = self.spawn_player_at(&pik);
         let ai_guy = self.spawn_human_at(&(7, 7));
+        let iid3 = self.create_item(ItemType::Weapon(Weapon::Mace));
+
+        let ai_equip = self
+            .components
+            .equipments
+            .get_mut(&ai_guy)
+            .expect("MUST HAVE QUEIP");
+        ai_equip.equipped.insert(iid3);
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
