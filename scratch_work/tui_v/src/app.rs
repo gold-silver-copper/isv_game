@@ -211,28 +211,23 @@ impl App {
     }
 
     pub fn generate_info_paragraph(&self) -> Paragraph {
-        let player_equip = self
-            .components
-            .equipments
-            .get(&self.local_player_id)
-            .expect("PLAYER MUST HAVE EQUIPMENT COMPONENT");
-
         let mut wield_string = String::new();
-
-        if player_equip.equipped.is_empty() {
-            wield_string = String::from("nothing")
-        } else {
-            for (item) in player_equip.equipped.iter() {
-                let item_type = self
-                    .components
-                    .ent_types
-                    .get(item)
-                    .expect("EVERY ITEM MUST HAVE AN ENTITY TYPE");
-                let item_name = match item_type {
-                    EntityType::Human => panic!("CANNOT WIELD ANIMALS... yet"),
-                    EntityType::Item(itemik) => itemik.item_name(),
-                };
-                wield_string.push_str(&format!(" {item_name}"));
+        if let Some(player_equip) = self.components.equipments.get(&self.local_player_id) {
+            if player_equip.equipped.is_empty() {
+                wield_string = String::from("nothing")
+            } else {
+                for (item) in player_equip.equipped.iter() {
+                    let item_type = self
+                        .components
+                        .ent_types
+                        .get(item)
+                        .expect("EVERY ITEM MUST HAVE AN ENTITY TYPE");
+                    let item_name = match item_type {
+                        EntityType::Human => panic!("CANNOT WIELD ANIMALS... yet"),
+                        EntityType::Item(itemik) => itemik.item_name(),
+                    };
+                    wield_string.push_str(&format!(" {item_name}"));
+                }
             }
         }
 
