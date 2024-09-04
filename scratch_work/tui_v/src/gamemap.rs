@@ -2,7 +2,6 @@ use crate::*;
 
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
-
 }
 
 impl Default for GameMap {
@@ -56,7 +55,6 @@ impl Default for GameMap {
 
         GameMap {
             voxeltile_grid: newtree,
-      
         }
     }
 }
@@ -86,34 +84,27 @@ impl GameMap {
         }
     }
 
-    pub fn generate_visible_ents_from_point(&self,ent_pos_comp: &MyPoint,) -> Vec<EntityID> {
-
+    pub fn generate_visible_ents_from_point(&self, ent_pos_comp: &MyPoint) -> Vec<EntityID> {
         let v_radius = 60;
-       
 
         let e_pos = (ent_pos_comp.0.clone(), ent_pos_comp.1.clone());
 
-            let same_z = locate_square(&e_pos, v_radius as i64, v_radius as i64);
+        let same_z = locate_square(&e_pos, v_radius as i64, v_radius as i64);
 
-            let local_voxels = self.voxeltile_grid.locate_in_envelope(&same_z);
-            let bottom_left_of_game_screen = (e_pos.0 - v_radius as i64, e_pos.1 - v_radius as i64);
+        let local_voxels = self.voxeltile_grid.locate_in_envelope(&same_z);
 
-            let fov = field_of_view_set(
-                BracketPoint {
-                    x: e_pos.0 as i32,
-                    y: e_pos.1 as i32,
-                },
-                v_radius,
-                self,
-            );
-
+        let fov = field_of_view_set(
+            BracketPoint {
+                x: e_pos.0 as i32,
+                y: e_pos.1 as i32,
+            },
+            v_radius,
+            self,
+        );
 
         let mut visible_ents = Vec::new();
 
         for lv in local_voxels {
-            let relative_point_x = lv.voxel_pos.0 - bottom_left_of_game_screen.0;
-            let relative_point_y = lv.voxel_pos.1 - bottom_left_of_game_screen.1;
-
             let bp = BracketPoint {
                 x: lv.voxel_pos.0 as i32,
                 y: lv.voxel_pos.1 as i32,
@@ -123,13 +114,9 @@ impl GameMap {
                 for ent in &lv.entity_set {
                     visible_ents.push(ent.clone());
                 }
-
-                
-            } 
-
-          
+            }
         }
-       visible_ents
+        visible_ents
     }
 
     pub fn create_client_render_packet_for_entity(
@@ -166,8 +153,6 @@ impl GameMap {
 
             //    println!("FOV IS {:#?}",fov);
 
-            
-
             for lv in local_voxels {
                 let relative_point_x = lv.voxel_pos.0 - bottom_left_of_game_screen.0;
                 let relative_point_y = lv.voxel_pos.1 - bottom_left_of_game_screen.1;
@@ -183,8 +168,6 @@ impl GameMap {
                     };
 
                     let boop = if fov.contains(&bp) {
-                       
-
                         lv.to_graphic(true, ent_types)
                     } else {
                         lv.to_graphic(false, ent_types)
@@ -198,7 +181,6 @@ impl GameMap {
 
             RenderPacket {
                 voxel_grid: voxel_grid,
-                
             }
         }
     }

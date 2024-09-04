@@ -42,8 +42,8 @@ impl ItemTrait for ItemType {
             ItemType::Accessory(acc) => "c",
 
             ItemType::Clothing(cloth) => "t",
-            ItemType::RangedWeapon(cloth) => ")",
-            ItemType::Ammo(cloth) => "-",
+            ItemType::RangedWeapon(rang) => ")",
+            ItemType::Ammo(amm) => "-",
         }
     }
     fn item_name(&self) -> String {
@@ -58,11 +58,11 @@ impl ItemTrait for ItemType {
             ItemType::Accessory(acc) => {
                 format!("{acc}")
             }
-            ItemType::RangedWeapon(cloth) => {
-                format!("{cloth}")
+            ItemType::RangedWeapon(rang) => {
+                format!("{rang}")
             }
-            ItemType::Ammo(cloth) => {
-                format!("{cloth}")
+            ItemType::Ammo(amm) => {
+                format!("{amm}")
             }
         }
     }
