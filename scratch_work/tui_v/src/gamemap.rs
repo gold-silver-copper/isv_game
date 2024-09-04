@@ -85,11 +85,9 @@ impl GameMap {
     }
 
     pub fn generate_visible_ents_from_point(&self, ent_pos_comp: &MyPoint) -> Vec<EntityID> {
-        let v_radius = 60;
-
         let e_pos = (ent_pos_comp.0.clone(), ent_pos_comp.1.clone());
 
-        let same_z = locate_square(&e_pos, v_radius as i64, v_radius as i64);
+        let same_z = locate_square(&e_pos, FOV_RANGE as i64, FOV_RANGE as i64);
 
         let local_voxels = self.voxeltile_grid.locate_in_envelope(&same_z);
 
@@ -98,7 +96,7 @@ impl GameMap {
                 x: e_pos.0 as i32,
                 y: e_pos.1 as i32,
             },
-            v_radius,
+            FOV_RANGE,
             self,
         );
 
@@ -147,7 +145,7 @@ impl GameMap {
                     x: e_pos.0 as i32,
                     y: e_pos.1 as i32,
                 },
-                60,
+                FOV_RANGE,
                 self,
             );
 

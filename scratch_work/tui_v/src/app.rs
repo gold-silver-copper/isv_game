@@ -49,6 +49,7 @@ impl App {
     }
 
     pub fn handle_deaths(&mut self) {
+        let mut healths_to_remove = Vec::new();
         for (eid, health) in &self.components.healths {
             if health.current_health <= 0 {
                 if let Some(e_pos) = self.components.positions.remove(eid) {
@@ -64,7 +65,12 @@ impl App {
                         }
                     }
                 }
+
+                healths_to_remove.push(eid.clone());
             }
+        }
+        for edik in healths_to_remove {
+            self.components.healths.remove(&edik);
         }
     }
 
@@ -97,6 +103,7 @@ impl App {
         self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Šuk));
         self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Šuk));
         self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Šuk));
+        self.reload_ui();
     }
 
     pub fn handle_events(&mut self) -> Result<()> {
@@ -230,12 +237,32 @@ impl App {
                 }
             }
         }
+        let mut health_string = String::new();
 
-        let mut lines = (Text::from(vec![
-            Line::from("HAI"),
+        let ent_name = self.get_entity_name(&self.local_player_id);
+        if let Some(health) = self.components.healths.get(&self.local_player_id) {
+            let cur_hel = &health.current_health;
+            let max_hel = &health.max_health;
+            health_string = format!("Health: {cur_hel}/{max_hel}");
+        }
+
+        let mut visible_lines = Vec::new();
+        let visible_symbols = self.gen_item_symbol_vec(&self.visible_ents);
+        let visible_names = self.gen_item_name_vec(&self.visible_ents);
+        for boopik in 0..self.visible_ents.len() {
+            let stringik = format! {"{}  {}",visible_symbols[boopik],visible_names[boopik]};
+            visible_lines.push(Line::from(stringik));
+        }
+
+        let mut standart = vec![
+            Line::from(ent_name),
+            Line::from(health_string),
             Line::from("Wielding..."),
             Line::from(wield_string),
-        ]));
+        ];
+        standart.extend(visible_lines);
+
+        let lines = (Text::from(standart));
 
         Paragraph::new(Text::from(lines))
             .on_black()
@@ -256,7 +283,7 @@ impl App {
         }
 
         //  line_vec.reverse();
-        let mut lines = (Text::from(line_vec));
+        let lines = (Text::from(line_vec));
 
         Paragraph::new(Text::from(lines))
             .on_black()
@@ -279,7 +306,7 @@ impl App {
         list
     }
 
-    pub fn gen_item_name_vec(&mut self, id_vec: &Vec<EntityID>) -> Vec<String> {
+    pub fn gen_item_name_vec(&self, id_vec: &Vec<EntityID>) -> Vec<String> {
         let mut itemnamevec = Vec::new();
 
         for itik in id_vec.iter() {
@@ -289,12 +316,24 @@ impl App {
                 .get(itik)
                 .expect("ent type must have");
             let itname = match typik {
-                EntityType::Human => {
-                    panic!("why do u have an animal in ur inventory")
-                }
+                EntityType::Human => self.get_entity_name(itik),
                 EntityType::Item(itemik) => itemik.item_name(),
             };
             itemnamevec.push(itname);
+        }
+        itemnamevec
+    }
+    pub fn gen_item_symbol_vec(&self, id_vec: &Vec<EntityID>) -> Vec<String> {
+        let mut itemnamevec = Vec::new();
+
+        for itik in id_vec.iter() {
+            let typik = self
+                .components
+                .ent_types
+                .get(itik)
+                .expect("ent type must have");
+
+            itemnamevec.push(typik.symbol());
         }
         itemnamevec
     }
@@ -356,14 +395,17 @@ impl App {
         self.inv_vecs.ground = evec;
     }
 
-    pub fn generate_render_info(&mut self) {
-        let client_pos = self
-            .components
-            .positions
-            .get(&self.local_player_id)
-            .unwrap_or(&(0, 0));
+    pub fn generate_visible_ents_from_ent(&self, eid: &EntityID) -> Vec<EntityID> {
+        let ent_pos = self.components.positions.get(eid).unwrap_or(&(0, 0));
 
-        self.visible_ents = self.game_map.generate_visible_ents_from_point(client_pos);
+        let mut visible_ents_with_self = self.game_map.generate_visible_ents_from_point(ent_pos);
+        visible_ents_with_self.retain(|x| x != eid);
+
+        visible_ents_with_self
+    }
+
+    pub fn generate_render_info(&mut self) {
+        self.visible_ents = self.generate_visible_ents_from_ent(&self.local_player_id);
         //println!("{:#?}",self.visible_ents);
     }
 
