@@ -180,6 +180,13 @@ impl GameMap {
             voxel_grid
         }
     }
+
+    pub fn line_from_point_to_point_is_unblocked(&self, start: &MyPoint, end: &MyPoint) -> bool {
+        //  let bresik = Bresenham::new(start, end);
+
+        //  for pointik in bresik {}
+        true
+    }
 }
 
 impl BaseMap for GameMap {

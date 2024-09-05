@@ -50,7 +50,8 @@ pub enum GameAction {
     Equip(Subject, DirectObject),
     UnEquip(Subject, DirectObject),
     BumpAttack(Subject, DirectObject),
-    MeleeAttack(),
+    RangedAttack(Subject, DirectObject),
+
     Drop(Subject, DirectObject),
     Give(),
 
