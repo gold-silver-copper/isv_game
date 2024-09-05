@@ -37,7 +37,7 @@ impl Default for Name {
 impl Default for Health {
     fn default() -> Self {
         Health {
-            current_health: 3,
+            current_health: 80,
             max_health: 100,
         }
     }

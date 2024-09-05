@@ -216,6 +216,37 @@ impl App {
 
         Ok(())
     }
+    pub fn title_block(title: &str) -> Block {
+        let title = Title::from(title).alignment(Alignment::Center);
+        Block::new()
+            .borders(Borders::NONE)
+            .padding(Padding::vertical(0))
+            .title(title)
+            .fg(Color::Blue)
+    }
+
+    pub fn render_const_info(&self, area: Rect, buf: &mut Buffer) {
+        let mut cur_hel = 0;
+        let mut max_hel = 1;
+
+        let ent_name = self.get_entity_name(&self.local_player_id);
+        if let Some(health) = self.components.healths.get(&self.local_player_id) {
+            cur_hel = health.current_health.clone();
+            max_hel = health.max_health.clone();
+        }
+        let title = App::title_block(&ent_name);
+
+        let label = Span::styled(
+            format!("{}/{}", cur_hel, max_hel),
+            Style::new().bold().fg(Color::Black),
+        );
+        Gauge::default()
+            .block(title)
+            .gauge_style(Style::new().fg(Color::Green).bg(Color::LightRed))
+            .ratio(cur_hel as f64 / max_hel as f64)
+            .label(label)
+            .render(area, buf);
+    }
 
     pub fn generate_info_paragraph(&self) -> Paragraph {
         let mut wield_string = String::new();
@@ -237,14 +268,6 @@ impl App {
                 }
             }
         }
-        let mut health_string = String::new();
-
-        let ent_name = self.get_entity_name(&self.local_player_id);
-        if let Some(health) = self.components.healths.get(&self.local_player_id) {
-            let cur_hel = &health.current_health;
-            let max_hel = &health.max_health;
-            health_string = format!("Health: {cur_hel}/{max_hel}");
-        }
 
         let mut visible_lines = Vec::new();
         let visible_symbols = self.gen_item_symbol_vec(&self.visible_ents);
@@ -255,10 +278,9 @@ impl App {
         }
 
         let mut standart = vec![
-            Line::from(ent_name),
-            Line::from(health_string),
             Line::from("Wielding..."),
             Line::from(wield_string),
+            Line::from("You see..."),
         ];
         standart.extend(visible_lines);
 
@@ -423,13 +445,23 @@ impl Widget for &App {
         .split(area);
 
         let left_layout = layout[0];
-        let side_info_layout = layout[1];
+        let right_layout = layout[1];
 
         let second_layout = Layout::new(
             Direction::Vertical,
             [Constraint::Percentage(80), Constraint::Min(10)],
         )
         .split(left_layout);
+
+        let third_layout = Layout::new(
+            Direction::Vertical,
+            [Constraint::Length(3), Constraint::Fill(1)],
+        )
+        .split(right_layout);
+
+        let constant_info_layout = third_layout[0];
+
+        let side_info_layout = third_layout[1];
 
         let game_screen_layout = second_layout[0];
         let event_layout = second_layout[1];
@@ -482,6 +514,7 @@ impl Widget for &App {
             .block(Block::new())
             .render(game_screen_layout, buf);
 
+        self.render_const_info(constant_info_layout, buf);
         self.generate_info_paragraph().render(side_info_layout, buf);
         self.generate_event_paragraph().render(event_layout, buf);
 
