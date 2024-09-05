@@ -44,10 +44,19 @@ impl App {
                     self.inv_vecs.item_list_state.select_first();
                     self.input_state = InputState::Inventory;
                 }
+                KeyCode::Char(RANGED_ATTACK) => {
+                    self.input_state = InputState::RangedAttack;
+                }
                 KeyCode::Char(WAIT_KEY) => {
                     self.action_vec.push(GameAction::Wait(lid));
                 }
 
+                _ => {}
+            },
+            InputState::RangedAttack => match key_event.code {
+                KeyCode::Char(RANGED_ATTACK) => {
+                    self.input_state = InputState::Basic;
+                }
                 _ => {}
             },
             InputState::Inventory => match key_event.code {

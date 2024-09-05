@@ -4,16 +4,16 @@ pub fn first_char(s: &str) -> &str {
     &s[..s.char_indices().skip(1).next().map_or(s.len(), |(i, _)| i)]
 }
 
-pub type CoordinateUnit = i64;
+pub type CoordinateUnit = i32;
 pub type EntityID = i64;
 pub type Subject = EntityID;
 pub type DirectObject = EntityID;
 pub type IndirectObject = EntityID;
 pub type InstrumentObject = EntityID;
 
-pub const LOCAL_RANGE: i64 = 100;
-pub const FOV_RANGE: i32 = 20;
-pub const MAP_SIZE: i64 = 100;
+pub const LOCAL_RANGE: CoordinateUnit = 100;
+pub const FOV_RANGE: CoordinateUnit = 20;
+pub const MAP_SIZE: CoordinateUnit = 100;
 
 pub const CURSOR_UP: char = 'w';
 pub const CURSOR_UP_LEFT: char = 'q';
@@ -28,6 +28,7 @@ pub const WAIT_KEY: char = 't';
 pub const DROP_UNEQUIP_ACTION: char = 'h';
 pub const PICKUP_EQUIP_ACTION: char = 'j';
 pub const QUIT_BACK: char = ']';
+pub const RANGED_ATTACK: char = 'f';
 
 //pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);
 
@@ -69,7 +70,11 @@ pub fn create_2d_array(render_width: usize, render_height: usize) -> Vec<Vec<Gra
     grid
 }
 
-pub fn locate_square(e_pos: &MyPoint, w_radius: i64, h_radius: i64) -> AABB<MyPoint> {
+pub fn locate_square(
+    e_pos: &MyPoint,
+    w_radius: CoordinateUnit,
+    h_radius: CoordinateUnit,
+) -> AABB<MyPoint> {
     AABB::from_corners(
         (e_pos.0 - w_radius, e_pos.1 - h_radius),
         (e_pos.0 + w_radius, e_pos.1 + h_radius),

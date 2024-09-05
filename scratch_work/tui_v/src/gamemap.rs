@@ -87,7 +87,7 @@ impl GameMap {
     pub fn generate_visible_ents_from_point(&self, ent_pos_comp: &MyPoint) -> Vec<EntityID> {
         let e_pos = (ent_pos_comp.0.clone(), ent_pos_comp.1.clone());
 
-        let same_z = locate_square(&e_pos, FOV_RANGE as i64, FOV_RANGE as i64);
+        let same_z = locate_square(&e_pos, FOV_RANGE, FOV_RANGE);
 
         let local_voxels = self.voxeltile_grid.locate_in_envelope(&same_z);
 
@@ -131,11 +131,18 @@ impl GameMap {
 
             let e_pos = (ent_pos_comp.0.clone(), ent_pos_comp.1.clone());
 
-            let same_z = locate_square(&e_pos, w_radius as i64, h_radius as i64);
+            let same_z = locate_square(
+                &e_pos,
+                w_radius as CoordinateUnit,
+                h_radius as CoordinateUnit,
+            );
 
             let local_voxels = self.voxeltile_grid.locate_in_envelope(&same_z);
 
-            let bottom_left_of_game_screen = (e_pos.0 - w_radius as i64, e_pos.1 - h_radius as i64);
+            let bottom_left_of_game_screen = (
+                e_pos.0 - w_radius as CoordinateUnit,
+                e_pos.1 - h_radius as CoordinateUnit,
+            );
 
             // THIS GRID IS INDEXD Y FIRST
             let mut voxel_grid = create_2d_array(render_width.into(), render_height.into());
@@ -156,9 +163,9 @@ impl GameMap {
                 let relative_point_y = lv.voxel_pos.1 - bottom_left_of_game_screen.1;
 
                 if (0 < relative_point_y)
-                    && (relative_point_y < render_height as i64)
+                    && (relative_point_y < render_height as CoordinateUnit)
                     && (0 < relative_point_x)
-                    && (relative_point_x < render_width as i64)
+                    && (relative_point_x < render_width as CoordinateUnit)
                 {
                     let bp = BracketPoint {
                         x: lv.voxel_pos.0 as i32,
@@ -181,10 +188,24 @@ impl GameMap {
         }
     }
 
-    pub fn line_from_point_to_point_is_unblocked(&self, start: &MyPoint, end: &MyPoint) -> bool {
-        //  let bresik = Bresenham::new(start, end);
+    pub fn line_from_point_to_point_is_unblocked(
+        &self,
+        start: &MyPoint,
+        end: &MyPoint,
+        ent_types: &HashMap<EntityID, EntityType>,
+    ) -> bool {
+        let bresik = Bresenham::new(
+            Point::from_tuple(start.clone()),
+            Point::from_tuple(end.clone()),
+        );
 
-        //  for pointik in bresik {}
+        for pointik in bresik {
+            if let Some(voxik) = self.get_voxel_at(&(pointik.x, pointik.y)) {
+                if voxik.blocks_movement(ent_types) {
+                    return false;
+                }
+            }
+        }
         true
     }
 }
@@ -192,7 +213,7 @@ impl GameMap {
 impl BaseMap for GameMap {
     fn is_opaque(&self, idx: usize) -> bool {
         let bp = self.index_to_point2d(idx);
-        let mp = (bp.x as i64, bp.y as i64);
+        let mp = (bp.x, bp.y);
         let vox = self.get_voxel_at(&mp);
         match vox {
             Some(voxik) => voxik.blocks_vision(),

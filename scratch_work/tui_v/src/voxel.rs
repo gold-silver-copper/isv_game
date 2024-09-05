@@ -79,7 +79,7 @@ impl Voxel {
 }
 
 impl RTreeObject for Voxel {
-    type Envelope = AABB<(i64, i64)>;
+    type Envelope = AABB<(CoordinateUnit, CoordinateUnit)>;
 
     fn envelope(&self) -> Self::Envelope {
         AABB::from_point((self.voxel_pos.0, self.voxel_pos.1))
@@ -87,11 +87,11 @@ impl RTreeObject for Voxel {
 }
 
 impl PointDistance for Voxel {
-    fn distance_2(&self, point: &(i64, i64)) -> i64 {
+    fn distance_2(&self, point: &(CoordinateUnit, CoordinateUnit)) -> CoordinateUnit {
         self.voxel_pos.distance_2(point)
     }
 
-    fn contains_point(&self, point: &(i64, i64)) -> bool {
+    fn contains_point(&self, point: &(CoordinateUnit, CoordinateUnit)) -> bool {
         self.voxel_pos.contains_point(point)
     }
 }

@@ -8,6 +8,7 @@ pub enum EntityType {
 pub enum InputState {
     Basic,
     Inventory,
+    RangedAttack,
 }
 
 pub enum ItemVecType {

@@ -522,6 +522,8 @@ impl Widget for &App {
                 );
             }
 
+            InputState::RangedAttack => (),
+
             _ => panic!("INPUT STATE RENDER NOT IMPELEMNTED"),
         }
     }
