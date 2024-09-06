@@ -68,6 +68,10 @@ impl App {
                 KeyCode::Char(CURSOR_UP) => self.inv_vecs.item_list_state.select_previous(),
                 KeyCode::Char(CURSOR_RIGHT) => {
                     let selected_ent = self.manage_ranged_ents_input();
+                    if selected_ent != 0 {
+                        self.action_vec
+                            .push(GameAction::RangedAttack(lid, selected_ent));
+                    }
                 }
                 _ => {}
             },

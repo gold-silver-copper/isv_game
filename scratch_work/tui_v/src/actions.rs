@@ -19,6 +19,37 @@ impl App {
         }
         base_damage
     }
+    pub fn get_ent_ranged_damage(&self, subject_eid: &EntityID) -> i64 {
+        let mut base_damage = 0;
+        if let Some(equi) = self.components.equipments.get(subject_eid) {
+            for itemik in &equi.equipped {
+                if let EntityType::Item(typik) = self.get_ent_type(itemik) {
+                    match typik {
+                        ItemType::RangedWeapon(wepik) => base_damage = base_damage + wepik.damage(),
+                        _ => {}
+                    }
+                }
+            }
+        }
+        base_damage
+    }
+
+    pub fn ranged_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
+        let attacker_damage = self.get_ent_ranged_damage(subject_eid);
+
+        if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
+            defender_health.current_health -= attacker_damage;
+            return ActionResult::Success(GameAction::RangedAttack(
+                subject_eid.clone(),
+                object_eid.clone(),
+            ));
+        }
+
+        ActionResult::Failure(GameAction::RangedAttack(
+            subject_eid.clone(),
+            object_eid.clone(),
+        ))
+    }
 
     pub fn bump_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
         let attacker_damage = self.get_ent_melee_damage(subject_eid);
@@ -323,6 +354,17 @@ impl App {
 
                     format!("{pronoun} {verbik} {}", object.0)
                 }
+                GameAction::RangedAttack(subj, obj) => {
+                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let object = ISV::decline_noun(
+                        &self.get_entity_name(&obj),
+                        &Case::Acc,
+                        &Number::Singular,
+                    );
+                    let verbik = ISV::l_participle("atakovati", &gender, &Number::Singular);
+
+                    format!("{pronoun} {verbik} {} ot dali!", object.0)
+                }
                 _ => panic!("NOT IMPLEMENTED"),
             },
             ActionResult::Failure(ga) => match ga {
@@ -350,6 +392,12 @@ impl App {
                     let dropped = self.get_entity_name(&obj);
 
                     format!("{pronoun} brosil {dropped}")
+                }
+                GameAction::RangedAttack(subj, obj) => {
+                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let dropped = self.get_entity_name(&obj);
+
+                    format!("{pronoun} ne smog atakovati {dropped}")
                 }
                 _ => panic!("NOT IMPLEMENTED"),
             },
