@@ -118,6 +118,19 @@ impl App {
             _ => Ok(()),
         }
     }
+    pub fn manage_ranged_ents_input(&self) -> (EntityID) {
+        if self.input_state == InputState::RangedAttack {
+            let boop = self.inv_vecs.item_list_state.selected();
+            if let Some(sid) = boop {
+                let vecik = self.ranged_attackable_ents(&self.local_player_id);
+                if let Some(moop) = vecik.get(sid) {
+                    return moop.clone();
+                }
+            }
+        }
+
+        0
+    }
 
     pub fn manage_item_vec_input(&self) -> (bool, EntityID) {
         let boop = self.inv_vecs.item_list_state.selected();
@@ -131,7 +144,6 @@ impl App {
 
             if let Some(id_to_pickup) = moop {
                 let id_to_pickup = id_to_pickup.clone();
-                let lid = self.local_player_id.clone();
 
                 return (true, id_to_pickup);
             }
@@ -481,6 +493,21 @@ impl App {
         //println!("{:#?}",self.visible_ents);
     }
 
+    pub fn line_from_ent_to_ent(
+        &self,
+        subj: &EntityID,
+        obj: &EntityID,
+    ) -> Option<BresenhamInclusive> {
+        if let Some(startik) = self.components.positions.get(subj) {
+            if let Some(endik) = self.components.positions.get(obj) {
+                let start = Point::from_tuple(startik.clone());
+                let end = Point::from_tuple(endik.clone());
+                return Some(BresenhamInclusive::new(start, end));
+            }
+        }
+        return None;
+    }
+
     pub fn exit(&mut self) {
         self.exit = true;
     }
@@ -522,10 +549,15 @@ impl Widget for &App {
             .get(&self.local_player_id)
             .unwrap_or(&(0, 0));
 
+        let selected_range_enemy = self.manage_ranged_ents_input();
+        let highlighted_ranged_line =
+            self.line_from_ent_to_ent(&self.local_player_id, &selected_range_enemy);
+
         let client_graphics = self.game_map.create_client_render_packet_for_entity(
             &client_pos,
             &game_screen_layout,
             &self.components.ent_types,
+            highlighted_ranged_line,
         );
 
         let mut render_lines = Vec::new();

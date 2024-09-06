@@ -122,6 +122,7 @@ impl GameMap {
         ent_pos_comp: &MyPoint,
         render_rect: &Rect,
         ent_types: &HashMap<EntityID, EntityType>,
+        highlighted_line: Option<BresenhamInclusive>,
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
@@ -157,6 +158,7 @@ impl GameMap {
             );
 
             //    println!("FOV IS {:#?}",fov);
+            //
 
             for lv in local_voxels {
                 let relative_point_x = lv.voxel_pos.0 - bottom_left_of_game_screen.0;
@@ -179,6 +181,25 @@ impl GameMap {
                     };
 
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;
+                }
+            }
+
+            if let Some(highlight) = highlighted_line {
+                for pointik in highlight {
+                    let relative_point_x = pointik.x - bottom_left_of_game_screen.0;
+                    let relative_point_y = pointik.y - bottom_left_of_game_screen.1;
+
+                    if (0 < relative_point_y)
+                        && (relative_point_y < render_height as CoordinateUnit)
+                        && (0 < relative_point_x)
+                        && (relative_point_x < render_width as CoordinateUnit)
+                    {
+                        let color_to_high =
+                            &mut voxel_grid[relative_point_y as usize][relative_point_x as usize];
+
+                        color_to_high.1 = dim(color_to_high.1, 0.4);
+                        color_to_high.2 = dim(color_to_high.2, 1.4);
+                    }
                 }
             }
 

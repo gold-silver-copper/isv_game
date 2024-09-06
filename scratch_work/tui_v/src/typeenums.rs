@@ -14,7 +14,7 @@ impl EntityType {
         }
     }
 }
-
+#[derive(Display, PartialEq, Clone)]
 pub enum InputState {
     Basic,
     Inventory,

@@ -66,6 +66,9 @@ impl App {
                     }
                 }
                 KeyCode::Char(CURSOR_UP) => self.inv_vecs.item_list_state.select_previous(),
+                KeyCode::Char(CURSOR_RIGHT) => {
+                    let selected_ent = self.manage_ranged_ents_input();
+                }
                 _ => {}
             },
             InputState::Inventory => match key_event.code {
