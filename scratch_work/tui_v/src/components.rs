@@ -87,7 +87,7 @@ impl App {
             .get_mut_voxel_at(point)
             .expect("cant spawn ent in empty voxel");
 
-        voxik.entity_set.insert(eid.clone());
+        voxik.entity_set.push(eid.clone());
     }
 
     pub fn spawn_item_at(&mut self, point: &MyPoint, item: ItemType) -> EntityID {
@@ -118,7 +118,7 @@ impl App {
             .get_mut_voxel_at(point)
             .expect("cant spawn ent in empty voxel");
 
-        voxik.entity_set.insert(eid.clone());
+        voxik.entity_set.push(eid.clone());
 
         eid.clone()
     }

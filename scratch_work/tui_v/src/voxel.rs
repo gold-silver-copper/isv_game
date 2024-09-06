@@ -4,7 +4,7 @@ pub struct Voxel {
     pub floor: Option<Floor>,
     pub roof: Option<Roof>,
     pub furniture: Option<Furniture>,
-    pub entity_set: HashSet<EntityID>,
+    pub entity_set: Vec<EntityID>,
     pub voxel_pos: MyPoint,
 }
 

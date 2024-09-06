@@ -91,10 +91,10 @@ impl App {
                 //no bump attack, then check if something blocks movement
                 if !dest_vox.blocks_movement(&self.components.ent_types) {
                     // println!("dest no block");
-                    dest_vox.entity_set.insert(subject_eid.clone());
+                    dest_vox.entity_set.push(subject_eid.clone());
 
                     if let Some(origin_vox) = self.game_map.get_mut_voxel_at(e_pos) {
-                        origin_vox.entity_set.remove(subject_eid);
+                        remove_ent_from_vec(&mut origin_vox.entity_set, subject_eid);
                     }
                     *e_pos = destination;
                     return ActionResult::Success(GameAction::Go(subject_eid.clone(), cd.clone()));
@@ -111,7 +111,7 @@ impl App {
         if subject_eid_inv.inventory.contains(item) {
             subject_eid_inv.inventory.remove(item);
             let subject_eid_vox = self.game_map.get_mut_voxel_at(subject_eid_pos).unwrap();
-            subject_eid_vox.entity_set.insert(item.clone());
+            subject_eid_vox.entity_set.push(item.clone());
             return ActionResult::Success(GameAction::Drop(subject_eid.clone(), item.clone()));
         }
         ActionResult::Failure(GameAction::Drop(subject_eid.clone(), item.clone()))
@@ -125,7 +125,8 @@ impl App {
         if let Some(ent_pos) = self.components.positions.get(subject_eid) {
             if let Some(ent_vox) = self.game_map.get_mut_voxel_at(ent_pos) {
                 if ent_vox.entity_set.contains(item) {
-                    ent_vox.entity_set.remove(item);
+                    remove_ent_from_vec(&mut ent_vox.entity_set, item);
+
                     self.components
                         .equipments
                         .get_mut(subject_eid)

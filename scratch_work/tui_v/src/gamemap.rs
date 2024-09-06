@@ -26,7 +26,7 @@ impl Default for GameMap {
                         floor: Some(floor),
                         furniture: Some(WOOD_WALL),
                         roof: None,
-                        entity_set: HashSet::new(),
+                        entity_set: Vec::new(),
                         voxel_pos: (x, y),
                     });
                 } else if x < 15 && y > 8 {
@@ -35,7 +35,7 @@ impl Default for GameMap {
                         floor: Some(floor),
                         furniture: None,
                         roof: Some(TEGULA_ROOF), //should have roof here
-                        entity_set: HashSet::new(),
+                        entity_set: Vec::new(),
                         voxel_pos: (x, y),
                     });
                 } else {
@@ -44,7 +44,7 @@ impl Default for GameMap {
                         floor: Some(floor),
                         furniture: None,
                         roof: None,
-                        entity_set: HashSet::new(),
+                        entity_set: Vec::new(),
                         voxel_pos: (x, y),
                     });
                 }

@@ -50,13 +50,14 @@ impl App {
             if health.current_health <= 0 {
                 if let Some(e_pos) = self.components.positions.remove(eid) {
                     if let Some(voxik) = self.game_map.get_mut_voxel_at(&e_pos) {
-                        voxik.entity_set.remove(eid);
+                        remove_ent_from_vec(&mut voxik.entity_set, eid);
+
                         if let Some(equi) = self.components.equipments.remove(eid) {
                             for ano in equi.equipped {
-                                voxik.entity_set.insert(ano);
+                                voxik.entity_set.push(ano);
                             }
                             for ano in equi.inventory {
-                                voxik.entity_set.insert(ano);
+                                voxik.entity_set.push(ano);
                             }
                         }
                     }
@@ -476,7 +477,7 @@ impl App {
         let ent_pos = self.components.positions.get(eid).unwrap_or(&(0, 0));
 
         let mut visible_ents_with_self = self.game_map.generate_visible_ents_from_point(ent_pos);
-        visible_ents_with_self.retain(|x| x != eid);
+        remove_ent_from_vec(&mut visible_ents_with_self, eid);
 
         visible_ents_with_self
     }
@@ -658,4 +659,8 @@ fn popup_area(area: Rect, percent_x: u16, percent_y: u16) -> Rect {
     let [area] = vertical.areas(area);
     let [area] = horizontal.areas(area);
     area
+}
+
+pub fn remove_ent_from_vec(ent_vec: &mut Vec<EntityID>, ent_to_remove: &EntityID) {
+    ent_vec.retain(|x| x != ent_to_remove);
 }
