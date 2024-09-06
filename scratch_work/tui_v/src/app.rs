@@ -83,6 +83,8 @@ impl App {
 
         self.local_player_id = self.spawn_player_at(&pik);
         let ai_guy = self.spawn_human_at(&(7, 7));
+        let ai_guy = self.spawn_human_at(&(7, 9));
+        let ai_guy = self.spawn_human_at(&(3, 4));
         let iid3 = self.create_item(ItemType::Weapon(Weapon::Mace));
 
         let ai_equip = self
@@ -174,6 +176,14 @@ impl App {
                     }
                 }
             }
+            InputState::RangedAttack => {
+                let boopik = self.ranged_attackable_ents(&self.local_player_id).len();
+                if let Some(sel_len) = self.inv_vecs.item_list_state.selected_mut() {
+                    if *sel_len > boopik {
+                        *sel_len = boopik;
+                    }
+                }
+            }
 
             _ => (),
         }
@@ -225,6 +235,29 @@ impl App {
             .fg(Color::Blue)
     }
 
+    pub fn ranged_attackable_ents(&self, subj: &EntityID) -> Vec<EntityID> {
+        let mut new_vec = Vec::new();
+
+        if let Some(subj_pos) = self.components.positions.get(subj) {
+            let visible_ents = self.generate_visible_ents_from_ent(subj);
+            for entik in visible_ents {
+                let typik = self.get_ent_type(&entik);
+                if typik.is_attackable() {
+                    if let Some(obj_pos) = self.components.positions.get(subj) {
+                        if self.game_map.line_from_point_to_point_is_unblocked(
+                            subj_pos,
+                            obj_pos,
+                            &self.components.ent_types,
+                        ) {
+                            new_vec.push(entik);
+                        }
+                    }
+                }
+            }
+        }
+        new_vec
+    }
+
     pub fn render_const_info(&self, area: Rect, buf: &mut Buffer) {
         let mut cur_hel = 0;
         let mut max_hel = 1;
@@ -248,6 +281,17 @@ impl App {
             .render(area, buf);
     }
 
+    pub fn gen_symbol_name_line_vec(&self, id_vec: &Vec<EntityID>) -> Vec<Line> {
+        let mut visible_lines = Vec::new();
+        let visible_symbols = self.gen_item_symbol_vec(id_vec);
+        let visible_names = self.gen_item_name_vec(id_vec);
+        for boopik in 0..id_vec.len() {
+            let stringik = format! {"{}  {}",visible_symbols[boopik],visible_names[boopik]};
+            visible_lines.push(Line::from(stringik));
+        }
+        visible_lines
+    }
+
     pub fn generate_info_paragraph(&self) -> Paragraph {
         let mut wield_string = String::new();
         if let Some(player_equip) = self.components.equipments.get(&self.local_player_id) {
@@ -269,13 +313,7 @@ impl App {
             }
         }
 
-        let mut visible_lines = Vec::new();
-        let visible_symbols = self.gen_item_symbol_vec(&self.visible_ents);
-        let visible_names = self.gen_item_name_vec(&self.visible_ents);
-        for boopik in 0..self.visible_ents.len() {
-            let stringik = format! {"{}  {}",visible_symbols[boopik],visible_names[boopik]};
-            visible_lines.push(Line::from(stringik));
-        }
+        let visible_lines = self.gen_symbol_name_line_vec(&self.visible_ents);
 
         let mut standart = vec![
             Line::from("Wielding..."),
@@ -320,6 +358,18 @@ impl App {
         };
 
         let list = List::new(wut)
+            .block(Block::bordered().title(title.to_string()))
+            .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
+            .highlight_symbol(">")
+            .repeat_highlight_symbol(true);
+
+        list
+    }
+    pub fn render_ranged_attackable_list(&self, title: &str) -> List {
+        let wut = self.ranged_attackable_ents(&self.local_player_id);
+        let listik = self.gen_symbol_name_line_vec(&wut);
+
+        let list = List::new(listik)
             .block(Block::bordered().title(title.to_string()))
             .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
             .highlight_symbol(">")
@@ -506,6 +556,10 @@ impl Widget for &App {
             ItemVecType::Ground => self.inv_vecs.item_list_state.clone(),
             _ => ListState::default(),
         };
+        let mut ranged_state = match self.input_state {
+            InputState::RangedAttack => self.inv_vecs.item_list_state.clone(),
+            _ => ListState::default(),
+        };
 
         //neccesary beccause drawing is from the top
         render_lines.reverse();
@@ -555,7 +609,17 @@ impl Widget for &App {
                 );
             }
 
-            InputState::RangedAttack => (),
+            InputState::RangedAttack => {
+                Clear.render(side_info_layout, buf); //this clears out the background
+                let block = Block::bordered().title("Ranged Attack");
+                block.render(side_info_layout, buf); //this clears out the background
+                ratatui::prelude::StatefulWidget::render(
+                    self.render_ranged_attackable_list("Ranged Attack"),
+                    side_info_layout,
+                    buf,
+                    &mut ranged_state,
+                );
+            }
 
             _ => panic!("INPUT STATE RENDER NOT IMPELEMNTED"),
         }

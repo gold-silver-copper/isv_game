@@ -45,6 +45,7 @@ impl App {
                     self.input_state = InputState::Inventory;
                 }
                 KeyCode::Char(RANGED_ATTACK) => {
+                    self.inv_vecs.item_list_state.select_first();
                     self.input_state = InputState::RangedAttack;
                 }
                 KeyCode::Char(WAIT_KEY) => {
@@ -57,6 +58,14 @@ impl App {
                 KeyCode::Char(RANGED_ATTACK) => {
                     self.input_state = InputState::Basic;
                 }
+                KeyCode::Char(CURSOR_DOWN) => {
+                    if let Some(veclen) = self.inv_vecs.item_list_state.selected() {
+                        if veclen + 1 < self.ranged_attackable_ents(&self.local_player_id).len() {
+                            self.inv_vecs.item_list_state.select_next();
+                        }
+                    }
+                }
+                KeyCode::Char(CURSOR_UP) => self.inv_vecs.item_list_state.select_previous(),
                 _ => {}
             },
             InputState::Inventory => match key_event.code {

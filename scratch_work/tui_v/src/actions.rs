@@ -50,13 +50,10 @@ impl App {
                 for dest_ent in &dest_vox.entity_set {
                     let typik = self.components.ent_types.get(dest_ent).unwrap();
 
-                    match typik {
-                        EntityType::Human => {
-                            let wut = dest_ent.clone();
-                            let resultatik = self.bump_attack(subject_eid, &wut);
-                            return resultatik;
-                        }
-                        EntityType::Item(_) => {}
+                    if typik.is_attackable() {
+                        let wut = dest_ent.clone();
+                        let resultatik = self.bump_attack(subject_eid, &wut);
+                        return resultatik;
                     }
                 }
 

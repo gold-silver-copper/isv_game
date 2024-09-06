@@ -5,6 +5,16 @@ pub enum EntityType {
     Human,
     Item(ItemType),
 }
+
+impl EntityType {
+    pub fn is_attackable(&self) -> bool {
+        match self {
+            EntityType::Human => true,
+            EntityType::Item(_) => false,
+        }
+    }
+}
+
 pub enum InputState {
     Basic,
     Inventory,
