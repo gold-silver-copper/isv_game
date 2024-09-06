@@ -22,13 +22,9 @@ pub struct ItemVecs {
     pub inventory: Vec<EntityID>,
     pub item_list_state: ListState,
 
-    pub inventory_names: Vec<String>,
     pub equipment: Vec<EntityID>,
 
-    pub equipment_names: Vec<String>,
     pub ground: Vec<EntityID>,
-
-    pub ground_names: Vec<String>,
 }
 
 impl App {
@@ -367,9 +363,9 @@ impl App {
 
     pub fn render_item_list(&self, title: &str, itemvectype: ItemVecType) -> List {
         let wut = match itemvectype {
-            ItemVecType::Equipped => self.inv_vecs.equipment_names.clone(),
-            ItemVecType::Inventory => self.inv_vecs.inventory_names.clone(),
-            ItemVecType::Ground => self.inv_vecs.ground_names.clone(),
+            ItemVecType::Equipped => self.gen_item_name_vec(&self.inv_vecs.equipment),
+            ItemVecType::Inventory => self.gen_item_name_vec(&self.inv_vecs.inventory),
+            ItemVecType::Ground => self.gen_item_name_vec(&self.inv_vecs.ground),
         };
 
         let list = List::new(wut)
@@ -436,8 +432,6 @@ impl App {
             evec.push(itemik.clone());
         }
 
-        self.inv_vecs.inventory_names = self.gen_item_name_vec(&evec);
-
         self.inv_vecs.inventory = evec;
     }
 
@@ -452,8 +446,6 @@ impl App {
         for itemik in player_equi.equipped.iter() {
             evec.push(itemik.clone());
         }
-
-        self.inv_vecs.equipment_names = self.gen_item_name_vec(&evec);
 
         self.inv_vecs.equipment = evec;
     }
@@ -476,8 +468,6 @@ impl App {
                 }
             }
         }
-
-        self.inv_vecs.ground_names = self.gen_item_name_vec(&evec);
 
         self.inv_vecs.ground = evec;
     }
