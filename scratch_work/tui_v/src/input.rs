@@ -122,7 +122,9 @@ impl App {
                 KeyCode::Char(CURSOR_DOWN) => match self.inv_vecs.selected_menu {
                     ItemVecType::Inventory => {
                         if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen + 1 < self.inv_vecs.inventory.len() {
+                            if invlen + 1
+                                < self.inventory_item_vec_of_ent(&self.local_player_id).len()
+                            {
                                 self.inv_vecs.item_list_state.select_next();
                             }
                         }
