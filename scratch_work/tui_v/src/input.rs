@@ -129,14 +129,17 @@ impl App {
                     }
                     ItemVecType::Equipped => {
                         if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen + 1 < self.inv_vecs.equipment.len() {
+                            if invlen + 1
+                                < self.equipped_item_vec_of_ent(&self.local_player_id).len()
+                            {
                                 self.inv_vecs.item_list_state.select_next();
                             }
                         }
                     }
                     ItemVecType::Ground => {
                         if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
-                            if invlen + 1 < self.inv_vecs.ground.len() {
+                            if invlen + 1 < self.ground_item_vec_at_ent(&self.local_player_id).len()
+                            {
                                 self.inv_vecs.item_list_state.select_next();
                             }
                         }

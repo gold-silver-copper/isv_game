@@ -21,10 +21,6 @@ pub struct ItemVecs {
     pub selected_menu: ItemVecType,
     pub inventory: Vec<EntityID>,
     pub item_list_state: ListState,
-
-    pub equipment: Vec<EntityID>,
-
-    pub ground: Vec<EntityID>,
 }
 
 impl App {
@@ -79,9 +75,10 @@ impl App {
         let pik = (5, 5);
 
         self.local_player_id = self.spawn_player_at(&pik);
-        let ai_guy = self.spawn_human_at(&(7, 7));
+
         let ai_guy = self.spawn_human_at(&(7, 9));
         let ai_guy = self.spawn_human_at(&(3, 4));
+        let ai_guy = self.spawn_human_at(&(7, 7));
         let iid3 = self.create_item(ItemType::Weapon(Weapon::Mace));
 
         let ai_equip = self
@@ -131,12 +128,14 @@ impl App {
 
     pub fn manage_item_vec_input(&self) -> (bool, EntityID) {
         let boop = self.inv_vecs.item_list_state.selected();
+        let ground_vec = self.ground_item_vec_at_ent(&self.local_player_id);
+        let equi_vec = self.equipped_item_vec_of_ent(&self.local_player_id);
 
         if let Some(sid) = boop {
             let moop = match self.inv_vecs.selected_menu {
-                ItemVecType::Equipped => self.inv_vecs.equipment.get(sid),
+                ItemVecType::Equipped => equi_vec.get(sid),
                 ItemVecType::Inventory => self.inv_vecs.inventory.get(sid),
-                ItemVecType::Ground => self.inv_vecs.ground.get(sid),
+                ItemVecType::Ground => ground_vec.get(sid),
             };
 
             if let Some(id_to_pickup) = moop {
@@ -170,13 +169,13 @@ impl App {
         match self.input_state {
             InputState::Inventory => {
                 self.generate_inventory_eid_vec();
-                self.generate_equipped_eid_vec();
-                self.generate_ground_item_eid_vec();
 
                 let boopik = match self.inv_vecs.selected_menu {
-                    ItemVecType::Equipped => self.inv_vecs.equipment.len(),
+                    ItemVecType::Equipped => {
+                        self.equipped_item_vec_of_ent(&self.local_player_id).len()
+                    }
                     ItemVecType::Inventory => self.inv_vecs.inventory.len(),
-                    ItemVecType::Ground => self.inv_vecs.ground.len(),
+                    ItemVecType::Ground => self.ground_item_vec_at_ent(&self.local_player_id).len(),
                 };
 
                 if let Some(sel_len) = self.inv_vecs.item_list_state.selected_mut() {
@@ -364,9 +363,13 @@ impl App {
 
     pub fn render_item_list(&self, title: &str, itemvectype: ItemVecType) -> List {
         let wut = match itemvectype {
-            ItemVecType::Equipped => self.gen_item_name_vec(&self.inv_vecs.equipment),
+            ItemVecType::Equipped => {
+                self.gen_item_name_vec(&self.equipped_item_vec_of_ent(&self.local_player_id))
+            }
             ItemVecType::Inventory => self.gen_item_name_vec(&self.inv_vecs.inventory),
-            ItemVecType::Ground => self.gen_item_name_vec(&self.inv_vecs.ground),
+            ItemVecType::Ground => {
+                self.gen_item_name_vec(&self.ground_item_vec_at_ent(&self.local_player_id))
+            }
         };
 
         let list = List::new(wut)
@@ -436,41 +439,35 @@ impl App {
         self.inv_vecs.inventory = evec;
     }
 
-    pub fn generate_equipped_eid_vec(&mut self) {
+    pub fn equipped_item_vec_of_ent(&self, eid: &EntityID) -> Vec<EntityID> {
         let mut evec = Vec::new();
-        let player_equi = self
-            .components
-            .equipments
-            .get(&self.local_player_id)
-            .expect("must have equi");
-
-        for itemik in player_equi.equipped.iter() {
-            evec.push(itemik.clone());
+        if let Some(ent_equi) = self.components.equipments.get(eid) {
+            for itemik in ent_equi.equipped.iter() {
+                evec.push(itemik.clone());
+            }
         }
 
-        self.inv_vecs.equipment = evec;
+        evec
     }
 
-    pub fn generate_ground_item_eid_vec(&mut self) {
+    pub fn ground_item_vec_at_ent(&self, eid: &EntityID) -> Vec<EntityID> {
         let mut evec = Vec::new();
-        let player_pos = self
-            .components
-            .positions
-            .get(&self.local_player_id)
-            .unwrap();
-        let player_vox = self.game_map.get_voxel_at(player_pos).unwrap();
 
-        for boop in player_vox.entity_set.iter() {
-            let booptype = self.get_ent_type(boop);
-            match booptype {
-                EntityType::Human => {}
-                EntityType::Item(x) => {
-                    evec.push(boop.clone());
+        if let Some(ent_pos) = self.components.positions.get(eid) {
+            let ent_vox = self.game_map.get_voxel_at(ent_pos).unwrap();
+
+            for boop in ent_vox.entity_set.iter() {
+                let booptype = self.get_ent_type(boop);
+                match booptype {
+                    EntityType::Human => {}
+                    EntityType::Item(x) => {
+                        evec.push(boop.clone());
+                    }
                 }
             }
         }
 
-        self.inv_vecs.ground = evec;
+        evec
     }
 
     pub fn generate_visible_ents_from_ent(&self, eid: &EntityID) -> Vec<EntityID> {
