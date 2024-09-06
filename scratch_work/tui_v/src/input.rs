@@ -41,11 +41,11 @@ impl App {
                         .push(GameAction::Go(lid, CardinalDirection::East));
                 }
                 KeyCode::Char(INVENTORY_MENU) => {
-                    self.inv_vecs.item_list_state.select_first();
+                    self.item_list_state.select_first();
                     self.input_state = InputState::Inventory;
                 }
                 KeyCode::Char(RANGED_ATTACK) => {
-                    self.inv_vecs.item_list_state.select_first();
+                    self.item_list_state.select_first();
                     self.input_state = InputState::RangedAttack;
                 }
                 KeyCode::Char(WAIT_KEY) => {
@@ -59,16 +59,16 @@ impl App {
                     self.input_state = InputState::Basic;
                 }
                 KeyCode::Char(CURSOR_DOWN) => {
-                    if let Some(veclen) = self.inv_vecs.item_list_state.selected() {
+                    if let Some(veclen) = self.item_list_state.selected() {
                         if veclen + 1 < self.ranged_attackable_ents(&self.local_player_id).len() {
-                            self.inv_vecs.item_list_state.select_next();
+                            self.item_list_state.select_next();
                         }
                     }
                 }
-                KeyCode::Char(CURSOR_UP) => self.inv_vecs.item_list_state.select_previous(),
+                KeyCode::Char(CURSOR_UP) => self.item_list_state.select_previous(),
                 KeyCode::Char(CURSOR_RIGHT) => {
-                    let selected_ent = self.manage_ranged_ents_input();
-                    if selected_ent != 0 {
+                    let (truth, selected_ent) = self.manage_item_vec_input();
+                    if truth {
                         self.action_vec
                             .push(GameAction::RangedAttack(lid, selected_ent));
                     }
@@ -78,105 +78,105 @@ impl App {
             InputState::Inventory => match key_event.code {
                 KeyCode::Char(INVENTORY_MENU) => {
                     self.input_state = InputState::Basic;
-                    self.inv_vecs.item_list_state = ListState::default();
+                    self.item_list_state = ListState::default();
 
-                    self.inv_vecs.selected_menu = ItemVecType::default();
+                    self.selected_menu = ItemVecType::default();
                 }
-                KeyCode::Char(CURSOR_UP) => self.inv_vecs.item_list_state.select_previous(),
-                KeyCode::Char(CURSOR_RIGHT) => match self.inv_vecs.selected_menu {
+                KeyCode::Char(CURSOR_UP) => self.item_list_state.select_previous(),
+                KeyCode::Char(CURSOR_RIGHT) => match self.selected_menu {
                     ItemVecType::Inventory => {
-                        self.inv_vecs.selected_menu = ItemVecType::Equipped;
+                        self.selected_menu = ItemVecType::Equipped;
 
-                        self.inv_vecs.item_list_state.select_first();
+                        self.item_list_state.select_first();
                     }
                     ItemVecType::Equipped => {
-                        self.inv_vecs.selected_menu = ItemVecType::Ground;
+                        self.selected_menu = ItemVecType::Ground;
 
-                        self.inv_vecs.item_list_state.select_first();
+                        self.item_list_state.select_first();
                     }
                     ItemVecType::Ground => {
-                        self.inv_vecs.selected_menu = ItemVecType::Inventory;
+                        self.selected_menu = ItemVecType::Inventory;
 
-                        self.inv_vecs.item_list_state.select_first();
+                        self.item_list_state.select_first();
                     }
                 },
 
-                KeyCode::Char(CURSOR_LEFT) => match self.inv_vecs.selected_menu {
+                KeyCode::Char(CURSOR_LEFT) => match self.selected_menu {
                     ItemVecType::Inventory => {
-                        self.inv_vecs.selected_menu = ItemVecType::Ground;
+                        self.selected_menu = ItemVecType::Ground;
 
-                        self.inv_vecs.item_list_state.select_first();
+                        self.item_list_state.select_first();
                     }
                     ItemVecType::Equipped => {
-                        self.inv_vecs.selected_menu = ItemVecType::Inventory;
+                        self.selected_menu = ItemVecType::Inventory;
 
-                        self.inv_vecs.item_list_state.select_first();
+                        self.item_list_state.select_first();
                     }
                     ItemVecType::Ground => {
-                        self.inv_vecs.selected_menu = ItemVecType::Equipped;
+                        self.selected_menu = ItemVecType::Equipped;
 
-                        self.inv_vecs.item_list_state.select_first();
+                        self.item_list_state.select_first();
                     }
                 },
 
-                KeyCode::Char(CURSOR_DOWN) => match self.inv_vecs.selected_menu {
+                KeyCode::Char(CURSOR_DOWN) => match self.selected_menu {
                     ItemVecType::Inventory => {
-                        if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
+                        if let Some(invlen) = self.item_list_state.selected() {
                             if invlen + 1
                                 < self.inventory_item_vec_of_ent(&self.local_player_id).len()
                             {
-                                self.inv_vecs.item_list_state.select_next();
+                                self.item_list_state.select_next();
                             }
                         }
                     }
                     ItemVecType::Equipped => {
-                        if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
+                        if let Some(invlen) = self.item_list_state.selected() {
                             if invlen + 1
                                 < self.equipped_item_vec_of_ent(&self.local_player_id).len()
                             {
-                                self.inv_vecs.item_list_state.select_next();
+                                self.item_list_state.select_next();
                             }
                         }
                     }
                     ItemVecType::Ground => {
-                        if let Some(invlen) = self.inv_vecs.item_list_state.selected() {
+                        if let Some(invlen) = self.item_list_state.selected() {
                             if invlen + 1 < self.ground_item_vec_at_ent(&self.local_player_id).len()
                             {
-                                self.inv_vecs.item_list_state.select_next();
+                                self.item_list_state.select_next();
                             }
                         }
                     }
                 },
-                KeyCode::Char(DROP_UNEQUIP_ACTION) => match self.inv_vecs.selected_menu {
+                KeyCode::Char(DROP_UNEQUIP_ACTION) => match self.selected_menu {
                     ItemVecType::Equipped => {
                         let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::UnEquip(lid, selected_id));
-                            self.inv_vecs.item_list_state.select_previous();
+                            self.item_list_state.select_previous();
                         }
                     }
                     ItemVecType::Inventory => {
                         let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::Drop(lid, selected_id));
-                            self.inv_vecs.item_list_state.select_previous();
+                            self.item_list_state.select_previous();
                         }
                     }
                     _ => (),
                 },
-                KeyCode::Char(PICKUP_EQUIP_ACTION) => match self.inv_vecs.selected_menu {
+                KeyCode::Char(PICKUP_EQUIP_ACTION) => match self.selected_menu {
                     ItemVecType::Ground => {
                         let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::PickUp(lid, selected_id));
-                            self.inv_vecs.item_list_state.select_previous();
+                            self.item_list_state.select_previous();
                         }
                     }
                     ItemVecType::Inventory => {
                         let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::Equip(lid, selected_id));
-                            self.inv_vecs.item_list_state.select_previous();
+                            self.item_list_state.select_previous();
                         }
                     }
                     _ => (),

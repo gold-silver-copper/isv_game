@@ -8,19 +8,14 @@ pub struct App {
     pub action_results: Vec<ActionResult>,
     pub visible_ents: Vec<EntityID>,
 
-    pub inv_vecs: ItemVecs,
+    pub selected_menu: ItemVecType,
+
+    pub item_list_state: ListState,
 
     pub exit: bool,
     pub game_map: GameMap,
     pub action_vec: ActionVec,
     pub local_player_id: EntityID,
-}
-
-#[derive(Default)]
-pub struct ItemVecs {
-    pub selected_menu: ItemVecType,
-
-    pub item_list_state: ListState,
 }
 
 impl App {
@@ -112,37 +107,30 @@ impl App {
             _ => Ok(()),
         }
     }
-    pub fn manage_ranged_ents_input(&self) -> (EntityID) {
-        if self.input_state == InputState::RangedAttack {
-            let boop = self.inv_vecs.item_list_state.selected();
-            if let Some(sid) = boop {
-                let vecik = self.ranged_attackable_ents(&self.local_player_id);
-                if let Some(moop) = vecik.get(sid) {
-                    return moop.clone();
-                }
-            }
-        }
-
-        0
-    }
 
     pub fn manage_item_vec_input(&self) -> (bool, EntityID) {
-        let boop = self.inv_vecs.item_list_state.selected();
         let ground_vec = self.ground_item_vec_at_ent(&self.local_player_id);
         let equi_vec = self.equipped_item_vec_of_ent(&self.local_player_id);
         let inv_vec = self.inventory_item_vec_of_ent(&self.local_player_id);
 
-        if let Some(sid) = boop {
-            let moop = match self.inv_vecs.selected_menu {
-                ItemVecType::Equipped => equi_vec.get(sid),
-                ItemVecType::Inventory => inv_vec.get(sid),
-                ItemVecType::Ground => ground_vec.get(sid),
-            };
+        if let Some(sid) = self.item_list_state.selected() {
+            if self.input_state == InputState::Inventory {
+                let moop = match self.selected_menu {
+                    ItemVecType::Equipped => equi_vec.get(sid),
+                    ItemVecType::Inventory => inv_vec.get(sid),
+                    ItemVecType::Ground => ground_vec.get(sid),
+                };
 
-            if let Some(id_to_pickup) = moop {
-                let id_to_pickup = id_to_pickup.clone();
+                if let Some(id_to_select) = moop {
+                    let id_to_select = id_to_select.clone();
 
-                return (true, id_to_pickup);
+                    return (true, id_to_select);
+                }
+            } else if self.input_state == InputState::RangedAttack {
+                let vecik = self.ranged_attackable_ents(&self.local_player_id);
+                if let Some(moop) = vecik.get(sid) {
+                    return (true, moop.clone());
+                }
             }
         }
 
@@ -169,7 +157,7 @@ impl App {
 
         match self.input_state {
             InputState::Inventory => {
-                let boopik = match self.inv_vecs.selected_menu {
+                let boopik = match self.selected_menu {
                     ItemVecType::Equipped => {
                         self.equipped_item_vec_of_ent(&self.local_player_id).len()
                     }
@@ -179,7 +167,7 @@ impl App {
                     ItemVecType::Ground => self.ground_item_vec_at_ent(&self.local_player_id).len(),
                 };
 
-                if let Some(sel_len) = self.inv_vecs.item_list_state.selected_mut() {
+                if let Some(sel_len) = self.item_list_state.selected_mut() {
                     if *sel_len > boopik {
                         *sel_len = boopik;
                     }
@@ -187,7 +175,7 @@ impl App {
             }
             InputState::RangedAttack => {
                 let boopik = self.ranged_attackable_ents(&self.local_player_id).len();
-                if let Some(sel_len) = self.inv_vecs.item_list_state.selected_mut() {
+                if let Some(sel_len) = self.item_list_state.selected_mut() {
                     if *sel_len > boopik {
                         *sel_len = boopik;
                     }
@@ -539,9 +527,9 @@ impl Widget for &App {
             .get(&self.local_player_id)
             .unwrap_or(&(0, 0));
 
-        let selected_range_enemy = self.manage_ranged_ents_input();
+        let (_, selected_ent) = self.manage_item_vec_input();
         let highlighted_ranged_line =
-            self.line_from_ent_to_ent(&self.local_player_id, &selected_range_enemy);
+            self.line_from_ent_to_ent(&self.local_player_id, &selected_ent);
 
         let client_graphics = self.game_map.create_client_render_packet_for_entity(
             &client_pos,
@@ -566,20 +554,20 @@ impl Widget for &App {
             }
         }
 
-        let mut inv_state = match self.inv_vecs.selected_menu {
-            ItemVecType::Inventory => self.inv_vecs.item_list_state.clone(),
+        let mut inv_state = match self.selected_menu {
+            ItemVecType::Inventory => self.item_list_state.clone(),
             _ => ListState::default(),
         };
-        let mut equip_state = match self.inv_vecs.selected_menu {
-            ItemVecType::Equipped => self.inv_vecs.item_list_state.clone(),
+        let mut equip_state = match self.selected_menu {
+            ItemVecType::Equipped => self.item_list_state.clone(),
             _ => ListState::default(),
         };
-        let mut ground_state = match self.inv_vecs.selected_menu {
-            ItemVecType::Ground => self.inv_vecs.item_list_state.clone(),
+        let mut ground_state = match self.selected_menu {
+            ItemVecType::Ground => self.item_list_state.clone(),
             _ => ListState::default(),
         };
         let mut ranged_state = match self.input_state {
-            InputState::RangedAttack => self.inv_vecs.item_list_state.clone(),
+            InputState::RangedAttack => self.item_list_state.clone(),
             _ => ListState::default(),
         };
 
