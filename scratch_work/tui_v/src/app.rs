@@ -6,12 +6,8 @@ pub struct App {
     pub components: ComponentHolder,
     pub input_state: InputState,
     pub action_results: Vec<ActionResult>,
-    pub visible_ents: Vec<EntityID>,
-
     pub selected_menu: ItemVecType,
-
     pub item_list_state: ListState,
-
     pub exit: bool,
     pub game_map: GameMap,
     pub action_vec: ActionVec,
@@ -153,8 +149,6 @@ impl App {
     }
 
     pub fn reload_ui(&mut self) {
-        self.generate_render_info();
-
         match self.input_state {
             InputState::Inventory => {
                 let boopik = match self.selected_menu {
@@ -168,16 +162,17 @@ impl App {
                 };
 
                 if let Some(sel_len) = self.item_list_state.selected_mut() {
-                    if *sel_len > boopik {
-                        *sel_len = boopik;
+                    if ((*sel_len >= boopik) && (boopik > 0)) {
+                        *sel_len = boopik - 1;
                     }
                 }
             }
             InputState::RangedAttack => {
                 let boopik = self.ranged_attackable_ents(&self.local_player_id).len();
                 if let Some(sel_len) = self.item_list_state.selected_mut() {
-                    if *sel_len > boopik {
-                        *sel_len = boopik;
+                    if ((*sel_len >= boopik) && (boopik > 0)) {
+                        *sel_len = boopik - 1;
+                        println!("boopik {boopik}");
                     }
                 }
             }
@@ -218,7 +213,10 @@ impl App {
                 _ => panic!("meow"),
             };
 
-            if (act_result.0 == self.local_player_id) || (self.visible_ents.contains(&act_result.0))
+            if (act_result.0 == self.local_player_id)
+                || (self
+                    .generate_visible_ents_from_ent(&self.local_player_id)
+                    .contains(&act_result.0))
             {
                 self.action_results.push(act_result.1);
             }
@@ -313,7 +311,8 @@ impl App {
             }
         }
 
-        let visible_lines = self.gen_symbol_name_line_vec(&self.visible_ents);
+        let visible_lines = self
+            .gen_symbol_name_line_vec(&self.generate_visible_ents_from_ent(&self.local_player_id));
 
         let mut standart = vec![
             Line::from("Wielding..."),
@@ -464,11 +463,6 @@ impl App {
         remove_ent_from_vec(&mut visible_ents_with_self, eid);
 
         visible_ents_with_self
-    }
-
-    pub fn generate_render_info(&mut self) {
-        self.visible_ents = self.generate_visible_ents_from_ent(&self.local_player_id);
-        //println!("{:#?}",self.visible_ents);
     }
 
     pub fn line_from_ent_to_ent(

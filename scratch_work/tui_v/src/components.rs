@@ -134,6 +134,7 @@ impl App {
         let iid = self.create_item(ItemType::Weapon(Weapon::Sword));
         let iid2 = self.create_item(ItemType::Clothing(Clothing::Toga));
         let iid3 = self.create_item(ItemType::Weapon(Weapon::Mace));
+        let iid4 = self.create_item(ItemType::RangedWeapon(RangedWeapon::Šuk));
 
         let player_equip = self
             .components
@@ -143,6 +144,7 @@ impl App {
         player_equip.equipped.insert(iid);
         player_equip.inventory.insert(iid2);
         player_equip.inventory.insert(iid3);
+        player_equip.equipped.insert(iid4);
 
         pid
     }

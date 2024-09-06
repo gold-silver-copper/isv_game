@@ -152,14 +152,12 @@ impl App {
                         let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::UnEquip(lid, selected_id));
-                            self.item_list_state.select_previous();
                         }
                     }
                     ItemVecType::Inventory => {
                         let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::Drop(lid, selected_id));
-                            self.item_list_state.select_previous();
                         }
                     }
                     _ => (),
@@ -169,14 +167,12 @@ impl App {
                         let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::PickUp(lid, selected_id));
-                            self.item_list_state.select_previous();
                         }
                     }
                     ItemVecType::Inventory => {
                         let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::Equip(lid, selected_id));
-                            self.item_list_state.select_previous();
                         }
                     }
                     _ => (),
