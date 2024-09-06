@@ -180,8 +180,6 @@ impl App {
 
                 _ => {}
             },
-
-            _ => panic!("input state not implemented"),
         }
 
         Ok(())

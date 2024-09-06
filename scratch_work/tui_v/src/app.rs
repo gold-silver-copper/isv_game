@@ -210,7 +210,9 @@ impl App {
                     (subj_id.clone(), self.ranged_attack(&subj_id, &obj_id))
                 }
                 GameAction::Wait(subj_id) => (subj_id.clone(), self.handle_wait(&subj_id)),
-                _ => panic!("meow"),
+                GameAction::BumpAttack(subj_id, obj_id) => {
+                    (subj_id.clone(), self.bump_attack(&subj_id, &obj_id))
+                }
             };
 
             if (act_result.0 == self.local_player_id)
@@ -303,7 +305,7 @@ impl App {
                         .get(item)
                         .expect("EVERY ITEM MUST HAVE AN ENTITY TYPE");
                     let item_name = match item_type {
-                        EntityType::Human => panic!("CANNOT WIELD ANIMALS... yet"),
+                        EntityType::Human => self.get_entity_name(item),
                         EntityType::Item(itemik) => itemik.item_name(),
                     };
                     wield_string.push_str(&format!(" {item_name}"));
@@ -624,8 +626,6 @@ impl Widget for &App {
                     &mut ranged_state,
                 );
             }
-
-            _ => panic!("INPUT STATE RENDER NOT IMPELEMNTED"),
         }
     }
 }

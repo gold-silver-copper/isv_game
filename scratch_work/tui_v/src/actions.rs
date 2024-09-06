@@ -189,8 +189,8 @@ impl App {
                         ItemType::Clothing(cloth) => {
                             let new_part_covered = cloth.body_part_covered();
                             for thing_equipped in &boop.equipped {
-                                if let EntityType::Item(ItemType::Clothing(clothik)) =
-                                    self.components.ent_types.get(thing_equipped).unwrap()
+                                if let Some(EntityType::Item(ItemType::Clothing(clothik))) =
+                                    self.components.ent_types.get(thing_equipped)
                                 {
                                     let exist_part_covered = clothik.body_part_covered();
                                     if new_part_covered == exist_part_covered {
@@ -210,8 +210,8 @@ impl App {
                         }
                         ItemType::RangedWeapon(rang) => {
                             for thing_equipped in &boop.equipped {
-                                if let EntityType::Item(ItemType::RangedWeapon(ex_rang)) =
-                                    self.components.ent_types.get(thing_equipped).unwrap()
+                                if let Some(EntityType::Item(ItemType::RangedWeapon(ex_rang))) =
+                                    self.components.ent_types.get(thing_equipped)
                                 {
                                     return ActionResult::Failure(GameAction::Equip(
                                         subject_eid.clone(),
@@ -366,7 +366,6 @@ impl App {
 
                     format!("{pronoun} {verbik} {} ot dali!", object.0)
                 }
-                _ => panic!("NOT IMPLEMENTED"),
             },
             ActionResult::Failure(ga) => match ga {
                 GameAction::Drop(subj, obj) => {
@@ -400,7 +399,17 @@ impl App {
 
                     format!("{pronoun} ne smog atakovati {dropped}")
                 }
-                _ => panic!("NOT IMPLEMENTED"),
+                GameAction::BumpAttack(subj, obj) => {
+                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let dropped = self.get_entity_name(&obj);
+
+                    format!("{pronoun} ne smog atakovati {dropped}")
+                }
+                GameAction::Wait(subj) => {
+                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+
+                    format!("{pronoun} ne moze zdati")
+                }
             },
         };
 

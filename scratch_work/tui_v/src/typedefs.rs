@@ -54,7 +54,6 @@ pub enum GameAction {
     RangedAttack(Subject, DirectObject),
 
     Drop(Subject, DirectObject),
-    Give(),
 
     Go(Subject, CardinalDirection),
 }
