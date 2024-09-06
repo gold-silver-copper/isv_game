@@ -119,11 +119,11 @@ impl App {
         }
     }
 
-    pub fn manage_item_vec_input(&self, itemvectype: &ItemVecType) -> (bool, EntityID) {
+    pub fn manage_item_vec_input(&self) -> (bool, EntityID) {
         let boop = self.inv_vecs.item_list_state.selected();
 
         if let Some(sid) = boop {
-            let moop = match itemvectype {
+            let moop = match self.inv_vecs.selected_menu {
                 ItemVecType::Equipped => self.inv_vecs.equipment.get(sid),
                 ItemVecType::Inventory => self.inv_vecs.inventory.get(sid),
                 ItemVecType::Ground => self.inv_vecs.ground.get(sid),

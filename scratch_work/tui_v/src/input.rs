@@ -137,16 +137,14 @@ impl App {
                 },
                 KeyCode::Char(DROP_UNEQUIP_ACTION) => match self.inv_vecs.selected_menu {
                     ItemVecType::Equipped => {
-                        let (possible, selected_id) =
-                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
+                        let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::UnEquip(lid, selected_id));
                             self.inv_vecs.item_list_state.select_previous();
                         }
                     }
                     ItemVecType::Inventory => {
-                        let (possible, selected_id) =
-                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
+                        let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::Drop(lid, selected_id));
                             self.inv_vecs.item_list_state.select_previous();
@@ -156,16 +154,14 @@ impl App {
                 },
                 KeyCode::Char(PICKUP_EQUIP_ACTION) => match self.inv_vecs.selected_menu {
                     ItemVecType::Ground => {
-                        let (possible, selected_id) =
-                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
+                        let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::PickUp(lid, selected_id));
                             self.inv_vecs.item_list_state.select_previous();
                         }
                     }
                     ItemVecType::Inventory => {
-                        let (possible, selected_id) =
-                            self.manage_item_vec_input(&self.inv_vecs.selected_menu);
+                        let (possible, selected_id) = self.manage_item_vec_input();
                         if possible {
                             self.action_vec.push(GameAction::Equip(lid, selected_id));
                             self.inv_vecs.item_list_state.select_previous();
