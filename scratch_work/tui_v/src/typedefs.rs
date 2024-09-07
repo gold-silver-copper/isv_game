@@ -71,7 +71,7 @@ pub enum GameActionResult {
     BumpAttackFailureMiss(Subject, DirectObject),
     RangedAttackSuccess(Subject, DirectObject, InstrumentObject),
     RangedAttackFailureMiss(Subject, DirectObject, InstrumentObject),
-    RangedAttackSuccess(Subject, DirectObject, InstrumentObject),
+    RangedAttackFailureNoAmmo(Subject, DirectObject, InstrumentObject),
 }
 
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
