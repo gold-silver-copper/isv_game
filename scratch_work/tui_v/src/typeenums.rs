@@ -94,7 +94,7 @@ pub enum Weapon {
 }
 #[derive(Clone, Debug, PartialEq, Display)]
 pub enum RangedWeapon {
-    Šuk,
+    Lųk,
     Pråšča,
 }
 #[derive(Clone, Debug, PartialEq, Display)]

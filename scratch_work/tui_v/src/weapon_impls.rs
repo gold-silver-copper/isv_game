@@ -28,13 +28,13 @@ impl WeaponTrait for Weapon {
 impl WeaponTrait for RangedWeapon {
     fn damage(&self) -> i64 {
         match self {
-            RangedWeapon::Šuk => 30,
+            RangedWeapon::Lųk => 30,
             RangedWeapon::Pråšča => 1,
         }
     }
     fn damage_type(&self) -> DamageType {
         match self {
-            RangedWeapon::Šuk => DamageType::Sharp,
+            RangedWeapon::Lųk => DamageType::Sharp,
             RangedWeapon::Pråšča => DamageType::Blunt,
         }
     }

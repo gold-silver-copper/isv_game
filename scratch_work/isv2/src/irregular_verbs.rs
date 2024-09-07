@@ -9,6 +9,7 @@ pub const IRREGULAR_STEMS: &[(&str, &str)] = &[
     ("biti", "bije"),
     ("brati", "bere"),
     ("idti", "ide"),
+    ("oděti", "oděne "),
 ];
 
 pub fn irregular_present_stem(infinitive: &str) -> String {

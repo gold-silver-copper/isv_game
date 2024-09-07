@@ -87,9 +87,9 @@ impl App {
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
-        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Šuk));
-        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Šuk));
-        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Šuk));
+        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Lųk));
+        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Lųk));
+        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Lųk));
         self.reload_ui();
     }
 

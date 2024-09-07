@@ -401,6 +401,10 @@ impl ISV {
     }
     pub fn is_ost_class(word: &str) -> bool {
         word.ends_with("ost́")
+            || word.ends_with("ěć")
+            || word.ends_with("ěč")
+            || word.ends_with("eć")
+            || word.ends_with("at́")
     }
 
     pub fn get_noun_stem(word: &str, number: &Number) -> String {

@@ -10,7 +10,7 @@ pub enum ActionResult {
 pub enum SuccessType {
     Normal,
     WithValue(i64), //for damage
-    WithValueAndInstrument(i64, EntityID),
+    WithValueAndRangedWeapon(i64, RangedWeapon),
 }
 #[derive(Clone, Debug, PartialEq)]
 pub enum FailType {
@@ -76,9 +76,9 @@ impl App {
                                         subject_eid.clone(),
                                         object_eid.clone(),
                                     ),
-                                    SuccessType::WithValueAndInstrument(
+                                    SuccessType::WithValueAndRangedWeapon(
                                         base_damage,
-                                        itemik.clone(),
+                                        wepik.clone(),
                                     ),
                                 );
                             }
@@ -395,20 +395,40 @@ impl App {
                 }
                 GameAction::Equip(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let object = ISV::decline_noun(
-                        &self.get_entity_name(&obj),
-                        &Case::Acc,
-                        &Number::Singular,
-                    );
+
+                    let objtyp = self.get_ent_type(&obj);
+
+                    let equip_verb = match objtyp {
+                        EntityType::Item(itemik) => match itemik {
+                            (ItemType::Weapon(_) | ItemType::RangedWeapon(_)) => "orųžati",
+                            ItemType::Clothing(_) => "oděvati",
+                            _ => "equipirovati",
+                        },
+                        _ => "equipirovati",
+                    };
                     let verbik = ISV::conjugate_verb(
-                        "equipirovati",
+                        equip_verb,
                         &person,
                         &Number::Singular,
                         &gender,
                         &Tense::Present,
                     );
 
-                    format!("{pronoun} {verbik} {}", object.0)
+                    if equip_verb == "orųžati" {
+                        let object = ISV::decline_noun(
+                            &self.get_entity_name(&obj),
+                            &Case::Ins,
+                            &Number::Singular,
+                        );
+                        format!("{pronoun} {verbik} sę {}", object.0)
+                    } else {
+                        let object = ISV::decline_noun(
+                            &self.get_entity_name(&obj),
+                            &Case::Acc,
+                            &Number::Singular,
+                        );
+                        format!("{pronoun} {verbik} {}", object.0)
+                    }
                 }
                 GameAction::UnEquip(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
@@ -418,7 +438,7 @@ impl App {
                         &Number::Singular,
                     );
                     let verbik = ISV::conjugate_verb(
-                        "snimati",
+                        "odkladati",
                         &person,
                         &Number::Singular,
                         &gender,
@@ -487,58 +507,122 @@ impl App {
                 }
                 GameAction::RangedAttack(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let object = ISV::decline_noun(
-                        &self.get_entity_name(&obj),
-                        &Case::Acc,
-                        &Number::Singular,
-                    );
-                    let verbik = ISV::l_participle("atakovati", &gender, &Number::Singular);
+                    let object = self.pronoun_for_act_obj(&obj);
 
-                    format!("{pronoun} {verbik} {} ot dali!", object.0)
+                    match reason {
+                        SuccessType::WithValueAndRangedWeapon(val, inst) => {
+                            let nanositi = ISV::conjugate_verb(
+                                "nanositi",
+                                &person,
+                                &Number::Singular,
+                                &gender,
+                                &Tense::Present,
+                            );
+                            let attack_verb = match inst {
+                                RangedWeapon::Lųk => "strelati",
+                                RangedWeapon::Pråšča => "metati",
+                            };
+
+                            let instrument = ISV::decline_noun(
+                                &format!("{}", inst),
+                                &Case::Ins,
+                                &Number::Singular,
+                            )
+                            .0;
+                            let verbik = ISV::conjugate_verb(
+                                attack_verb,
+                                &person,
+                                &Number::Singular,
+                                &gender,
+                                &Tense::Present,
+                            );
+                            format!(
+                                "{pronoun} {verbik} {instrument} v {} , {nanositi} {val} točky škody",
+                                object.0
+                            )
+                        }
+                        _ => {
+                            let verbik = ISV::conjugate_verb(
+                                "atakovati",
+                                &person,
+                                &Number::Singular,
+                                &gender,
+                                &Tense::Present,
+                            );
+
+                            format!("{pronoun} {verbik} {}", object.0)
+                        }
+                    }
                 }
             },
             ActionResult::Failure(ga, reason) => match ga {
                 GameAction::Drop(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    if &subj == &self.local_player_id {
+                        let dropped = self.pronoun_for_act_obj(&obj).0;
 
-                    format!("{pronoun} brosil {dropped}")
+                        format!("ty ne možeš opustiti {dropped}")
+                    } else {
+                        format!("")
+                    }
                 }
                 GameAction::Equip(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    let extra_string = match reason {
+                        FailType::AlreadyEquipped => ",podobna věć uže orųdujųća ",
+                        _ => "",
+                    };
+                    if &subj == &self.local_player_id {
+                        let obje = self.pronoun_for_act_obj(&obj).0;
 
-                    format!("{pronoun} brosil {dropped}")
+                        format!("ty ne možeš equipirovati {obje}{extra_string}")
+                    } else {
+                        format!("")
+                    }
                 }
                 GameAction::UnEquip(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    if &subj == &self.local_player_id {
+                        let dropped = self.pronoun_for_act_obj(&obj).0;
 
-                    format!("{pronoun} brosil {dropped}")
+                        format!("ty ne možeš odklasti {dropped}")
+                    } else {
+                        format!("")
+                    }
                 }
-                GameAction::Go(subj, cd) => "ne mozzesz tuda idti".to_string(),
+                GameAction::Go(subj, cd) => {
+                    if &subj == &self.local_player_id {
+                        format!("ty ne možeš tųdy idti")
+                    } else {
+                        format!("")
+                    }
+                }
                 GameAction::PickUp(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    if &subj == &self.local_player_id {
+                        let dropped = self.pronoun_for_act_obj(&obj).0;
 
-                    format!("{pronoun} brosil {dropped}")
+                        format!("ty ne možeš vzęti {dropped}")
+                    } else {
+                        format!("")
+                    }
                 }
                 GameAction::RangedAttack(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    if &subj == &self.local_player_id {
+                        let dropped = self.pronoun_for_act_obj(&obj).0;
 
-                    format!("{pronoun} ne smog atakovati {dropped}")
+                        format!("ty ne možeš atakovati {dropped}")
+                    } else {
+                        format!("")
+                    }
                 }
                 GameAction::BumpAttack(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let dropped = self.get_entity_name(&obj);
+                    if &subj == &self.local_player_id {
+                        let dropped = self.pronoun_for_act_obj(&obj).0;
 
-                    format!("{pronoun} ne smog atakovati {dropped}")
+                        format!("ty ne možeš atakovati {dropped}")
+                    } else {
+                        format!("")
+                    }
                 }
                 GameAction::Wait(subj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-
-                    format!("{pronoun} ne moze zdati")
+                    format!("")
                 }
             },
         };
