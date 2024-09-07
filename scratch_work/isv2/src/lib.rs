@@ -216,8 +216,9 @@ impl ISV {
         gender: &Gender,
         tense: &Tense,
     ) -> Verb {
-        let (present_stem, conjugation) = ISV::get_present_tense_stem(word);
-        let infinitive_stem = ISV::get_infinitive_stem(word);
+        let word = word.to_lowercase();
+        let (present_stem, conjugation) = ISV::get_present_tense_stem(&word);
+        let infinitive_stem = ISV::get_infinitive_stem(&word);
 
         let endings = match conjugation {
             Conjugation::First => &FIRST_CONJUGATION,
@@ -275,8 +276,9 @@ impl ISV {
         gender: &Gender,
         animate: bool,
     ) -> Adjective {
-        let stem_is_soft = ISV::stem_of_adj_is_soft(word);
-        let adj_stem = ISV::get_adj_stem(word);
+        let word = word.to_lowercase();
+        let stem_is_soft = ISV::stem_of_adj_is_soft(&word);
+        let adj_stem = ISV::get_adj_stem(&word);
 
         let endings = match gender {
             Gender::Masculine => {
@@ -331,12 +333,13 @@ impl ISV {
 //NOUN STUFF
 impl ISV {
     pub fn decline_noun(word: &str, case: &Case, number: &Number) -> Noun {
-        let gender = ISV::guess_gender(word);
-        let word_is_animate = ISV::noun_is_animate(word);
-        let word_stem_is_soft = ISV::stem_of_noun_is_soft(word);
-        let word_stem = ISV::get_noun_stem(word, number);
+        let word = word.to_lowercase();
+        let gender = ISV::guess_gender(&word);
+        let word_is_animate = ISV::noun_is_animate(&word);
+        let word_stem_is_soft = ISV::stem_of_noun_is_soft(&word);
+        let word_stem = ISV::get_noun_stem(&word, number);
 
-        let endings = if ISV::is_ost_class(word) {
+        let endings = if ISV::is_ost_class(&word) {
             &OST_ENDINGS
         } else {
             match gender {

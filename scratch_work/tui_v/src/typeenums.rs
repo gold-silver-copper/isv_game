@@ -66,11 +66,6 @@ pub enum Material {
     Metal(Metal),
     Wood(Tree),
 }
-#[derive(Display, Clone)]
-pub enum ActionResult {
-    Success(GameAction),
-    Failure(GameAction),
-}
 
 // tegula imbrex
 #[derive(Display)]

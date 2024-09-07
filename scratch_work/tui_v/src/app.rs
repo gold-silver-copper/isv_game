@@ -339,7 +339,10 @@ impl App {
         for x in 0..20 {
             let boop = events_copy.pop();
             if let Some(actik) = boop {
-                line_vec.push(Line::from(self.generate_action_result_string(actik)));
+                let linija = self.generate_action_result_string(actik);
+                if linija != Line::from("") {
+                    line_vec.push(Line::from(linija));
+                }
             }
         }
 

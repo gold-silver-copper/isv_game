@@ -42,38 +42,6 @@ pub const GRAVEL_FLOOR: Floor = Floor::Gravel(BASIC_METAL_MATERIAL);
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (String, RatColor, RatColor);
 
-// Define a marker trait
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum GameAction {
-    Wait(Subject),
-    PickUp(Subject, DirectObject),
-    Equip(Subject, DirectObject),
-    UnEquip(Subject, DirectObject),
-    BumpAttack(Subject, DirectObject),
-    RangedAttack(Subject, DirectObject),
-
-    Drop(Subject, DirectObject),
-
-    Go(Subject, CardinalDirection),
-}
-
-pub enum GameActionResult {
-    Wait(Subject),
-    PickUpSuccess(Subject, DirectObject),
-    PickUpFailureInventoryFull(Subject, DirectObject),
-    EquipSuccess(Subject, DirectObject),
-    EquipFailureNotEquipable(Subject, DirectObject),
-    EquipFailureSlotTaken(Subject, DirectObject),
-    UnEquipSuccess(Subject, DirectObject),
-    UnEquipFailureInventoryFull(Subject, DirectObject),
-    BumpAttackSuccess(Subject, DirectObject),
-    BumpAttackFailureMiss(Subject, DirectObject),
-    RangedAttackSuccess(Subject, DirectObject, InstrumentObject),
-    RangedAttackFailureMiss(Subject, DirectObject, InstrumentObject),
-    RangedAttackFailureNoAmmo(Subject, DirectObject, InstrumentObject),
-}
-
 pub fn add_two_points(p1: &MyPoint, p2: &MyPoint) -> MyPoint {
     (p1.0 + p2.0, p1.1 + p2.1)
 }

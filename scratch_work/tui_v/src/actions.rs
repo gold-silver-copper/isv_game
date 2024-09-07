@@ -1,8 +1,47 @@
 use crate::*;
 
+// Define a marker trait
+#[derive(Display, Clone)]
+pub enum ActionResult {
+    Success(GameAction, SuccessType),
+    Failure(GameAction, FailType),
+}
+#[derive(Clone, Debug, PartialEq)]
+pub enum SuccessType {
+    Normal,
+    WithValue(i64), //for damage
+    WithValueAndInstrument(i64, EntityID),
+}
+#[derive(Clone, Debug, PartialEq)]
+pub enum FailType {
+    Normal,
+    Miss,
+    MissWithInstrument(EntityID),
+    NoAmmo,
+    NoWeapon,
+    Blocked,
+    InventoryFull,
+    WrongType,
+    AlreadyEquipped,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum GameAction {
+    Wait(Subject),
+    PickUp(Subject, DirectObject),
+    Equip(Subject, DirectObject),
+    UnEquip(Subject, DirectObject),
+    BumpAttack(Subject, DirectObject),
+    RangedAttack(Subject, DirectObject),
+
+    Drop(Subject, DirectObject),
+
+    Go(Subject, CardinalDirection),
+}
+
 impl App {
     pub fn handle_wait(&self, subject_eid: &EntityID) -> ActionResult {
-        ActionResult::Success(GameAction::Wait(subject_eid.clone()))
+        ActionResult::Success(GameAction::Wait(subject_eid.clone()), SuccessType::Normal)
     }
 
     pub fn get_ent_melee_damage(&self, subject_eid: &EntityID) -> i64 {
@@ -19,52 +58,61 @@ impl App {
         }
         base_damage
     }
-    pub fn get_ent_ranged_damage(&self, subject_eid: &EntityID) -> i64 {
+
+    pub fn ranged_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
         let mut base_damage = 0;
         if let Some(equi) = self.components.equipments.get(subject_eid) {
             for itemik in &equi.equipped {
                 if let EntityType::Item(typik) = self.get_ent_type(itemik) {
                     match typik {
-                        ItemType::RangedWeapon(wepik) => base_damage = base_damage + wepik.damage(),
+                        ItemType::RangedWeapon(wepik) => {
+                            base_damage = base_damage + wepik.damage();
+                            if let Some(defender_health) =
+                                self.components.healths.get_mut(object_eid)
+                            {
+                                defender_health.current_health -= base_damage;
+                                return ActionResult::Success(
+                                    GameAction::RangedAttack(
+                                        subject_eid.clone(),
+                                        object_eid.clone(),
+                                    ),
+                                    SuccessType::WithValueAndInstrument(
+                                        base_damage,
+                                        itemik.clone(),
+                                    ),
+                                );
+                            }
+                        }
                         _ => {}
                     }
                 }
             }
-        }
-        base_damage
-    }
-
-    pub fn ranged_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
-        let attacker_damage = self.get_ent_ranged_damage(subject_eid);
-
-        if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
-            defender_health.current_health -= attacker_damage;
-            return ActionResult::Success(GameAction::RangedAttack(
-                subject_eid.clone(),
-                object_eid.clone(),
-            ));
+            return ActionResult::Failure(
+                GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+                FailType::NoWeapon,
+            );
         }
 
-        ActionResult::Failure(GameAction::RangedAttack(
-            subject_eid.clone(),
-            object_eid.clone(),
-        ))
+        return ActionResult::Failure(
+            GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+            FailType::NoWeapon,
+        );
     }
 
     pub fn bump_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
         let attacker_damage = self.get_ent_melee_damage(subject_eid);
         if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
             defender_health.current_health -= attacker_damage;
-            return ActionResult::Success(GameAction::BumpAttack(
-                subject_eid.clone(),
-                object_eid.clone(),
-            ));
+            return ActionResult::Success(
+                GameAction::BumpAttack(subject_eid.clone(), object_eid.clone()),
+                SuccessType::WithValue(attacker_damage),
+            );
         }
 
-        ActionResult::Failure(GameAction::BumpAttack(
-            subject_eid.clone(),
-            object_eid.clone(),
-        ))
+        ActionResult::Failure(
+            GameAction::BumpAttack(subject_eid.clone(), object_eid.clone()),
+            FailType::Normal,
+        )
     }
     pub fn handle_movement(
         &mut self,
@@ -97,12 +145,18 @@ impl App {
                         remove_ent_from_vec(&mut origin_vox.entity_set, subject_eid);
                     }
                     *e_pos = destination;
-                    return ActionResult::Success(GameAction::Go(subject_eid.clone(), cd.clone()));
+                    return ActionResult::Success(
+                        GameAction::Go(subject_eid.clone(), cd.clone()),
+                        SuccessType::Normal,
+                    );
                 }
             }
         }
 
-        ActionResult::Failure(GameAction::Go(subject_eid.clone(), cd.clone()))
+        ActionResult::Failure(
+            GameAction::Go(subject_eid.clone(), cd.clone()),
+            FailType::Blocked,
+        )
     }
     pub fn drop_item_from_inv(&mut self, subject_eid: &EntityID, item: &EntityID) -> ActionResult {
         let subject_eid_inv = self.components.equipments.get_mut(subject_eid).unwrap();
@@ -112,9 +166,15 @@ impl App {
             subject_eid_inv.inventory.remove(item);
             let subject_eid_vox = self.game_map.get_mut_voxel_at(subject_eid_pos).unwrap();
             subject_eid_vox.entity_set.push(item.clone());
-            return ActionResult::Success(GameAction::Drop(subject_eid.clone(), item.clone()));
+            return ActionResult::Success(
+                GameAction::Drop(subject_eid.clone(), item.clone()),
+                SuccessType::Normal,
+            );
         }
-        ActionResult::Failure(GameAction::Drop(subject_eid.clone(), item.clone()))
+        ActionResult::Failure(
+            GameAction::Drop(subject_eid.clone(), item.clone()),
+            FailType::Normal,
+        )
     }
 
     pub fn pickup_item_from_ground(
@@ -133,14 +193,17 @@ impl App {
                         .unwrap()
                         .inventory
                         .insert(item.clone());
-                    return ActionResult::Success(GameAction::PickUp(
-                        subject_eid.clone(),
-                        item.clone(),
-                    ));
+                    return ActionResult::Success(
+                        GameAction::PickUp(subject_eid.clone(), item.clone()),
+                        SuccessType::Normal,
+                    );
                 }
             }
         }
-        ActionResult::Failure(GameAction::PickUp(subject_eid.clone(), item.clone()))
+        ActionResult::Failure(
+            GameAction::PickUp(subject_eid.clone(), item.clone()),
+            FailType::Normal,
+        )
     }
 
     pub fn equip_item_from_inv(&mut self, subject_eid: &EntityID, item: &EntityID) -> ActionResult {
@@ -162,10 +225,15 @@ impl App {
                             if wep.handedness() <= hand_space {
                                 boop.inventory.remove(item);
                                 boop.equipped.insert(item.clone());
-                                return ActionResult::Success(GameAction::Equip(
-                                    subject_eid.clone(),
-                                    item.clone(),
-                                ));
+                                return ActionResult::Success(
+                                    GameAction::Equip(subject_eid.clone(), item.clone()),
+                                    SuccessType::Normal,
+                                );
+                            } else {
+                                return ActionResult::Failure(
+                                    GameAction::Equip(subject_eid.clone(), item.clone()),
+                                    FailType::AlreadyEquipped,
+                                );
                             }
                         }
                         ItemType::Accessory(acc) => {
@@ -180,10 +248,15 @@ impl App {
                             if 0 < accessory_space {
                                 boop.inventory.remove(item);
                                 boop.equipped.insert(item.clone());
-                                return ActionResult::Success(GameAction::Equip(
-                                    subject_eid.clone(),
-                                    item.clone(),
-                                ));
+                                return ActionResult::Success(
+                                    GameAction::Equip(subject_eid.clone(), item.clone()),
+                                    SuccessType::Normal,
+                                );
+                            } else {
+                                return ActionResult::Failure(
+                                    GameAction::Equip(subject_eid.clone(), item.clone()),
+                                    FailType::AlreadyEquipped,
+                                );
                             }
                         }
                         ItemType::Clothing(cloth) => {
@@ -194,50 +267,53 @@ impl App {
                                 {
                                     let exist_part_covered = clothik.body_part_covered();
                                     if new_part_covered == exist_part_covered {
-                                        return ActionResult::Failure(GameAction::Equip(
-                                            subject_eid.clone(),
-                                            item.clone(),
-                                        ));
+                                        return ActionResult::Failure(
+                                            GameAction::Equip(subject_eid.clone(), item.clone()),
+                                            FailType::AlreadyEquipped,
+                                        );
                                     }
                                 }
                             }
                             boop.inventory.remove(item);
                             boop.equipped.insert(item.clone());
-                            return ActionResult::Success(GameAction::Equip(
-                                subject_eid.clone(),
-                                item.clone(),
-                            ));
+                            return ActionResult::Success(
+                                GameAction::Equip(subject_eid.clone(), item.clone()),
+                                SuccessType::Normal,
+                            );
                         }
                         ItemType::RangedWeapon(rang) => {
                             for thing_equipped in &boop.equipped {
                                 if let Some(EntityType::Item(ItemType::RangedWeapon(ex_rang))) =
                                     self.components.ent_types.get(thing_equipped)
                                 {
-                                    return ActionResult::Failure(GameAction::Equip(
-                                        subject_eid.clone(),
-                                        item.clone(),
-                                    ));
+                                    return ActionResult::Failure(
+                                        GameAction::Equip(subject_eid.clone(), item.clone()),
+                                        FailType::AlreadyEquipped,
+                                    );
                                 }
                             }
                             boop.inventory.remove(item);
                             boop.equipped.insert(item.clone());
-                            return ActionResult::Success(GameAction::Equip(
-                                subject_eid.clone(),
-                                item.clone(),
-                            ));
+                            return ActionResult::Success(
+                                GameAction::Equip(subject_eid.clone(), item.clone()),
+                                SuccessType::Normal,
+                            );
                         }
                         ItemType::Ammo(amm) => {
                             //cant equip ammo it is used directly from inventory
-                            return ActionResult::Failure(GameAction::Equip(
-                                subject_eid.clone(),
-                                item.clone(),
-                            ));
+                            return ActionResult::Failure(
+                                GameAction::Equip(subject_eid.clone(), item.clone()),
+                                FailType::WrongType,
+                            );
                         }
                     }
                 }
             }
         }
-        return ActionResult::Failure(GameAction::Equip(subject_eid.clone(), item.clone()));
+        return ActionResult::Failure(
+            GameAction::Equip(subject_eid.clone(), item.clone()),
+            FailType::Normal,
+        );
     }
     pub fn unequip_item_from_equipped(
         &mut self,
@@ -248,16 +324,19 @@ impl App {
             if boop.equipped.contains(item) {
                 boop.equipped.remove(item);
                 boop.inventory.insert(item.clone());
-                return ActionResult::Success(GameAction::UnEquip(
-                    subject_eid.clone(),
-                    item.clone(),
-                ));
+                return ActionResult::Success(
+                    GameAction::UnEquip(subject_eid.clone(), item.clone()),
+                    SuccessType::Normal,
+                );
             }
         }
-        return ActionResult::Failure(GameAction::UnEquip(subject_eid.clone(), item.clone()));
+        return ActionResult::Failure(
+            GameAction::UnEquip(subject_eid.clone(), item.clone()),
+            FailType::Normal,
+        );
     }
 
-    pub fn pronoun_for_act_string(&self, subj: &EntityID) -> (String, Gender, Person) {
+    pub fn pronoun_for_act_subj(&self, subj: &EntityID) -> (String, Gender, Person) {
         let person = if subj == &self.local_player_id {
             Person::Second
         } else {
@@ -277,12 +356,34 @@ impl App {
             (pn, genik, person)
         }
     }
+    pub fn pronoun_for_act_obj(&self, subj: &EntityID) -> (String, Gender, Person) {
+        let person = if subj == &self.local_player_id {
+            Person::Second
+        } else {
+            Person::Third
+        };
+
+        let pn = match person {
+            Person::Second => "tę".to_string(),
+            Person::Third => {
+                ISV::decline_noun(&self.get_entity_name(&subj), &Case::Acc, &Number::Singular).0
+            }
+            Person::First => "ja".to_string(),
+        };
+
+        if let Some(gender) = self.components.genders.get(subj) {
+            (pn, gender.clone(), person)
+        } else {
+            let genik = ISV::guess_gender(&self.get_entity_name(&subj));
+            (pn, genik, person)
+        }
+    }
 
     pub fn generate_action_result_string(&self, act_resut: ActionResult) -> Line {
         let line_text = match act_resut {
-            ActionResult::Success(ga) => match ga {
+            ActionResult::Success(ga, reason) => match ga {
                 GameAction::Drop(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let object = ISV::decline_noun(
                         &self.get_entity_name(&obj),
                         &Case::Acc,
@@ -293,7 +394,7 @@ impl App {
                     format!("{pronoun} {verbik} {}", object.0)
                 }
                 GameAction::Equip(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let object = ISV::decline_noun(
                         &self.get_entity_name(&obj),
                         &Case::Acc,
@@ -310,53 +411,82 @@ impl App {
                     format!("{pronoun} {verbik} {}", object.0)
                 }
                 GameAction::UnEquip(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let object = ISV::decline_noun(
                         &self.get_entity_name(&obj),
                         &Case::Acc,
                         &Number::Singular,
                     );
-                    let verbik = ISV::l_participle("opustiti", &gender, &Number::Singular);
+                    let verbik = ISV::conjugate_verb(
+                        "snimati",
+                        &person,
+                        &Number::Singular,
+                        &gender,
+                        &Tense::Present,
+                    );
 
                     format!("{pronoun} {verbik} {}", object.0)
                 }
                 GameAction::Go(subj, cd) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
-                    let dropped = cd.to_isv();
-
-                    format!("{pronoun} poszol na {dropped}")
+                    format!("")
                 }
                 GameAction::PickUp(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let object = ISV::decline_noun(
                         &self.get_entity_name(&obj),
                         &Case::Acc,
                         &Number::Singular,
                     );
-                    let verbik = ISV::l_participle("opustiti", &gender, &Number::Singular);
+                    let verbik = ISV::conjugate_verb(
+                        "podbirati",
+                        &person,
+                        &Number::Singular,
+                        &gender,
+                        &Tense::Present,
+                    );
 
                     format!("{pronoun} {verbik} {}", object.0)
                 }
                 GameAction::Wait(subj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    if &subj == &self.local_player_id {
+                        let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
 
-                    let verbik = ISV::l_participle("počekati", &gender, &Number::Singular);
+                        let verbik = ISV::l_participle("počekati", &gender, &Number::Singular);
 
-                    format!("{pronoun} {verbik}")
+                        format!("{pronoun} {verbik}")
+                    } else {
+                        format!("")
+                    }
                 }
                 GameAction::BumpAttack(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
-                    let object = ISV::decline_noun(
-                        &self.get_entity_name(&obj),
-                        &Case::Acc,
-                        &Number::Singular,
-                    );
-                    let verbik = ISV::l_participle("atakovati", &gender, &Number::Singular);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
+                    let extra_string = match reason {
+                        SuccessType::WithValue(val) => {
+                            let verbik = ISV::conjugate_verb(
+                                "nanositi",
+                                &person,
+                                &Number::Singular,
+                                &gender,
+                                &Tense::Present,
+                            );
+                            format!(", {verbik} {val} točky škody")
+                        }
+                        _ => format!(""),
+                    };
+                    let object = self.pronoun_for_act_obj(&obj);
 
-                    format!("{pronoun} {verbik} {}", object.0)
+                    let verbik = ISV::conjugate_verb(
+                        "atakovati",
+                        &person,
+                        &Number::Singular,
+                        &gender,
+                        &Tense::Present,
+                    );
+
+                    format!("{pronoun} {verbik} {}{extra_string}", object.0)
                 }
                 GameAction::RangedAttack(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let object = ISV::decline_noun(
                         &self.get_entity_name(&obj),
                         &Case::Acc,
@@ -367,46 +497,46 @@ impl App {
                     format!("{pronoun} {verbik} {} ot dali!", object.0)
                 }
             },
-            ActionResult::Failure(ga) => match ga {
+            ActionResult::Failure(ga, reason) => match ga {
                 GameAction::Drop(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let dropped = self.get_entity_name(&obj);
 
                     format!("{pronoun} brosil {dropped}")
                 }
                 GameAction::Equip(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let dropped = self.get_entity_name(&obj);
 
                     format!("{pronoun} brosil {dropped}")
                 }
                 GameAction::UnEquip(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let dropped = self.get_entity_name(&obj);
 
                     format!("{pronoun} brosil {dropped}")
                 }
                 GameAction::Go(subj, cd) => "ne mozzesz tuda idti".to_string(),
                 GameAction::PickUp(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let dropped = self.get_entity_name(&obj);
 
                     format!("{pronoun} brosil {dropped}")
                 }
                 GameAction::RangedAttack(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let dropped = self.get_entity_name(&obj);
 
                     format!("{pronoun} ne smog atakovati {dropped}")
                 }
                 GameAction::BumpAttack(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let dropped = self.get_entity_name(&obj);
 
                     format!("{pronoun} ne smog atakovati {dropped}")
                 }
                 GameAction::Wait(subj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_string(&subj);
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
 
                     format!("{pronoun} ne moze zdati")
                 }
