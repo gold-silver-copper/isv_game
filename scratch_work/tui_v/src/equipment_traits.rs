@@ -55,9 +55,11 @@ impl ItemTrait for ItemType {
                 format!("{acc}")
             }
 
-            ItemType::Ammo(amm) => {
-                format!("{amm}")
-            }
+            ItemType::Ammo(amm) => match amm {
+                Ammo::Kulja(x) | Ammo::Strěla(x) | Ammo::Oščěp(x) | Ammo::Drotik(x) => {
+                    format!("{amm}({x})")
+                }
+            },
         }
     }
 }

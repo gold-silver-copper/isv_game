@@ -89,8 +89,8 @@ pub enum Metal {
 
 #[derive(Clone, Debug, PartialEq, Display)]
 pub enum Weapon {
-    Sword,
-    Mace,
+    Meč,
+    Bulava,
 }
 impl Default for RangedWeapon {
     fn default() -> Self {

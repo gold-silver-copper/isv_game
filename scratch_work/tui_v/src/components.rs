@@ -136,9 +136,9 @@ impl App {
                 last_name: "Milov".into(),
             },
         );
-        let iid = self.create_item(ItemType::Weapon(Weapon::Sword));
+        let iid = self.create_item(ItemType::Weapon(Weapon::Meč));
         let iid2 = self.create_item(ItemType::Clothing(Clothing::Toga));
-        let iid3 = self.create_item(ItemType::Weapon(Weapon::Mace));
+        let iid3 = self.create_item(ItemType::Weapon(Weapon::Bulava));
 
         let player_equip = self
             .components

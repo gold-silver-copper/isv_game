@@ -13,14 +13,14 @@ pub trait WeaponTrait {
 impl WeaponTrait for Weapon {
     fn damage(&self) -> i64 {
         match self {
-            Weapon::Sword => 1,
-            Weapon::Mace => 2,
+            Weapon::Meč => 1,
+            Weapon::Bulava => 2,
         }
     }
     fn damage_type(&self) -> DamageType {
         match self {
-            Weapon::Sword => DamageType::Sharp,
-            Weapon::Mace => DamageType::Blunt,
+            Weapon::Meč => DamageType::Sharp,
+            Weapon::Bulava => DamageType::Blunt,
         }
     }
 }

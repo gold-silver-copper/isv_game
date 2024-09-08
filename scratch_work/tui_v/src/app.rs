@@ -86,7 +86,7 @@ impl App {
         let ai_guy = self.spawn_human_at(&(7, 9));
         let ai_guy = self.spawn_human_at(&(3, 4));
         let ai_guy = self.spawn_human_at(&(7, 7));
-        let iid3 = self.create_item(ItemType::Weapon(Weapon::Mace));
+        let iid3 = self.create_item(ItemType::Weapon(Weapon::Bulava));
 
         let ai_equip = self
             .components
@@ -96,10 +96,10 @@ impl App {
         ai_equip.equipped.insert(iid3);
         ai_equip.arrows += 30;
         self.spawn_item_at(&(5, 6), ItemType::Ammo(Ammo::Drotik(50)));
-        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
-        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
-        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
-        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
+        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Meč));
+        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Meč));
+        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Meč));
+        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Meč));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
