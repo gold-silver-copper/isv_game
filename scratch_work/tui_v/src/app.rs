@@ -6,6 +6,7 @@ pub struct App {
     pub components: ComponentHolder,
     pub input_state: InputState,
     pub action_results: Vec<ActionResult>,
+    pub action_result_strings: Vec<String>,
     pub selected_menu: ItemVecType,
     pub item_list_state: ListState,
     pub exit: bool,
@@ -23,9 +24,9 @@ impl App {
             if !self.action_vec.is_empty() {
                 self.handle_ai();
                 self.handle_actions()?;
-                self.handle_deaths();
             }
-
+            self.handle_deaths();
+            self.gen_action_result_strings();
             self.reload_ui();
         }
         Ok(())
@@ -35,6 +36,10 @@ impl App {
         let mut healths_to_remove = Vec::new();
         for (eid, health) in &self.components.healths {
             if health.current_health <= 0 {
+                self.action_results.push(ActionResult::Success(
+                    GameAction::Death(eid.clone()),
+                    SuccessType::Normal,
+                ));
                 if let Some(e_pos) = self.components.positions.remove(eid) {
                     if let Some(voxik) = self.game_map.get_mut_voxel_at(&e_pos) {
                         remove_ent_from_vec(&mut voxik.entity_set, eid);
@@ -213,6 +218,10 @@ impl App {
                 GameAction::BumpAttack(subj_id, obj_id) => {
                     (subj_id.clone(), self.bump_attack(&subj_id, &obj_id))
                 }
+                GameAction::Death(subj_id) => (
+                    subj_id.clone(),
+                    ActionResult::Success(GameAction::Death(subj_id), SuccessType::Normal),
+                ),
             };
 
             if (act_result.0 == self.local_player_id)
@@ -330,19 +339,25 @@ impl App {
             .block(Block::bordered())
     }
 
+    pub fn gen_action_result_strings(&mut self) {
+        let meow = self.action_results.clone();
+        self.action_results.clear();
+        for boop in meow {
+            let linija = self.generate_action_result_string(boop.clone());
+            if linija != String::from("") {
+                self.action_result_strings.push(linija);
+            }
+        }
+    }
+
     pub fn generate_event_paragraph(&self) -> Paragraph {
         let mut line_vec = Vec::new();
-
-        //should add visible events too later
-        let mut events_copy = self.action_results.clone();
+        let mut events_copy = self.action_result_strings.clone();
 
         for x in 0..20 {
             let boop = events_copy.pop();
             if let Some(actik) = boop {
-                let linija = self.generate_action_result_string(actik);
-                if linija != Line::from("") {
-                    line_vec.push(Line::from(linija));
-                }
+                line_vec.push(Line::from(actik));
             }
         }
 

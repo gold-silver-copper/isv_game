@@ -99,7 +99,10 @@ pub enum RangedWeapon {
 }
 #[derive(Clone, Debug, PartialEq, Display)]
 pub enum Ammo {
-    Pulja,
+    Kulja(i64),
+    Oščěp(i64),
+    Drotik(i64),
+    Strěla(i64),
 }
 #[derive(Clone, Debug, PartialEq, Display)]
 pub enum Clothing {

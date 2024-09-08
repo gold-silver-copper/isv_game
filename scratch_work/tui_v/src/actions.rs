@@ -33,6 +33,7 @@ pub enum GameAction {
     UnEquip(Subject, DirectObject),
     BumpAttack(Subject, DirectObject),
     RangedAttack(Subject, DirectObject),
+    Death(Subject),
 
     Drop(Subject, DirectObject),
 
@@ -379,7 +380,7 @@ impl App {
         }
     }
 
-    pub fn generate_action_result_string(&self, act_resut: ActionResult) -> Line {
+    pub fn generate_action_result_string(&self, act_resut: ActionResult) -> String {
         let line_text = match act_resut {
             ActionResult::Success(ga, reason) => match ga {
                 GameAction::Drop(subj, obj) => {
@@ -554,6 +555,10 @@ impl App {
                         }
                     }
                 }
+                GameAction::Death(subj) => {
+                    let name = self.get_entity_name(&subj);
+                    format!("{name} umiraje")
+                }
             },
             ActionResult::Failure(ga, reason) => match ga {
                 GameAction::Drop(subj, obj) => {
@@ -624,9 +629,13 @@ impl App {
                 GameAction::Wait(subj) => {
                     format!("")
                 }
+                GameAction::Death(subj) => {
+                    let name = self.get_entity_name(&subj);
+                    format!("{name} umiraje")
+                }
             },
         };
 
-        Line::from(line_text)
+        line_text
     }
 }
