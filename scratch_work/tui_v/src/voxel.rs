@@ -7,7 +7,7 @@ pub struct Voxel {
     pub entity_set: Vec<EntityID>,
     pub voxel_pos: MyPoint,
 }
-
+//GIANT DESTRICTUON
 impl Voxel {
     pub fn to_graphic(
         &self,
