@@ -271,9 +271,9 @@ impl App {
             Direction::Vertical,
             [
                 Constraint::Length(3),
-                Constraint::Length(4),
                 Constraint::Length(3),
-                Constraint::Length(1),
+                Constraint::Length(4),
+                Constraint::Length(4),
             ],
         )
         .split(area);
@@ -308,7 +308,7 @@ impl App {
             Paragraph::new(Text::from(lines))
                 .on_black()
                 .block(Block::bordered().title("Amunicija"))
-                .render(const_layout[1], buf);
+                .render(const_layout[3], buf);
         }
 
         let mut weapons = Vec::new();
@@ -342,11 +342,21 @@ impl App {
             if weapons.len() == 2 {
                 weapon_string = format!("{} i {}", weapons[0].clone(), weapons[1].clone())
             }
-            let lines = (Text::from(weapon_string));
 
-            Paragraph::new(Text::from(lines))
+            if armor.len() > 0 {
+                armor_string = String::from(armor[0].clone());
+                for thing in 1..armor.len() {
+                    armor_string.push_str(&format!(", {}", armor[thing].clone()));
+                }
+            }
+
+            Paragraph::new(Text::from(weapon_string))
                 .on_black()
                 .block(Block::bordered().title("Orųžeńje"))
+                .render(const_layout[1], buf);
+            Paragraph::new(Text::from(armor_string))
+                .on_black()
+                .block(Block::bordered().title("Odědža"))
                 .render(const_layout[2], buf);
         }
     }
@@ -566,7 +576,7 @@ impl Widget for &App {
 
         let third_layout = Layout::new(
             Direction::Vertical,
-            [Constraint::Length(12), Constraint::Fill(1)],
+            [Constraint::Length(14), Constraint::Fill(1)],
         )
         .split(right_layout);
 
