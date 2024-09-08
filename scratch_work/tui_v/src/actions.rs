@@ -18,7 +18,7 @@ pub enum FailType {
     Miss,
     MissWithInstrument(EntityID),
     NoAmmo,
-    NoWeapon,
+
     Blocked,
     InventoryFull,
     WrongType,
@@ -62,41 +62,64 @@ impl App {
 
     pub fn ranged_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
         let mut base_damage = 0;
-        if let Some(equi) = self.components.equipments.get(subject_eid) {
-            for itemik in &equi.equipped {
-                if let EntityType::Item(typik) = self.get_ent_type(itemik) {
-                    match typik {
-                        ItemType::RangedWeapon(wepik) => {
-                            base_damage = base_damage + wepik.damage();
-                            if let Some(defender_health) =
-                                self.components.healths.get_mut(object_eid)
-                            {
-                                defender_health.current_health -= base_damage;
-                                return ActionResult::Success(
-                                    GameAction::RangedAttack(
-                                        subject_eid.clone(),
-                                        object_eid.clone(),
-                                    ),
-                                    SuccessType::WithValueAndRangedWeapon(
-                                        base_damage,
-                                        wepik.clone(),
-                                    ),
-                                );
-                            }
-                        }
-                        _ => {}
+        if let Some(equi) = self.components.equipments.get_mut(subject_eid) {
+            let attack_possible = match equi.ranged_weapon {
+                RangedWeapon::Lųk => {
+                    if equi.arrows > 0 {
+                        equi.arrows -= 1;
+                        true
+                    } else {
+                        false
                     }
                 }
+                RangedWeapon::Pråšča => {
+                    if equi.bullets > 0 {
+                        equi.bullets -= 1;
+                        true
+                    } else {
+                        false
+                    }
+                }
+                RangedWeapon::Oščěp => {
+                    if equi.javelins > 0 {
+                        equi.javelins -= 1;
+                        true
+                    } else {
+                        false
+                    }
+                }
+                RangedWeapon::Drotik => {
+                    if equi.darts > 0 {
+                        equi.darts -= 1;
+                        true
+                    } else {
+                        false
+                    }
+                }
+            };
+            if attack_possible {
+                base_damage = base_damage + equi.ranged_weapon.damage();
+                if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
+                    defender_health.current_health -= base_damage;
+                    return ActionResult::Success(
+                        GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+                        SuccessType::WithValueAndRangedWeapon(
+                            base_damage,
+                            equi.ranged_weapon.clone(),
+                        ),
+                    );
+                }
             }
+
             return ActionResult::Failure(
                 GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-                FailType::NoWeapon,
+                FailType::NoAmmo,
             );
         }
 
         return ActionResult::Failure(
             GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-            FailType::NoWeapon,
+            FailType::NoAmmo,
         );
     }
 
@@ -282,24 +305,7 @@ impl App {
                                 SuccessType::Normal,
                             );
                         }
-                        ItemType::RangedWeapon(rang) => {
-                            for thing_equipped in &boop.equipped {
-                                if let Some(EntityType::Item(ItemType::RangedWeapon(ex_rang))) =
-                                    self.components.ent_types.get(thing_equipped)
-                                {
-                                    return ActionResult::Failure(
-                                        GameAction::Equip(subject_eid.clone(), item.clone()),
-                                        FailType::AlreadyEquipped,
-                                    );
-                                }
-                            }
-                            boop.inventory.remove(item);
-                            boop.equipped.insert(item.clone());
-                            return ActionResult::Success(
-                                GameAction::Equip(subject_eid.clone(), item.clone()),
-                                SuccessType::Normal,
-                            );
-                        }
+
                         ItemType::Ammo(amm) => {
                             //cant equip ammo it is used directly from inventory
                             return ActionResult::Failure(
@@ -401,7 +407,7 @@ impl App {
 
                     let equip_verb = match objtyp {
                         EntityType::Item(itemik) => match itemik {
-                            (ItemType::Weapon(_) | ItemType::RangedWeapon(_)) => "orųžati",
+                            (ItemType::Weapon(_)) => "orųžati",
                             ItemType::Clothing(_) => "oděvati",
                             _ => "equipirovati",
                         },
@@ -522,14 +528,30 @@ impl App {
                             let attack_verb = match inst {
                                 RangedWeapon::Lųk => "strelati",
                                 RangedWeapon::Pråšča => "metati",
+                                RangedWeapon::Oščěp => "kydati",
+                                RangedWeapon::Drotik => "kydati",
                             };
 
-                            let instrument = ISV::decline_noun(
-                                &format!("{}", inst),
-                                &Case::Ins,
-                                &Number::Singular,
-                            )
-                            .0;
+                            let instik = match inst {
+                                RangedWeapon::Lųk | RangedWeapon::Pråšča => {
+                                    ISV::decline_noun(
+                                        &format!("{}", inst),
+                                        &Case::Ins,
+                                        &Number::Singular,
+                                    )
+                                    .0
+                                }
+
+                                RangedWeapon::Oščěp | RangedWeapon::Drotik => {
+                                    ISV::decline_noun(
+                                        &format!("{}", inst),
+                                        &Case::Acc,
+                                        &Number::Singular,
+                                    )
+                                    .0
+                                }
+                            };
+
                             let verbik = ISV::conjugate_verb(
                                 attack_verb,
                                 &person,
@@ -538,7 +560,7 @@ impl App {
                                 &Tense::Present,
                             );
                             format!(
-                                "{pronoun} {verbik} {instrument} v {} , {nanositi} {val} točky škody",
+                                "{pronoun} {verbik} {instik} v {} , {nanositi} {val} točky škody",
                                 object.0
                             )
                         }

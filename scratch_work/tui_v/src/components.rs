@@ -15,6 +15,11 @@ pub type EntSet = HashSet<EntityID>;
 pub struct Equipment {
     pub equipped: EntSet,
     pub inventory: EntSet,
+    pub ranged_weapon: RangedWeapon,
+    pub arrows: i64,
+    pub darts: i64,
+    pub bullets: i64,
+    pub javelins: i64,
 }
 //try again
 pub struct Health {
@@ -134,17 +139,16 @@ impl App {
         let iid = self.create_item(ItemType::Weapon(Weapon::Sword));
         let iid2 = self.create_item(ItemType::Clothing(Clothing::Toga));
         let iid3 = self.create_item(ItemType::Weapon(Weapon::Mace));
-        let iid4 = self.create_item(ItemType::RangedWeapon(RangedWeapon::Lųk));
 
         let player_equip = self
             .components
             .equipments
             .get_mut(&pid)
             .expect("MUST HAVE QUEIP");
+        player_equip.arrows = 100;
         player_equip.equipped.insert(iid);
         player_equip.inventory.insert(iid2);
         player_equip.inventory.insert(iid3);
-        player_equip.equipped.insert(iid4);
 
         pid
     }

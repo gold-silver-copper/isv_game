@@ -41,7 +41,7 @@ impl Default for InputState {
 #[derive(Display, PartialEq, Clone)]
 pub enum ItemType {
     Weapon(Weapon),
-    RangedWeapon(RangedWeapon),
+
     Ammo(Ammo),
     Clothing(Clothing),
     Accessory(Accessory),
@@ -92,16 +92,22 @@ pub enum Weapon {
     Sword,
     Mace,
 }
+impl Default for RangedWeapon {
+    fn default() -> Self {
+        RangedWeapon::Lųk
+    }
+}
 #[derive(Clone, Debug, PartialEq, Display)]
 pub enum RangedWeapon {
     Lųk,
     Pråšča,
+    Oščěp,
+    Drotik,
 }
 #[derive(Clone, Debug, PartialEq, Display)]
 pub enum Ammo {
     Kulja(i64),
-    Oščěp(i64),
-    Drotik(i64),
+
     Strěla(i64),
 }
 #[derive(Clone, Debug, PartialEq, Display)]

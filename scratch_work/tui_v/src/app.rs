@@ -92,9 +92,7 @@ impl App {
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
-        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Lųk));
-        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Lųk));
-        self.spawn_item_at(&(5, 10), ItemType::RangedWeapon(RangedWeapon::Lųk));
+
         self.reload_ui();
     }
 
@@ -268,6 +266,11 @@ impl App {
     }
 
     pub fn render_const_info(&self, area: Rect, buf: &mut Buffer) {
+        let const_layout = Layout::new(
+            Direction::Vertical,
+            [Constraint::Length(3), Constraint::Fill(1)],
+        )
+        .split(area);
         let mut cur_hel = 0;
         let mut max_hel = 1;
 
@@ -287,7 +290,20 @@ impl App {
             .gauge_style(Style::new().fg(Color::Green).bg(Color::LightRed))
             .ratio(cur_hel as f64 / max_hel as f64)
             .label(label)
-            .render(area, buf);
+            .render(const_layout[0], buf);
+
+        if let Some(equi) = self.components.equipments.get(&self.local_player_id) {
+            let line_one = format!("strěly:{} drotiki:{}", equi.arrows, equi.darts);
+            let line_two = format!("oščěpy:{} kulje:{}", equi.javelins, equi.bullets);
+            let standart = vec![Line::from(line_one), Line::from(line_two)];
+
+            let lines = (Text::from(standart));
+
+            Paragraph::new(Text::from(lines))
+                .on_black()
+                .block(Block::bordered().title("Amunicija"))
+                .render(const_layout[1], buf);
+        }
     }
 
     pub fn gen_symbol_name_line_vec(&self, id_vec: &Vec<EntityID>) -> Vec<Line> {
@@ -390,7 +406,12 @@ impl App {
 
         list
     }
-    pub fn render_ranged_attackable_list(&self, title: &str) -> List {
+    pub fn render_ranged_attackable_list(&self) -> List {
+        let mut title = "".to_string();
+        if let Some(equi) = self.components.equipments.get(&self.local_player_id) {
+            title = format!("{}", equi.ranged_weapon);
+        }
+
         let wut = self.ranged_attackable_ents(&self.local_player_id);
         let listik = self.gen_symbol_name_line_vec(&wut);
 
@@ -509,7 +530,7 @@ impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let layout = Layout::new(
             Direction::Horizontal,
-            [Constraint::Percentage(80), Constraint::Min(20)],
+            [Constraint::Percentage(80), Constraint::Min(23)],
         )
         .split(area);
 
@@ -524,7 +545,7 @@ impl Widget for &App {
 
         let third_layout = Layout::new(
             Direction::Vertical,
-            [Constraint::Length(3), Constraint::Fill(1)],
+            [Constraint::Length(7), Constraint::Fill(1)],
         )
         .split(right_layout);
 
@@ -635,10 +656,9 @@ impl Widget for &App {
 
             InputState::RangedAttack => {
                 Clear.render(side_info_layout, buf); //this clears out the background
-                let block = Block::bordered().title("Ranged Attack");
-                block.render(side_info_layout, buf); //this clears out the background
+
                 ratatui::prelude::StatefulWidget::render(
-                    self.render_ranged_attackable_list("Ranged Attack"),
+                    self.render_ranged_attackable_list(),
                     side_info_layout,
                     buf,
                     &mut ranged_state,

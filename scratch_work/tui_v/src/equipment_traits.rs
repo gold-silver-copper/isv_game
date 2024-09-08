@@ -54,9 +54,7 @@ impl ItemTrait for ItemType {
             ItemType::Accessory(acc) => {
                 format!("{acc}")
             }
-            ItemType::RangedWeapon(rang) => {
-                format!("{rang}")
-            }
+
             ItemType::Ammo(amm) => {
                 format!("{amm}")
             }
