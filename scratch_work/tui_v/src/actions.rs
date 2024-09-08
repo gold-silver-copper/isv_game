@@ -259,6 +259,10 @@ impl App {
                             .unwrap()
                             .inventory
                             .insert(item.clone());
+                        return ActionResult::Success(
+                            GameAction::PickUp(subject_eid.clone(), item.clone()),
+                            SuccessType::Normal,
+                        );
                     }
                 }
             }

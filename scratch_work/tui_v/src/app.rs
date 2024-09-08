@@ -40,26 +40,37 @@ impl App {
                     GameAction::Death(eid.clone()),
                     SuccessType::Normal,
                 ));
-                if let Some(e_pos) = self.components.positions.remove(eid) {
-                    if let Some(voxik) = self.game_map.get_mut_voxel_at(&e_pos) {
-                        remove_ent_from_vec(&mut voxik.entity_set, eid);
-
-                        if let Some(equi) = self.components.equipments.remove(eid) {
-                            for ano in equi.equipped {
-                                voxik.entity_set.push(ano);
-                            }
-                            for ano in equi.inventory {
-                                voxik.entity_set.push(ano);
-                            }
-                        }
-                    }
-                }
-
                 healths_to_remove.push(eid.clone());
             }
         }
-        for edik in healths_to_remove {
-            self.components.healths.remove(&edik);
+        for eid in &healths_to_remove {
+            if let Some(e_pos) = self.components.positions.remove(eid) {
+                if let Some(voxik) = self.game_map.get_mut_voxel_at(&e_pos) {
+                    remove_ent_from_vec(&mut voxik.entity_set, eid);
+
+                    if let Some(equi) = self.components.equipments.remove(eid) {
+                        for ano in equi.equipped {
+                            voxik.entity_set.push(ano);
+                        }
+                        for ano in equi.inventory {
+                            voxik.entity_set.push(ano);
+                        }
+                        if equi.arrows > 0 {
+                            self.spawn_item_at(&e_pos, ItemType::Ammo(Ammo::Strěla(equi.arrows)));
+                        }
+                        if equi.darts > 0 {
+                            self.spawn_item_at(&e_pos, ItemType::Ammo(Ammo::Drotik(equi.darts)));
+                        }
+                        if equi.javelins > 0 {
+                            self.spawn_item_at(&e_pos, ItemType::Ammo(Ammo::Oščěp(equi.javelins)));
+                        }
+                        if equi.bullets > 0 {
+                            self.spawn_item_at(&e_pos, ItemType::Ammo(Ammo::Kulja(equi.bullets)));
+                        }
+                    }
+                }
+            }
+            self.components.healths.remove(&eid);
         }
     }
 
@@ -83,6 +94,7 @@ impl App {
             .get_mut(&ai_guy)
             .expect("MUST HAVE QUEIP");
         ai_equip.equipped.insert(iid3);
+        ai_equip.arrows += 30;
         self.spawn_item_at(&(5, 6), ItemType::Ammo(Ammo::Drotik(50)));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
@@ -391,7 +403,7 @@ impl App {
         visible_lines
     }
 
-    pub fn generate_info_paragraph(&self) -> Paragraph {
+    pub fn render_info_paragraph(&self, area: Rect, buf: &mut Buffer) {
         let visible_lines = self
             .gen_symbol_name_line_vec(&self.generate_visible_ents_from_ent(&self.local_player_id));
 
@@ -403,6 +415,7 @@ impl App {
         Paragraph::new(Text::from(lines))
             .on_black()
             .block(Block::bordered())
+            .render(area, buf);
     }
 
     pub fn gen_action_result_strings(&mut self) {
@@ -416,7 +429,7 @@ impl App {
         }
     }
 
-    pub fn generate_event_paragraph(&self) -> Paragraph {
+    pub fn render_event_paragraph(&self, area: Rect, buf: &mut Buffer) {
         let mut line_vec = Vec::new();
         let mut events_copy = self.action_result_strings.clone();
 
@@ -433,6 +446,7 @@ impl App {
         Paragraph::new(Text::from(lines))
             .on_black()
             .block(Block::bordered())
+            .render(area, buf);
     }
 
     pub fn render_item_list(&self, title: &str, itemvectype: ItemVecType) -> List {
@@ -574,6 +588,92 @@ impl App {
     pub fn exit(&mut self) {
         self.exit = true;
     }
+
+    pub fn render_game_screen(&self, area: Rect, buf: &mut Buffer) {
+        let client_pos = self
+            .components
+            .positions
+            .get(&self.local_player_id)
+            .unwrap_or(&(0, 0));
+
+        let (_, selected_ent) = self.manage_item_vec_input();
+        let highlighted_ranged_line =
+            self.line_from_ent_to_ent(&self.local_player_id, &selected_ent);
+
+        let client_graphics = self.game_map.create_client_render_packet_for_entity(
+            &client_pos,
+            &area,
+            &self.components.ent_types,
+            highlighted_ranged_line,
+        );
+
+        let mut render_lines = Vec::new();
+        let needed_height = area.height as i16;
+
+        if client_graphics.len() > 0 {
+            for y in (0..needed_height) {
+                let myspanvec: Vec<_> = client_graphics[y as usize]
+                    .iter()
+                    .map(|x| Span::from(x.0.clone()).fg(x.1).bg(x.2))
+                    .collect();
+
+                let myline = ratatui::text::Line::from(myspanvec);
+
+                render_lines.push(myline);
+            }
+        }
+        //neccesary beccause drawing is from the top
+        render_lines.reverse();
+        Paragraph::new(Text::from(render_lines))
+            .on_black()
+            .block(Block::new())
+            .render(area, buf);
+    }
+    pub fn render_inventory_menus(&self, area: Rect, buf: &mut Buffer) {
+        let mut inv_state = match self.selected_menu {
+            ItemVecType::Inventory => self.item_list_state.clone(),
+            _ => ListState::default(),
+        };
+        let mut equip_state = match self.selected_menu {
+            ItemVecType::Equipped => self.item_list_state.clone(),
+            _ => ListState::default(),
+        };
+        let mut ground_state = match self.selected_menu {
+            ItemVecType::Ground => self.item_list_state.clone(),
+            _ => ListState::default(),
+        };
+        let block = Block::bordered().title("Popup");
+        let pop_area = popup_area(area, 80, 70);
+        let pop_layout = Layout::new(
+            Direction::Horizontal,
+            [
+                Constraint::Min(20),
+                Constraint::Min(20),
+                Constraint::Min(20),
+            ],
+        )
+        .split(pop_area);
+        Clear.render(pop_area, buf); //this clears out the background
+        block.render(pop_area, buf); //this clears out the background
+        ratatui::prelude::StatefulWidget::render(
+            self.render_item_list("Inventory", ItemVecType::Inventory),
+            pop_layout[1],
+            buf,
+            &mut inv_state,
+        );
+        ratatui::prelude::StatefulWidget::render(
+            self.render_item_list("Equipped", ItemVecType::Equipped),
+            pop_layout[2],
+            buf,
+            &mut equip_state,
+        );
+        ratatui::prelude::StatefulWidget::render(
+            self.render_item_list("Ground", ItemVecType::Ground),
+            pop_layout[0],
+            buf,
+            &mut ground_state,
+        );
+    }
 }
 
 impl Widget for &App {
@@ -613,103 +713,21 @@ impl Widget for &App {
         let game_screen_layout = second_layout[0];
         let event_layout = second_layout[1];
 
-        let client_pos = self
-            .components
-            .positions
-            .get(&self.local_player_id)
-            .unwrap_or(&(0, 0));
-
-        let (_, selected_ent) = self.manage_item_vec_input();
-        let highlighted_ranged_line =
-            self.line_from_ent_to_ent(&self.local_player_id, &selected_ent);
-
-        let client_graphics = self.game_map.create_client_render_packet_for_entity(
-            &client_pos,
-            &game_screen_layout,
-            &self.components.ent_types,
-            highlighted_ranged_line,
-        );
-
-        let mut render_lines = Vec::new();
-        let needed_height = game_screen_layout.height as i16;
-
-        if client_graphics.len() > 0 {
-            for y in (0..needed_height) {
-                let myspanvec: Vec<_> = client_graphics[y as usize]
-                    .iter()
-                    .map(|x| Span::from(x.0.clone()).fg(x.1).bg(x.2))
-                    .collect();
-
-                let myline = ratatui::text::Line::from(myspanvec);
-
-                render_lines.push(myline);
-            }
-        }
-
-        let mut inv_state = match self.selected_menu {
-            ItemVecType::Inventory => self.item_list_state.clone(),
-            _ => ListState::default(),
-        };
-        let mut equip_state = match self.selected_menu {
-            ItemVecType::Equipped => self.item_list_state.clone(),
-            _ => ListState::default(),
-        };
-        let mut ground_state = match self.selected_menu {
-            ItemVecType::Ground => self.item_list_state.clone(),
-            _ => ListState::default(),
-        };
         let mut ranged_state = match self.input_state {
             InputState::RangedAttack => self.item_list_state.clone(),
             _ => ListState::default(),
         };
 
-        //neccesary beccause drawing is from the top
-        render_lines.reverse();
-        Paragraph::new(Text::from(render_lines))
-            .on_black()
-            .block(Block::new())
-            .render(game_screen_layout, buf);
+        self.render_game_screen(game_screen_layout, buf);
 
         self.render_const_info(constant_info_layout, buf);
-        self.generate_info_paragraph().render(side_info_layout, buf);
-        self.generate_event_paragraph().render(event_layout, buf);
+        self.render_info_paragraph(side_info_layout, buf);
+        self.render_event_paragraph(event_layout, buf);
 
         match self.input_state {
             InputState::Basic => (),
 
-            InputState::Inventory => {
-                let block = Block::bordered().title("Popup");
-                let pop_area = popup_area(game_screen_layout, 80, 70);
-                let pop_layout = Layout::new(
-                    Direction::Horizontal,
-                    [
-                        Constraint::Min(20),
-                        Constraint::Min(20),
-                        Constraint::Min(20),
-                    ],
-                )
-                .split(pop_area);
-                Clear.render(pop_area, buf); //this clears out the background
-                block.render(pop_area, buf); //this clears out the background
-                ratatui::prelude::StatefulWidget::render(
-                    self.render_item_list("Inventory", ItemVecType::Inventory),
-                    pop_layout[1],
-                    buf,
-                    &mut inv_state,
-                );
-                ratatui::prelude::StatefulWidget::render(
-                    self.render_item_list("Equipped", ItemVecType::Equipped),
-                    pop_layout[2],
-                    buf,
-                    &mut equip_state,
-                );
-                ratatui::prelude::StatefulWidget::render(
-                    self.render_item_list("Ground", ItemVecType::Ground),
-                    pop_layout[0],
-                    buf,
-                    &mut ground_state,
-                );
-            }
+            InputState::Inventory => self.render_inventory_menus(game_screen_layout, buf),
 
             InputState::RangedAttack => {
                 Clear.render(side_info_layout, buf); //this clears out the background
