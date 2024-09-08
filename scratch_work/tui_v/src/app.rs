@@ -269,7 +269,12 @@ impl App {
     pub fn render_const_info(&self, area: Rect, buf: &mut Buffer) {
         let const_layout = Layout::new(
             Direction::Vertical,
-            [Constraint::Length(3), Constraint::Fill(1)],
+            [
+                Constraint::Length(3),
+                Constraint::Length(4),
+                Constraint::Length(3),
+                Constraint::Length(1),
+            ],
         )
         .split(area);
         let mut cur_hel = 0;
@@ -294,8 +299,8 @@ impl App {
             .render(const_layout[0], buf);
 
         if let Some(equi) = self.components.equipments.get(&self.local_player_id) {
-            let line_one = format!("strěly:{} drotiki:{}", equi.arrows, equi.darts);
-            let line_two = format!("oščěpy:{} kulje:{}", equi.javelins, equi.bullets);
+            let line_one = format!("Strěly:{} Kulje:{}", equi.arrows, equi.bullets);
+            let line_two = format!("Oščěpy:{} Drotiki:{}", equi.javelins, equi.darts);
             let standart = vec![Line::from(line_one), Line::from(line_two)];
 
             let lines = (Text::from(standart));
@@ -304,6 +309,45 @@ impl App {
                 .on_black()
                 .block(Block::bordered().title("Amunicija"))
                 .render(const_layout[1], buf);
+        }
+
+        let mut weapons = Vec::new();
+        let mut armor = Vec::new();
+        let mut weapon_string = String::from("Pęsti");
+        let mut armor_string = String::from("Ničto");
+        if let Some(player_equip) = self.components.equipments.get(&self.local_player_id) {
+            if player_equip.equipped.is_empty() {
+            } else {
+                for (item) in player_equip.equipped.iter() {
+                    let item_type = self
+                        .components
+                        .ent_types
+                        .get(item)
+                        .expect("EVERY ITEM MUST HAVE AN ENTITY TYPE");
+
+                    match item_type {
+                        EntityType::Human => (),
+                        EntityType::Item(itemik) => match itemik {
+                            ItemType::Weapon(_) => weapons.push(itemik.item_name()),
+                            ItemType::Accessory(_) => armor.push(itemik.item_name()),
+                            ItemType::Clothing(_) => armor.push(itemik.item_name()),
+                            _ => (),
+                        },
+                    }
+                }
+            }
+            if weapons.len() == 1 {
+                weapon_string = weapons[0].clone();
+            }
+            if weapons.len() == 2 {
+                weapon_string = format!("{} i {}", weapons[0].clone(), weapons[1].clone())
+            }
+            let lines = (Text::from(weapon_string));
+
+            Paragraph::new(Text::from(lines))
+                .on_black()
+                .block(Block::bordered().title("Orųžeńje"))
+                .render(const_layout[2], buf);
         }
     }
 
@@ -319,34 +363,10 @@ impl App {
     }
 
     pub fn generate_info_paragraph(&self) -> Paragraph {
-        let mut wield_string = String::new();
-        if let Some(player_equip) = self.components.equipments.get(&self.local_player_id) {
-            if player_equip.equipped.is_empty() {
-                wield_string = String::from("nothing")
-            } else {
-                for (item) in player_equip.equipped.iter() {
-                    let item_type = self
-                        .components
-                        .ent_types
-                        .get(item)
-                        .expect("EVERY ITEM MUST HAVE AN ENTITY TYPE");
-                    let item_name = match item_type {
-                        EntityType::Human => self.get_entity_name(item),
-                        EntityType::Item(itemik) => itemik.item_name(),
-                    };
-                    wield_string.push_str(&format!(" {item_name}"));
-                }
-            }
-        }
-
         let visible_lines = self
             .gen_symbol_name_line_vec(&self.generate_visible_ents_from_ent(&self.local_player_id));
 
-        let mut standart = vec![
-            Line::from("Wielding..."),
-            Line::from(wield_string),
-            Line::from("You see..."),
-        ];
+        let mut standart = vec![Line::from("You see...")];
         standart.extend(visible_lines);
 
         let lines = (Text::from(standart));
@@ -546,7 +566,7 @@ impl Widget for &App {
 
         let third_layout = Layout::new(
             Direction::Vertical,
-            [Constraint::Length(7), Constraint::Fill(1)],
+            [Constraint::Length(12), Constraint::Fill(1)],
         )
         .split(right_layout);
 

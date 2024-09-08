@@ -620,7 +620,7 @@ impl App {
                                 &Tense::Present,
                             );
                             format!(
-                                "{pronoun} {verbik} {instik} v {} , {nanositi} {val} točky škody",
+                                "{pronoun} {verbik} {instik} v {}, {nanositi} {val} točky škody",
                                 object.0
                             )
                         }
