@@ -361,6 +361,25 @@ impl App {
         }
     }
 
+    pub fn render_key_hints(&self, area: Rect, buf: &mut Buffer) {
+        let string = match self.input_state {
+            InputState::Basic => {
+                format! {"[{RANGED_ATTACK}]-oddaljena ataka  [{INVENTORY_MENU}]-rukzak  [{WAIT_KEY}]-čekati  [{CURSOR_UP}{CURSOR_LEFT}{CURSOR_DOWN}{CURSOR_RIGHT} + {CURSOR_UP_LEFT}{CURSOR_UP_RIGHT}{CURSOR_DOWN_LEFT}{CURSOR_DOWN_RIGHT}]-dvigati sę  [{QUIT_BACK}]-vyjdti iz igry"}
+            }
+            InputState::Inventory => {
+                format! {"[{CURSOR_LEFT}/{CURSOR_RIGHT}]-měnjati menju  [{CURSOR_UP}/{CURSOR_DOWN}]-izbirati věć  [{DROP_UNEQUIP_ACTION}]-odkladati/opustiti  [{PICKUP_EQUIP_ACTION}]-podbirati/equipirovati [{INVENTORY_MENU}]-zakryti rukzak"}
+            }
+            InputState::RangedAttack => {
+                format! {"[{CURSOR_RIGHT}]-atakovati  [{CURSOR_LEFT}]-měnjati orųžje  [{CURSOR_UP}/{CURSOR_DOWN}]-izbirati vråga  [{RANGED_ATTACK}]-izključiti režim oddaljenoj ataky",}
+            }
+        };
+        Paragraph::new(Text::from(string))
+            .on_gray()
+            .black()
+            .centered()
+            .render(area, buf);
+    }
+
     pub fn gen_symbol_name_line_vec(&self, id_vec: &Vec<EntityID>) -> Vec<Line> {
         let mut visible_lines = Vec::new();
         let visible_symbols = self.gen_item_symbol_vec(id_vec);
@@ -376,7 +395,7 @@ impl App {
         let visible_lines = self
             .gen_symbol_name_line_vec(&self.generate_visible_ents_from_ent(&self.local_player_id));
 
-        let mut standart = vec![Line::from("You see...")];
+        let mut standart = vec![Line::from("Ty vidiš.....")];
         standart.extend(visible_lines);
 
         let lines = (Text::from(standart));
@@ -559,14 +578,21 @@ impl App {
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let layout = Layout::new(
-            Direction::Horizontal,
-            [Constraint::Percentage(80), Constraint::Min(23)],
+        let layout_base = Layout::new(
+            Direction::Vertical,
+            [Constraint::Fill(99), Constraint::Length(1)],
         )
         .split(area);
+        let layout = Layout::new(
+            Direction::Horizontal,
+            [Constraint::Fill(150), Constraint::Length(24)],
+        )
+        .split(layout_base[0]);
 
         let left_layout = layout[0];
         let right_layout = layout[1];
+        let key_hint_layout = layout_base[1];
+        self.render_key_hints(key_hint_layout, buf);
 
         let second_layout = Layout::new(
             Direction::Vertical,
