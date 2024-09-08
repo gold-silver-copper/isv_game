@@ -58,6 +58,16 @@ impl App {
                 KeyCode::Char(RANGED_ATTACK) => {
                     self.input_state = InputState::Basic;
                 }
+                KeyCode::Char(CURSOR_LEFT) => {
+                    if let Some(equi) = self.components.equipments.get_mut(&self.local_player_id) {
+                        match equi.ranged_weapon {
+                            RangedWeapon::Lųk => equi.ranged_weapon = RangedWeapon::Pråšča,
+                            RangedWeapon::Pråšča => equi.ranged_weapon = RangedWeapon::Drotik,
+                            RangedWeapon::Drotik => equi.ranged_weapon = RangedWeapon::Oščěp,
+                            RangedWeapon::Oščěp => equi.ranged_weapon = RangedWeapon::Lųk,
+                        }
+                    }
+                }
                 KeyCode::Char(CURSOR_DOWN) => {
                     if let Some(veclen) = self.item_list_state.selected() {
                         if veclen + 1 < self.ranged_attackable_ents(&self.local_player_id).len() {

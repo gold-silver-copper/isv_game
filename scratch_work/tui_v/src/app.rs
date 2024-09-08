@@ -83,6 +83,7 @@ impl App {
             .get_mut(&ai_guy)
             .expect("MUST HAVE QUEIP");
         ai_equip.equipped.insert(iid3);
+        self.spawn_item_at(&(5, 6), ItemType::Ammo(Ammo::Drotik(50)));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Sword));

@@ -211,16 +211,55 @@ impl App {
                 if ent_vox.entity_set.contains(item) {
                     remove_ent_from_vec(&mut ent_vox.entity_set, item);
 
-                    self.components
-                        .equipments
-                        .get_mut(subject_eid)
-                        .unwrap()
-                        .inventory
-                        .insert(item.clone());
-                    return ActionResult::Success(
-                        GameAction::PickUp(subject_eid.clone(), item.clone()),
-                        SuccessType::Normal,
-                    );
+                    if let Some(EntityType::Item(ItemType::Ammo(ammik))) =
+                        self.components.ent_types.get(item)
+                    {
+                        let amount = match ammik {
+                            Ammo::Kulja(x) => {
+                                self.components
+                                    .equipments
+                                    .get_mut(subject_eid)
+                                    .unwrap()
+                                    .bullets += x;
+                                x
+                            }
+                            Ammo::Strěla(x) => {
+                                self.components
+                                    .equipments
+                                    .get_mut(subject_eid)
+                                    .unwrap()
+                                    .arrows += x;
+                                x
+                            }
+                            Ammo::Oščěp(x) => {
+                                self.components
+                                    .equipments
+                                    .get_mut(subject_eid)
+                                    .unwrap()
+                                    .javelins += x;
+                                x
+                            }
+                            Ammo::Drotik(x) => {
+                                self.components
+                                    .equipments
+                                    .get_mut(subject_eid)
+                                    .unwrap()
+                                    .darts += x;
+                                x
+                            }
+                        };
+                        return ActionResult::Success(
+                            GameAction::PickUp(subject_eid.clone(), item.clone()),
+                            SuccessType::WithValue(amount.clone()),
+                        );
+                    } else {
+                        self.components
+                            .equipments
+                            .get_mut(subject_eid)
+                            .unwrap()
+                            .inventory
+                            .insert(item.clone());
+                    }
                 }
             }
         }
@@ -457,23 +496,44 @@ impl App {
                 GameAction::Go(subj, cd) => {
                     format!("")
                 }
-                GameAction::PickUp(subj, obj) => {
-                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let object = ISV::decline_noun(
-                        &self.get_entity_name(&obj),
-                        &Case::Acc,
-                        &Number::Singular,
-                    );
-                    let verbik = ISV::conjugate_verb(
-                        "podbirati",
-                        &person,
-                        &Number::Singular,
-                        &gender,
-                        &Tense::Present,
-                    );
+                GameAction::PickUp(subj, obj) => match reason {
+                    SuccessType::WithValue(x) => {
+                        let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
+                        let number = if x > 1 {
+                            Number::Plural
+                        } else {
+                            Number::Singular
+                        };
+                        let object =
+                            ISV::decline_noun(&self.get_entity_name(&obj), &Case::Acc, &number);
+                        let verbik = ISV::conjugate_verb(
+                            "podbirati",
+                            &person,
+                            &Number::Singular,
+                            &gender,
+                            &Tense::Present,
+                        );
 
-                    format!("{pronoun} {verbik} {}", object.0)
-                }
+                        format!("{pronoun} {verbik} {} {}", x, object.0)
+                    }
+                    _ => {
+                        let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
+                        let object = ISV::decline_noun(
+                            &self.get_entity_name(&obj),
+                            &Case::Acc,
+                            &Number::Singular,
+                        );
+                        let verbik = ISV::conjugate_verb(
+                            "podbirati",
+                            &person,
+                            &Number::Singular,
+                            &gender,
+                            &Tense::Present,
+                        );
+
+                        format!("{pronoun} {verbik} {}", object.0)
+                    }
+                },
                 GameAction::Wait(subj) => {
                     if &subj == &self.local_player_id {
                         let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
@@ -631,10 +691,14 @@ impl App {
                     }
                 }
                 GameAction::RangedAttack(subj, obj) => {
+                    let extra_string = match reason {
+                        FailType::NoAmmo => String::from(", ne imaješ dostatȯčno amunicije"),
+                        _ => String::new(),
+                    };
                     if &subj == &self.local_player_id {
                         let dropped = self.pronoun_for_act_obj(&obj).0;
 
-                        format!("ty ne možeš atakovati {dropped}")
+                        format!("ty ne možeš atakovati {dropped}{extra_string}")
                     } else {
                         format!("")
                     }
