@@ -45,21 +45,6 @@ impl App {
         ActionResult::Success(GameAction::Wait(subject_eid.clone()), SuccessType::Normal)
     }
 
-    pub fn get_ent_melee_damage(&self, subject_eid: &EntityID) -> i64 {
-        let mut base_damage = 0;
-        if let Some(equi) = self.components.equipments.get(subject_eid) {
-            for itemik in &equi.equipped {
-                if let EntityType::Item(typik) = self.get_ent_type(itemik) {
-                    match typik {
-                        ItemType::Weapon(wepik) => base_damage = base_damage + wepik.damage(),
-                        _ => {}
-                    }
-                }
-            }
-        }
-        base_damage
-    }
-
     pub fn ranged_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
         let mut base_damage = 0;
         if let Some(equi) = self.components.equipments.get_mut(subject_eid) {
@@ -124,7 +109,24 @@ impl App {
     }
 
     pub fn bump_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
-        let attacker_damage = self.get_ent_melee_damage(subject_eid);
+        let mut attacker_damage = 0;
+        let mut attacker_dodge = 0;
+        if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
+            attacker_damage += attacker_stats.strength;
+            attacker_dodge = attacker_stats.speed + (attacker_stats.intelligence / 2);
+        }
+        if let Some(equi) = self.components.equipments.get(subject_eid) {
+            for itemik in &equi.equipped {
+                if let EntityType::Item(typik) = self.get_ent_type(itemik) {
+                    match typik {
+                        ItemType::Weapon(wepik) => {
+                            attacker_damage = attacker_damage + wepik.damage()
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
         if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
             defender_health.current_health -= attacker_damage;
             return ActionResult::Success(

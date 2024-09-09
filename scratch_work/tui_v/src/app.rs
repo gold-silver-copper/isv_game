@@ -282,7 +282,8 @@ impl App {
         let const_layout = Layout::new(
             Direction::Vertical,
             [
-                Constraint::Length(3),
+                Constraint::Length(2),
+                Constraint::Length(1),
                 Constraint::Length(3),
                 Constraint::Length(4),
                 Constraint::Length(4),
@@ -291,6 +292,17 @@ impl App {
         .split(area);
         let mut cur_hel = 0;
         let mut max_hel = 1;
+
+        if let Some(stats) = self.components.stats.get(&self.local_player_id) {
+            let stats_string = format!(
+                "S: {} B: {} R: {}",
+                stats.strength, stats.speed, stats.intelligence
+            );
+            Paragraph::new(Text::from(stats_string))
+                .on_black()
+                .centered()
+                .render(const_layout[1], buf);
+        }
 
         let ent_name = self.get_entity_name(&self.local_player_id);
         if let Some(health) = self.components.healths.get(&self.local_player_id) {
@@ -311,8 +323,8 @@ impl App {
             .render(const_layout[0], buf);
 
         if let Some(equi) = self.components.equipments.get(&self.local_player_id) {
-            let line_one = format!("Strěly:{} Kulje:{}", equi.arrows, equi.bullets);
-            let line_two = format!("Oščěpy:{} Drotiki:{}", equi.javelins, equi.darts);
+            let line_one = format!("Strěly:{}  Kulje:{}", equi.arrows, equi.bullets);
+            let line_two = format!("Oščěpy:{}  Drotiki:{}", equi.javelins, equi.darts);
             let standart = vec![Line::from(line_one), Line::from(line_two)];
 
             let lines = (Text::from(standart));
@@ -320,7 +332,7 @@ impl App {
             Paragraph::new(Text::from(lines))
                 .on_black()
                 .block(Block::bordered().title("Amunicija"))
-                .render(const_layout[3], buf);
+                .render(const_layout[4], buf);
         }
 
         let mut weapons = Vec::new();
@@ -365,11 +377,13 @@ impl App {
             Paragraph::new(Text::from(weapon_string))
                 .on_black()
                 .block(Block::bordered().title("Orųžeńje"))
-                .render(const_layout[1], buf);
+                .centered()
+                .render(const_layout[2], buf);
             Paragraph::new(Text::from(armor_string))
                 .on_black()
                 .block(Block::bordered().title("Odědža"))
-                .render(const_layout[2], buf);
+                .wrap(Wrap { trim: true })
+                .render(const_layout[3], buf);
         }
     }
 

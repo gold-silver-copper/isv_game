@@ -8,6 +8,7 @@ pub struct ComponentHolder {
     pub healths: HashMap<EntityID, Health>,
     pub genders: HashMap<EntityID, Gender>,
     pub names: HashMap<EntityID, Name>,
+    pub stats: HashMap<EntityID, Stats>,
 }
 
 pub type EntSet = HashSet<EntityID>;
@@ -21,6 +22,16 @@ pub struct Equipment {
     pub bullets: i64,
     pub javelins: i64,
 }
+#[derive(Default)]
+pub struct Stats {
+    pub strength: i64,
+    pub speed: i64,
+    pub intelligence: i64,
+    pub strength_xp: i64,
+    pub speed_xp: i64,
+    pub int_xp: i64,
+}
+
 //try again
 pub struct Health {
     pub current_health: i64,
@@ -117,6 +128,17 @@ impl App {
             .healths
             .insert(eid.clone(), Health::default());
         self.components.names.insert(eid.clone(), Name::default());
+        self.components.stats.insert(
+            eid.clone(),
+            Stats {
+                strength: 555,
+                speed: 555,
+                intelligence: 555,
+                strength_xp: 500,
+                speed_xp: 500,
+                int_xp: 500,
+            },
+        );
 
         let voxik = self
             .game_map
