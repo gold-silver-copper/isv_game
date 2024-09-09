@@ -1,4 +1,4 @@
-use animate_nouns::ANIMATE_NOUNS;
+use animate_nouns::*;
 
 mod animate_nouns;
 mod case_endings;
@@ -380,7 +380,9 @@ impl ISV {
         return (merged, gender.clone());
     }
     pub fn noun_is_animate(word: &str) -> bool {
-        ANIMATE_NOUNS.contains(&word)
+        ANIMATE_ANIMALS.contains(&word)
+            || MALE_NAMES.contains(&word)
+            || ANIMATE_JOBS.contains(&word)
     }
 
     pub fn guess_gender(word: &str) -> Gender {
