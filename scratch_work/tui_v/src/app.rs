@@ -106,6 +106,8 @@ impl App {
         let ai_guy = self.spawn_human_at(&(3, 4));
         let ai_guy = self.spawn_human_at(&(7, 7));
         let iid3 = self.create_item(ItemType::Weapon(Weapon::Bulava));
+        let iid4 = self.create_item(ItemType::Clothing(Clothing::Helma));
+        let iid5 = self.create_item(ItemType::Clothing(Clothing::Toga));
 
         let ai_equip = self
             .components
@@ -113,6 +115,8 @@ impl App {
             .get_mut(&ai_guy)
             .expect("MUST HAVE QUEIP");
         ai_equip.equipped.insert(iid3);
+        ai_equip.equipped.insert(iid4);
+        ai_equip.equipped.insert(iid5);
         ai_equip.arrows += 30;
         self.spawn_item_at(&(5, 6), ItemType::Ammo(Ammo::Drotik(50)));
         self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Meč));
@@ -314,7 +318,7 @@ impl App {
 
         if let Some(stats) = self.components.stats.get(&self.local_player_id) {
             let stats_string = format!(
-                "S: {} B: {} R: {}",
+                "Sila-{} Bystrst-{} Råzum-{}",
                 stats.strength, stats.speed, stats.intelligence
             );
             Paragraph::new(Text::from(stats_string))
@@ -351,6 +355,7 @@ impl App {
             Paragraph::new(Text::from(lines))
                 .on_black()
                 .block(Block::bordered().title("Amunicija"))
+                .centered()
                 .render(const_layout[4], buf);
         }
 
@@ -440,14 +445,11 @@ impl App {
         let visible_lines = self
             .gen_symbol_name_line_vec(&self.generate_visible_ents_from_ent(&self.local_player_id));
 
-        let mut standart = vec![Line::from("Ty vidiš.....")];
-        standart.extend(visible_lines);
-
-        let lines = (Text::from(standart));
+        let lines = (Text::from(visible_lines));
 
         Paragraph::new(Text::from(lines))
             .on_black()
-            .block(Block::bordered())
+            .block(Block::bordered().title("Ty vidiš........."))
             .render(area, buf);
     }
 
@@ -718,7 +720,7 @@ impl Widget for &App {
         .split(area);
         let layout = Layout::new(
             Direction::Horizontal,
-            [Constraint::Fill(150), Constraint::Length(24)],
+            [Constraint::Fill(150), Constraint::Length(30)],
         )
         .split(layout_base[0]);
 

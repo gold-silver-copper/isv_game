@@ -131,8 +131,8 @@ impl App {
         self.components.stats.insert(
             eid.clone(),
             Stats {
-                strength: 20,
-                speed: 20,
+                strength: 22,
+                speed: 22,
                 intelligence: 20,
                 strength_xp: 500,
                 speed_xp: 500,

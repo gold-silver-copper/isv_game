@@ -12,7 +12,7 @@ pub enum ActionResult {
 pub enum SuccessType {
     Normal,
     WithValue(i64), //for damage
-    CriticalWithValue(i64),
+
     WithValueAndRangedWeapon(i64, RangedWeapon),
 }
 #[derive(Clone, Debug, PartialEq)]
@@ -51,7 +51,7 @@ impl App {
     pub fn ranged_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
         let mut base_damage = 0;
         if let Some(equi) = self.components.equipments.get_mut(subject_eid) {
-            let attack_possible = match equi.ranged_weapon {
+            let enough_ammo = match equi.ranged_weapon {
                 RangedWeapon::Lųk => {
                     if equi.arrows > 0 {
                         equi.arrows -= 1;
@@ -85,7 +85,7 @@ impl App {
                     }
                 }
             };
-            if attack_possible {
+            if enough_ammo {
                 base_damage = base_damage + equi.ranged_weapon.damage();
                 if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
                     defender_health.current_health -= base_damage;
