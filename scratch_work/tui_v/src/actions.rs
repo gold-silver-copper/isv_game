@@ -11,9 +11,9 @@ pub enum ActionResult {
 #[derive(Clone, Debug, PartialEq)]
 pub enum SuccessType {
     Normal,
-    WithValue(i64), //for damage
+    WithValue(i32), //for damage
 
-    WithValueAndRangedWeapon(i64, RangedWeapon),
+    WithValueAndRangedWeapon(i32, RangedWeapon),
 }
 #[derive(Clone, Debug, PartialEq)]
 pub enum FailType {
@@ -47,6 +47,12 @@ impl App {
     pub fn handle_wait(&self, subject_eid: &EntityID) -> ActionResult {
         ActionResult::Success(GameAction::Wait(subject_eid.clone()), SuccessType::Normal)
     }
+    pub fn level_up_strength(&mut self, subject_eid: &EntityID) {
+        if let Some(stats) = self.components.stats.get_mut(subject_eid) {
+            let chance = self.small_rng.gen_ratio(0, (stats.strength + 1) as u32);
+        }
+    }
+    pub fn level_up_speed(&mut self, subject_eid: &EntityID) {}
 
     pub fn ranged_dodge(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> bool {
         let attacker_dodge = self.entity_dodge(subject_eid);
@@ -60,9 +66,9 @@ impl App {
                 let max_dist = wep_dist * 2;
 
                 if (distance_between_ents < min_dist) || (distance_between_ents > max_dist) {
-                    defender_dodge += distance_between_ents as i64;
+                    defender_dodge += distance_between_ents;
                 }
-                defender_dodge += distance_between_ents as i64;
+                defender_dodge += distance_between_ents;
 
                 if attacker_dodge > defender_dodge {
                     return true;
@@ -77,6 +83,8 @@ impl App {
         let attacker_damage = self.attacker_ranged_damage(subject_eid);
         let defender_defense = self.entity_defense(object_eid);
         let defender_didnt_dodge = self.ranged_dodge(subject_eid, object_eid);
+        self.level_up_strength(subject_eid);
+        self.level_up_speed(subject_eid);
         if let Some(equi) = self.components.equipments.get_mut(subject_eid) {
             let enough_ammo = match equi.ranged_weapon {
                 RangedWeapon::Lųk => {
@@ -115,13 +123,26 @@ impl App {
             if enough_ammo {
                 if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
                     if defender_didnt_dodge {
-                        defender_health.current_health -= attacker_damage;
-                        return ActionResult::Success(
+                        let real_damage = attacker_damage - defender_defense;
+                        if real_damage > 0 {
+                            defender_health.current_health -= real_damage;
+                            return ActionResult::Success(
+                                GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+                                SuccessType::WithValueAndRangedWeapon(
+                                    real_damage,
+                                    equi.ranged_weapon.clone(),
+                                ),
+                            );
+                        } else {
+                            return ActionResult::Failure(
+                                GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+                                FailType::Blocked,
+                            );
+                        }
+                    } else {
+                        return ActionResult::Failure(
                             GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-                            SuccessType::WithValueAndRangedWeapon(
-                                attacker_damage,
-                                equi.ranged_weapon.clone(),
-                            ),
+                            FailType::Miss,
                         );
                     }
                 }
@@ -139,47 +160,51 @@ impl App {
         );
     }
 
-    pub fn attacker_melee_damage(&mut self, subject_eid: &EntityID) -> i64 {
+    pub fn attacker_melee_damage(&mut self, subject_eid: &EntityID) -> i32 {
         let mut attacker_damage = 1;
         if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
-            attacker_damage += self.small_rng.gen_range(0..attacker_stats.strength);
+            attacker_damage += self.small_rng.gen_range(0..=attacker_stats.strength + 1);
         }
         if let Some(equi) = self.components.equipments.get(subject_eid) {
             for itemik in &equi.equipped {
                 if let EntityType::Item(ItemType::Weapon(wepik)) = self.get_ent_type(itemik) {
-                    attacker_damage += self.small_rng.gen_range(0..wepik.damage());
+                    attacker_damage += self.small_rng.gen_range(0..=wepik.damage() + 1);
                 }
             }
         }
 
         attacker_damage
     }
-    pub fn attacker_ranged_damage(&mut self, subject_eid: &EntityID) -> i64 {
+    pub fn attacker_ranged_damage(&mut self, subject_eid: &EntityID) -> i32 {
         let mut attacker_damage = 1;
         if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
-            attacker_damage += self.small_rng.gen_range(0..(attacker_stats.strength / 3))
-                + self.small_rng.gen_range(0..(attacker_stats.speed / 2));
+            attacker_damage += self
+                .small_rng
+                .gen_range(0..=(attacker_stats.strength / 4) + 1)
+                + self.small_rng.gen_range(0..=(attacker_stats.speed / 3) + 1);
         }
         if let Some(equi) = self.components.equipments.get(subject_eid) {
-            attacker_damage += self.small_rng.gen_range(0..equi.ranged_weapon.damage());
+            attacker_damage += self
+                .small_rng
+                .gen_range(0..=equi.ranged_weapon.damage() + 1);
         }
 
         attacker_damage
     }
-    pub fn entity_dodge(&mut self, subject_eid: &EntityID) -> i64 {
+    pub fn entity_dodge(&mut self, subject_eid: &EntityID) -> i32 {
         let mut attacker_dodge = self.small_rng.gen_range(0..7);
         if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
-            attacker_dodge += self.small_rng.gen_range(0..attacker_stats.speed)
+            attacker_dodge += self.small_rng.gen_range(0..=attacker_stats.speed + 1)
                 + (attacker_stats.intelligence / 3);
         }
         attacker_dodge
     }
-    pub fn entity_defense(&mut self, subject_eid: &EntityID) -> i64 {
+    pub fn entity_defense(&mut self, subject_eid: &EntityID) -> i32 {
         let mut defender_defense = 1;
         if let Some(equi) = self.components.equipments.get(subject_eid) {
             for itemik in &equi.equipped {
                 if let EntityType::Item(ItemType::Clothing(cloth)) = self.get_ent_type(itemik) {
-                    defender_defense += self.small_rng.gen_range(0..cloth.defense_value())
+                    defender_defense += self.small_rng.gen_range(0..=cloth.defense_value() + 1)
                 }
             }
         }
@@ -364,7 +389,7 @@ impl App {
                 if let EntityType::Item(itemik) = item_type {
                     match itemik {
                         ItemType::Weapon(wep) => {
-                            let mut hand_space: i64 = 2;
+                            let mut hand_space: i32 = 2;
                             for thing_equipped in &boop.equipped {
                                 if let EntityType::Item(ItemType::Weapon(wepik)) =
                                     self.components.ent_types.get(thing_equipped).unwrap()
@@ -387,7 +412,7 @@ impl App {
                             }
                         }
                         ItemType::Accessory(acc) => {
-                            let mut accessory_space: i64 = 4;
+                            let mut accessory_space: i32 = 4;
                             for thing_equipped in &boop.equipped {
                                 if let EntityType::Item(ItemType::Accessory(accik)) =
                                     self.components.ent_types.get(thing_equipped).unwrap()
@@ -777,25 +802,13 @@ impl App {
                         format!("")
                     }
                 }
-                GameAction::RangedAttack(subj, obj) => {
-                    let extra_string = match reason {
-                        FailType::NoAmmo => String::from(", ne imaješ dostatȯčno amunicije"),
-                        _ => String::new(),
-                    };
-                    if &subj == &self.local_player_id {
-                        let dropped = self.pronoun_for_act_obj(&obj).0;
 
-                        format!("ty ne možeš atakovati {dropped}{extra_string}")
-                    } else {
-                        format!("")
-                    }
-                }
-                GameAction::BumpAttack(subj, obj) => match reason {
+                GameAction::RangedAttack(subj, obj) => match reason {
                     FailType::Miss => {
                         if &subj == &self.local_player_id {
                             let dropped = self.pronoun_for_act_obj(&obj).0;
 
-                            format!("ne udača! ty propušćaješ ataku na {dropped}")
+                            format!("ne udačno! ty propušćaješ ataku na {dropped}")
                         } else {
                             format!("")
                         }
@@ -804,7 +817,37 @@ impl App {
                         if &subj == &self.local_player_id {
                             let dropped = self.pronoun_for_act_subj(&obj).0;
 
-                            format!("ne udača! tvoju ataku zablokovali!")
+                            format!("ne udačno! tvoju ataku zablokovali!")
+                        } else {
+                            format!("")
+                        }
+                    }
+                    FailType::NoAmmo => String::from("ne imaješ dostatȯčno amunicije dlja ataky"),
+                    _ => {
+                        if &subj == &self.local_player_id {
+                            let dropped = self.pronoun_for_act_obj(&obj).0;
+
+                            format!("ty ne možeš atakovati {dropped}")
+                        } else {
+                            format!("")
+                        }
+                    }
+                },
+                GameAction::BumpAttack(subj, obj) => match reason {
+                    FailType::Miss => {
+                        if &subj == &self.local_player_id {
+                            let dropped = self.pronoun_for_act_obj(&obj).0;
+
+                            format!("ne udačno! ty propušćaješ ataku na {dropped}")
+                        } else {
+                            format!("")
+                        }
+                    }
+                    FailType::Blocked => {
+                        if &subj == &self.local_player_id {
+                            let dropped = self.pronoun_for_act_subj(&obj).0;
+
+                            format!("ne udačno! tvojų ataku zablokovali!")
                         } else {
                             format!("")
                         }

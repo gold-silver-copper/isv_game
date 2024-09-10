@@ -93,8 +93,8 @@ impl GameMap {
 
         let fov = field_of_view_set(
             BracketPoint {
-                x: e_pos.0 as i32,
-                y: e_pos.1 as i32,
+                x: e_pos.0,
+                y: e_pos.1,
             },
             FOV_RANGE,
             self,
@@ -104,8 +104,8 @@ impl GameMap {
 
         for lv in local_voxels {
             let bp = BracketPoint {
-                x: lv.voxel_pos.0 as i32,
-                y: lv.voxel_pos.1 as i32,
+                x: lv.voxel_pos.0,
+                y: lv.voxel_pos.1,
             };
 
             if fov.contains(&bp) {
@@ -150,8 +150,8 @@ impl GameMap {
 
             let fov = field_of_view_set(
                 BracketPoint {
-                    x: e_pos.0 as i32,
-                    y: e_pos.1 as i32,
+                    x: e_pos.0,
+                    y: e_pos.1,
                 },
                 FOV_RANGE,
                 self,
@@ -170,8 +170,8 @@ impl GameMap {
                     && (relative_point_x < render_width as CoordinateUnit)
                 {
                     let bp = BracketPoint {
-                        x: lv.voxel_pos.0 as i32,
-                        y: lv.voxel_pos.1 as i32,
+                        x: lv.voxel_pos.0,
+                        y: lv.voxel_pos.1,
                     };
 
                     let boop = if fov.contains(&bp) {

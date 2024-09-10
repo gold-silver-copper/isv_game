@@ -17,25 +17,22 @@ pub struct Equipment {
     pub equipped: EntSet,
     pub inventory: EntSet,
     pub ranged_weapon: RangedWeapon,
-    pub arrows: i64,
-    pub darts: i64,
-    pub bullets: i64,
-    pub javelins: i64,
+    pub arrows: i32,
+    pub darts: i32,
+    pub bullets: i32,
+    pub javelins: i32,
 }
 #[derive(Default)]
 pub struct Stats {
-    pub strength: i64,
-    pub speed: i64,
-    pub intelligence: i64,
-    pub strength_xp: i64,
-    pub speed_xp: i64,
-    pub int_xp: i64,
+    pub strength: i32,
+    pub speed: i32,
+    pub intelligence: i32,
 }
 
 //try again
 pub struct Health {
-    pub current_health: i64,
-    pub max_health: i64,
+    pub current_health: i32,
+    pub max_health: i32,
 }
 pub struct Name {
     pub first_name: String,
@@ -131,12 +128,9 @@ impl App {
         self.components.stats.insert(
             eid.clone(),
             Stats {
-                strength: 22,
-                speed: 22,
-                intelligence: 20,
-                strength_xp: 500,
-                speed_xp: 500,
-                int_xp: 500,
+                strength: 1,
+                speed: 1,
+                intelligence: 1,
             },
         );
 

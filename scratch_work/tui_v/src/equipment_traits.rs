@@ -23,7 +23,7 @@ pub enum BodyPart {
 
 pub trait Armor {
     fn body_part_covered(&self) -> BodyPart;
-    fn defense_value(&self) -> i64;
+    fn defense_value(&self) -> i32;
 }
 
 impl Armor for Clothing {
@@ -33,7 +33,7 @@ impl Armor for Clothing {
             Clothing::Helma => BodyPart::Head,
         }
     }
-    fn defense_value(&self) -> i64 {
+    fn defense_value(&self) -> i32 {
         match self {
             Clothing::Toga => 5,
             Clothing::Helma => 3,
@@ -74,18 +74,18 @@ pub enum DamageType {
     Blunt,
 }
 impl Weapon {
-    pub fn handedness(&self) -> i64 {
+    pub fn handedness(&self) -> i32 {
         match self {
             _ => 1,
         }
     }
 }
 pub trait WeaponTrait {
-    fn damage(&self) -> i64;
+    fn damage(&self) -> i32;
 }
 
 impl WeaponTrait for Weapon {
-    fn damage(&self) -> i64 {
+    fn damage(&self) -> i32 {
         match self {
             Weapon::Meč => 1,
             Weapon::Bulava => 2,
@@ -104,7 +104,7 @@ impl RangedWeapon {
 }
 
 impl WeaponTrait for RangedWeapon {
-    fn damage(&self) -> i64 {
+    fn damage(&self) -> i32 {
         match self {
             RangedWeapon::Lųk => 30,
             RangedWeapon::Pråšča => 20,
