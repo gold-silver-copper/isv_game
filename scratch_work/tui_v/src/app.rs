@@ -471,7 +471,7 @@ impl App {
         let mut line_vec = Vec::new();
         let mut events_copy = self.action_result_strings.clone();
 
-        for x in 0..20 {
+        for _ in 0..20 {
             let boop = events_copy.pop_front();
             if let Some(actik) = boop {
                 line_vec.push(Line::from(actik));
