@@ -4,9 +4,13 @@ pub use color_eyre::{
     Result,
 };
 // ANCHOR_END: new-imports
-
 pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};
 pub use interslavic_rs::*;
+use rand::{
+    distributions::{Distribution, Uniform},
+    rngs::SmallRng,
+    SeedableRng,
+};
 pub use ratatui::style::Color as RatColor;
 pub use ratatui::text::Span;
 pub use ratatui::{

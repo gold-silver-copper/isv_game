@@ -20,11 +20,29 @@ pub enum BodyPart {
     FeetOver,
 }
 
-impl Clothing {
-    pub fn body_part_covered(&self) -> BodyPart {
+pub trait Armor {
+    fn body_part_covered(&self) -> BodyPart;
+    fn defense_value(&self) -> i64;
+    fn defense_type(&self) -> DamageType;
+}
+
+impl Armor for Clothing {
+    fn body_part_covered(&self) -> BodyPart {
         match self {
             Clothing::Toga => BodyPart::Cloak,
             Clothing::Helma => BodyPart::Head,
+        }
+    }
+    fn defense_value(&self) -> i64 {
+        match self {
+            Clothing::Toga => 5,
+            Clothing::Helma => 3,
+        }
+    }
+    fn defense_type(&self) -> DamageType {
+        match self {
+            Clothing::Toga => DamageType::Blunt,
+            Clothing::Helma => DamageType::Sharp,
         }
     }
 }

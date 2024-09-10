@@ -1,6 +1,6 @@
 use crate::*;
 // ANCHOR: app
-#[derive(Default)]
+
 pub struct App {
     pub entity_counter: i64,
     pub components: ComponentHolder,
@@ -13,6 +13,25 @@ pub struct App {
     pub game_map: GameMap,
     pub action_vec: ActionVec,
     pub local_player_id: EntityID,
+    pub small_rng: SmallRng,
+}
+impl Default for App {
+    fn default() -> Self {
+        App {
+            entity_counter: 0,
+            components: ComponentHolder::default(),
+            input_state: InputState::default(),
+            action_results: Vec::new(),
+            action_result_strings: Vec::new(),
+            selected_menu: ItemVecType::default(),
+            item_list_state: ListState::default(),
+            exit: false,
+            game_map: GameMap::default(),
+            action_vec: ActionVec::default(),
+            local_player_id: 0,
+            small_rng: SmallRng::seed_from_u64(1),
+        }
+    }
 }
 
 impl App {

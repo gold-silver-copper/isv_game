@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use crate::*;
 
 // Define a marker trait
@@ -10,6 +12,7 @@ pub enum ActionResult {
 pub enum SuccessType {
     Normal,
     WithValue(i64), //for damage
+    CriticalWithValue(i64),
     WithValueAndRangedWeapon(i64, RangedWeapon),
 }
 #[derive(Clone, Debug, PartialEq)]
@@ -108,31 +111,48 @@ impl App {
         );
     }
 
+    /*  pub fn attacker_melee_damage(&mut self, subject_eid: &EntityID) -> (DamageType, i64) {
+        let mut attacker_damage = 1;
+    } */
+
     pub fn bump_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
-        let mut attacker_damage = 0;
-        let mut attacker_dodge = 0;
+        let mut attacker_damage = 1;
+        let mut attacker_dodge = self.small_rng.gen_range(0..7);
+        let mut defender_defense = 1;
+        let mut defender_dodge = self.small_rng.gen_range(0..8);
+
         if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
-            attacker_damage += attacker_stats.strength;
-            attacker_dodge = attacker_stats.speed + (attacker_stats.intelligence / 2);
+            attacker_damage += self.small_rng.gen_range(0..attacker_stats.strength);
+            attacker_dodge += self.small_rng.gen_range(0..attacker_stats.speed)
+                + (attacker_stats.intelligence / 3);
+        }
+        if let Some(defender_stats) = self.components.stats.get(object_eid) {
+            defender_dodge += self.small_rng.gen_range(0..defender_stats.speed)
+                + (defender_stats.intelligence / 3);
         }
         if let Some(equi) = self.components.equipments.get(subject_eid) {
             for itemik in &equi.equipped {
-                if let EntityType::Item(typik) = self.get_ent_type(itemik) {
-                    match typik {
-                        ItemType::Weapon(wepik) => {
-                            attacker_damage = attacker_damage + wepik.damage()
-                        }
-                        _ => {}
-                    }
+                if let EntityType::Item(ItemType::Weapon(wepik)) = self.get_ent_type(itemik) {
+                    attacker_damage += attacker_damage + wepik.damage()
                 }
             }
         }
-        if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
-            defender_health.current_health -= attacker_damage;
-            return ActionResult::Success(
-                GameAction::BumpAttack(subject_eid.clone(), object_eid.clone()),
-                SuccessType::WithValue(attacker_damage),
-            );
+
+        if let Some(equi) = self.components.equipments.get(object_eid) {
+            for itemik in &equi.equipped {
+                if let EntityType::Item(ItemType::Clothing(cloth)) = self.get_ent_type(itemik) {
+                    defender_defense += defender_defense + cloth.defense_value()
+                }
+            }
+        }
+        if attacker_dodge > defender_dodge {
+            if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
+                defender_health.current_health -= attacker_damage;
+                return ActionResult::Success(
+                    GameAction::BumpAttack(subject_eid.clone(), object_eid.clone()),
+                    SuccessType::WithValue(attacker_damage),
+                );
+            }
         }
 
         ActionResult::Failure(
