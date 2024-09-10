@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use crate::*;
 // ANCHOR: app
 
@@ -6,7 +8,7 @@ pub struct App {
     pub components: ComponentHolder,
     pub input_state: InputState,
     pub action_results: Vec<ActionResult>,
-    pub action_result_strings: Vec<String>,
+    pub action_result_strings: VecDeque<String>,
     pub selected_menu: ItemVecType,
     pub item_list_state: ListState,
     pub exit: bool,
@@ -22,7 +24,7 @@ impl Default for App {
             components: ComponentHolder::default(),
             input_state: InputState::default(),
             action_results: Vec::new(),
-            action_result_strings: Vec::new(),
+            action_result_strings: VecDeque::new(),
             selected_menu: ItemVecType::default(),
             item_list_state: ListState::default(),
             exit: false,
@@ -459,9 +461,10 @@ impl App {
         for boop in meow {
             let linija = self.generate_action_result_string(boop.clone());
             if linija != String::from("") {
-                self.action_result_strings.push(linija);
+                self.action_result_strings.push_front(linija);
             }
         }
+        self.action_result_strings.truncate(100);
     }
 
     pub fn render_event_paragraph(&self, area: Rect, buf: &mut Buffer) {
@@ -469,7 +472,7 @@ impl App {
         let mut events_copy = self.action_result_strings.clone();
 
         for x in 0..20 {
-            let boop = events_copy.pop();
+            let boop = events_copy.pop_front();
             if let Some(actik) = boop {
                 line_vec.push(Line::from(actik));
             }
