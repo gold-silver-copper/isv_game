@@ -49,10 +49,28 @@ impl App {
     }
     pub fn level_up_strength(&mut self, subject_eid: &EntityID) {
         if let Some(stats) = self.components.stats.get_mut(subject_eid) {
-            let chance = self.small_rng.gen_ratio(0, (stats.strength + 1) as u32);
+            let chance = self.small_rng.gen_ratio(1, (stats.strength * 2) as u32);
+            if chance {
+                stats.strength += 1;
+            }
         }
     }
-    pub fn level_up_speed(&mut self, subject_eid: &EntityID) {}
+    pub fn level_up_speed(&mut self, subject_eid: &EntityID) {
+        if let Some(stats) = self.components.stats.get_mut(subject_eid) {
+            let chance = self.small_rng.gen_ratio(1, (stats.speed * 2) as u32);
+            if chance {
+                stats.speed += 1;
+            }
+        }
+    }
+    pub fn level_up_int(&mut self, subject_eid: &EntityID) {
+        if let Some(stats) = self.components.stats.get_mut(subject_eid) {
+            let chance = self.small_rng.gen_ratio(1, (stats.intelligence * 2) as u32);
+            if chance {
+                stats.intelligence += 1;
+            }
+        }
+    }
 
     pub fn ranged_dodge(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> bool {
         let attacker_dodge = self.entity_dodge(subject_eid);
@@ -62,15 +80,16 @@ impl App {
         {
             if let Some(equi) = self.components.equipments.get(subject_eid) {
                 let wep_dist = equi.ranged_weapon.ideal_range();
-                let min_dist = wep_dist / 2;
+                let min_dist = wep_dist / 3;
                 let max_dist = wep_dist * 2;
 
                 if (distance_between_ents < min_dist) || (distance_between_ents > max_dist) {
-                    defender_dodge += distance_between_ents;
+                    defender_dodge += distance_between_ents / 2;
                 }
-                defender_dodge += distance_between_ents;
+                defender_dodge += distance_between_ents / 4;
 
                 if attacker_dodge > defender_dodge {
+                    self.level_up_int(subject_eid);
                     return true;
                 }
             }
@@ -217,9 +236,15 @@ impl App {
         let attacker_dodge = self.entity_dodge(subject_eid);
 
         let defender_dodge = self.entity_dodge(object_eid);
+        self.level_up_strength(subject_eid);
+        self.level_up_speed(subject_eid);
 
         if attacker_dodge >= defender_dodge {
+            self.level_up_speed(subject_eid);
             if attacker_damage > defender_defense {
+                self.level_up_strength(subject_eid);
+
+                self.level_up_int(subject_eid);
                 let true_damage = attacker_damage - defender_defense;
                 if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
                     defender_health.current_health -= true_damage;
@@ -277,6 +302,7 @@ impl App {
                         remove_ent_from_vec(&mut origin_vox.entity_set, subject_eid);
                     }
                     *e_pos = destination;
+                    self.level_up_speed(subject_eid);
                     return ActionResult::Success(
                         GameAction::Go(subject_eid.clone(), cd.clone()),
                         SuccessType::Normal,
