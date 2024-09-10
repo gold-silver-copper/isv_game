@@ -111,54 +111,74 @@ impl App {
         );
     }
 
-    /*  pub fn attacker_melee_damage(&mut self, subject_eid: &EntityID) -> (DamageType, i64) {
+    pub fn attacker_melee_damage(&mut self, subject_eid: &EntityID) -> i64 {
         let mut attacker_damage = 1;
-    } */
-
-    pub fn bump_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
-        let mut attacker_damage = 1;
-        let mut attacker_dodge = self.small_rng.gen_range(0..7);
-        let mut defender_defense = 1;
-        let mut defender_dodge = self.small_rng.gen_range(0..8);
-
         if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
             attacker_damage += self.small_rng.gen_range(0..attacker_stats.strength);
-            attacker_dodge += self.small_rng.gen_range(0..attacker_stats.speed)
-                + (attacker_stats.intelligence / 3);
-        }
-        if let Some(defender_stats) = self.components.stats.get(object_eid) {
-            defender_dodge += self.small_rng.gen_range(0..defender_stats.speed)
-                + (defender_stats.intelligence / 3);
         }
         if let Some(equi) = self.components.equipments.get(subject_eid) {
             for itemik in &equi.equipped {
                 if let EntityType::Item(ItemType::Weapon(wepik)) = self.get_ent_type(itemik) {
-                    attacker_damage += attacker_damage + wepik.damage()
+                    attacker_damage += self.small_rng.gen_range(0..wepik.damage());
                 }
             }
         }
 
-        if let Some(equi) = self.components.equipments.get(object_eid) {
+        attacker_damage
+    }
+    pub fn entity_dodge(&mut self, subject_eid: &EntityID) -> i64 {
+        let mut attacker_dodge = self.small_rng.gen_range(0..7);
+        if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
+            attacker_dodge += self.small_rng.gen_range(0..attacker_stats.speed)
+                + (attacker_stats.intelligence / 3);
+        }
+        attacker_dodge
+    }
+    pub fn entity_defense(&mut self, subject_eid: &EntityID) -> i64 {
+        let mut defender_defense = 1;
+        if let Some(equi) = self.components.equipments.get(subject_eid) {
             for itemik in &equi.equipped {
                 if let EntityType::Item(ItemType::Clothing(cloth)) = self.get_ent_type(itemik) {
-                    defender_defense += defender_defense + cloth.defense_value()
+                    defender_defense += self.small_rng.gen_range(0..cloth.defense_value())
                 }
             }
         }
-        if attacker_dodge > defender_dodge {
-            if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
-                defender_health.current_health -= attacker_damage;
-                return ActionResult::Success(
+        defender_defense
+    }
+
+    pub fn bump_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
+        let attacker_damage = self.attacker_melee_damage(subject_eid);
+        let attacker_dodge = self.entity_dodge(subject_eid);
+        let defender_defense = self.entity_defense(object_eid);
+        let defender_dodge = self.entity_dodge(object_eid);
+
+        if attacker_dodge >= defender_dodge {
+            if attacker_damage > defender_defense {
+                let true_damage = attacker_damage - defender_defense;
+                if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
+                    defender_health.current_health -= true_damage;
+                    return ActionResult::Success(
+                        GameAction::BumpAttack(subject_eid.clone(), object_eid.clone()),
+                        SuccessType::WithValue(true_damage),
+                    );
+                } else {
+                    return ActionResult::Failure(
+                        GameAction::BumpAttack(subject_eid.clone(), object_eid.clone()),
+                        FailType::Normal,
+                    );
+                }
+            } else {
+                return ActionResult::Failure(
                     GameAction::BumpAttack(subject_eid.clone(), object_eid.clone()),
-                    SuccessType::WithValue(attacker_damage),
+                    FailType::Blocked,
                 );
             }
+        } else {
+            return ActionResult::Failure(
+                GameAction::BumpAttack(subject_eid.clone(), object_eid.clone()),
+                FailType::Miss,
+            );
         }
-
-        ActionResult::Failure(
-            GameAction::BumpAttack(subject_eid.clone(), object_eid.clone()),
-            FailType::Normal,
-        )
     }
     pub fn handle_movement(
         &mut self,
@@ -729,15 +749,35 @@ impl App {
                         format!("")
                     }
                 }
-                GameAction::BumpAttack(subj, obj) => {
-                    if &subj == &self.local_player_id {
-                        let dropped = self.pronoun_for_act_obj(&obj).0;
+                GameAction::BumpAttack(subj, obj) => match reason {
+                    FailType::Miss => {
+                        if &subj == &self.local_player_id {
+                            let dropped = self.pronoun_for_act_obj(&obj).0;
 
-                        format!("ty ne možeš atakovati {dropped}")
-                    } else {
-                        format!("")
+                            format!("ne udača! ty propušćaješ ataku na {dropped}")
+                        } else {
+                            format!("")
+                        }
                     }
-                }
+                    FailType::Blocked => {
+                        if &subj == &self.local_player_id {
+                            let dropped = self.pronoun_for_act_subj(&obj).0;
+
+                            format!("ne udača! tvoju ataku zablokovali!")
+                        } else {
+                            format!("")
+                        }
+                    }
+                    _ => {
+                        if &subj == &self.local_player_id {
+                            let dropped = self.pronoun_for_act_obj(&obj).0;
+
+                            format!("ty ne možeš atakovati {dropped}")
+                        } else {
+                            format!("")
+                        }
+                    }
+                },
                 GameAction::Wait(subj) => {
                     format!("")
                 }

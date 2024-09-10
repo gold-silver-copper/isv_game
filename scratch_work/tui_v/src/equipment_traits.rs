@@ -23,7 +23,6 @@ pub enum BodyPart {
 pub trait Armor {
     fn body_part_covered(&self) -> BodyPart;
     fn defense_value(&self) -> i64;
-    fn defense_type(&self) -> DamageType;
 }
 
 impl Armor for Clothing {
@@ -37,12 +36,6 @@ impl Armor for Clothing {
         match self {
             Clothing::Toga => 5,
             Clothing::Helma => 3,
-        }
-    }
-    fn defense_type(&self) -> DamageType {
-        match self {
-            Clothing::Toga => DamageType::Blunt,
-            Clothing::Helma => DamageType::Sharp,
         }
     }
 }
@@ -88,7 +81,6 @@ impl Weapon {
 }
 pub trait WeaponTrait {
     fn damage(&self) -> i64;
-    fn damage_type(&self) -> DamageType;
 }
 
 impl WeaponTrait for Weapon {
@@ -96,12 +88,6 @@ impl WeaponTrait for Weapon {
         match self {
             Weapon::Meč => 1,
             Weapon::Bulava => 2,
-        }
-    }
-    fn damage_type(&self) -> DamageType {
-        match self {
-            Weapon::Meč => DamageType::Sharp,
-            Weapon::Bulava => DamageType::Blunt,
         }
     }
 }
@@ -113,14 +99,6 @@ impl WeaponTrait for RangedWeapon {
             RangedWeapon::Pråšča => 20,
             RangedWeapon::Drotik => 10,
             RangedWeapon::Oščěp => 40,
-        }
-    }
-    fn damage_type(&self) -> DamageType {
-        match self {
-            RangedWeapon::Lųk => DamageType::Sharp,
-            RangedWeapon::Oščěp => DamageType::Sharp,
-            RangedWeapon::Drotik => DamageType::Sharp,
-            RangedWeapon::Pråšča => DamageType::Blunt,
         }
     }
 }
