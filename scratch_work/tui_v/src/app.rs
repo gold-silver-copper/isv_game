@@ -377,7 +377,7 @@ impl App {
                         EntityType::Human => (),
                         EntityType::Item(itemik) => match itemik {
                             ItemType::Weapon(_) => weapons.push(itemik.item_name()),
-                            ItemType::Accessory(_) => armor.push(itemik.item_name()),
+
                             ItemType::Clothing(_) => armor.push(itemik.item_name()),
                             _ => (),
                         },

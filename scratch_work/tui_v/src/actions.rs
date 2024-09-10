@@ -84,10 +84,9 @@ impl App {
                 let max_dist = wep_dist * 2;
 
                 if (distance_between_ents < min_dist) || (distance_between_ents > max_dist) {
-                    defender_dodge += distance_between_ents / 2;
+                    defender_dodge += distance_between_ents * 3;
                 }
-                defender_dodge += distance_between_ents / 4;
-
+                defender_dodge += distance_between_ents;
                 if attacker_dodge > defender_dodge {
                     self.level_up_int(subject_eid);
                     return true;
@@ -102,75 +101,76 @@ impl App {
         let attacker_damage = self.attacker_ranged_damage(subject_eid);
         let defender_defense = self.entity_defense(object_eid);
         let defender_didnt_dodge = self.ranged_dodge(subject_eid, object_eid);
-        self.level_up_strength(subject_eid);
-        self.level_up_speed(subject_eid);
-        if let Some(equi) = self.components.equipments.get_mut(subject_eid) {
-            let enough_ammo = match equi.ranged_weapon {
+
+        let (enough_ammo, wep) = if let Some(equi) = self.components.equipments.get_mut(subject_eid)
+        {
+            match equi.ranged_weapon {
                 RangedWeapon::Lųk => {
                     if equi.arrows > 0 {
                         equi.arrows -= 1;
-                        true
+                        (true, equi.ranged_weapon.clone())
                     } else {
-                        false
+                        (false, equi.ranged_weapon.clone())
                     }
                 }
                 RangedWeapon::Pråšča => {
                     if equi.bullets > 0 {
                         equi.bullets -= 1;
-                        true
+                        (true, equi.ranged_weapon.clone())
                     } else {
-                        false
+                        (false, equi.ranged_weapon.clone())
                     }
                 }
                 RangedWeapon::Oščěp => {
                     if equi.javelins > 0 {
                         equi.javelins -= 1;
-                        true
+                        (true, equi.ranged_weapon.clone())
                     } else {
-                        false
+                        (false, equi.ranged_weapon.clone())
                     }
                 }
                 RangedWeapon::Drotik => {
                     if equi.darts > 0 {
                         equi.darts -= 1;
-                        true
+                        (true, equi.ranged_weapon.clone())
                     } else {
-                        false
+                        (false, equi.ranged_weapon.clone())
                     }
                 }
-            };
-            if enough_ammo {
-                if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
-                    if defender_didnt_dodge {
-                        let real_damage = attacker_damage - defender_defense;
-                        if real_damage > 0 {
-                            defender_health.current_health -= real_damage;
-                            return ActionResult::Success(
-                                GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-                                SuccessType::WithValueAndRangedWeapon(
-                                    real_damage,
-                                    equi.ranged_weapon.clone(),
-                                ),
-                            );
-                        } else {
-                            return ActionResult::Failure(
-                                GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-                                FailType::Blocked,
-                            );
-                        }
+            }
+        } else {
+            (false, RangedWeapon::Lųk)
+        };
+        if enough_ammo {
+            self.level_up_strength(subject_eid);
+            self.level_up_speed(subject_eid);
+            if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
+                if defender_didnt_dodge {
+                    let real_damage = attacker_damage - defender_defense;
+                    if real_damage > 0 {
+                        defender_health.current_health -= real_damage;
+                        return ActionResult::Success(
+                            GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+                            SuccessType::WithValueAndRangedWeapon(real_damage, wep),
+                        );
                     } else {
                         return ActionResult::Failure(
                             GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-                            FailType::Miss,
+                            FailType::Blocked,
                         );
                     }
+                } else {
+                    return ActionResult::Failure(
+                        GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+                        FailType::Miss,
+                    );
                 }
-            } else {
-                return ActionResult::Failure(
-                    GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-                    FailType::NoAmmo,
-                );
             }
+        } else {
+            return ActionResult::Failure(
+                GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+                FailType::NoAmmo,
+            );
         }
 
         return ActionResult::Failure(
@@ -437,29 +437,7 @@ impl App {
                                 );
                             }
                         }
-                        ItemType::Accessory(acc) => {
-                            let mut accessory_space: i32 = 4;
-                            for thing_equipped in &boop.equipped {
-                                if let EntityType::Item(ItemType::Accessory(accik)) =
-                                    self.components.ent_types.get(thing_equipped).unwrap()
-                                {
-                                    accessory_space = accessory_space - 1;
-                                }
-                            }
-                            if 0 < accessory_space {
-                                boop.inventory.remove(item);
-                                boop.equipped.insert(item.clone());
-                                return ActionResult::Success(
-                                    GameAction::Equip(subject_eid.clone(), item.clone()),
-                                    SuccessType::Normal,
-                                );
-                            } else {
-                                return ActionResult::Failure(
-                                    GameAction::Equip(subject_eid.clone(), item.clone()),
-                                    FailType::AlreadyEquipped,
-                                );
-                            }
-                        }
+
                         ItemType::Clothing(cloth) => {
                             let new_part_covered = cloth.body_part_covered();
                             for thing_equipped in &boop.equipped {

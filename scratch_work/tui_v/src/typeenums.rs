@@ -44,7 +44,6 @@ pub enum ItemType {
 
     Ammo(Ammo),
     Clothing(Clothing),
-    Accessory(Accessory),
 }
 
 impl EntityType {
@@ -115,10 +114,6 @@ pub enum Ammo {
 pub enum Clothing {
     Toga,
     Helma,
-}
-#[derive(Clone, Debug, PartialEq, Display)]
-pub enum Accessory {
-    Kolce,
 }
 
 pub enum Furniture {
