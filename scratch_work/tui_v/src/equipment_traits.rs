@@ -1,5 +1,6 @@
 use crate::first_char;
 use crate::typeenums::*;
+use crate::CoordinateUnit;
 
 pub trait ItemTrait {
     fn item_symbol(&self) -> String;
@@ -88,6 +89,16 @@ impl WeaponTrait for Weapon {
         match self {
             Weapon::Meč => 1,
             Weapon::Bulava => 2,
+        }
+    }
+}
+impl RangedWeapon {
+    pub fn ideal_range(&self) -> CoordinateUnit {
+        match self {
+            RangedWeapon::Lųk => 10,
+            RangedWeapon::Pråšča => 7,
+            RangedWeapon::Drotik => 3,
+            RangedWeapon::Oščěp => 5,
         }
     }
 }

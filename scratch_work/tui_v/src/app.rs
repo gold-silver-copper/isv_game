@@ -619,6 +619,21 @@ impl App {
         }
         return None;
     }
+    pub fn distance_from_ent_to_ent(
+        &self,
+        subj: &EntityID,
+        obj: &EntityID,
+    ) -> Option<CoordinateUnit> {
+        if let Some(line) = self.line_from_ent_to_ent(subj, obj) {
+            let mut distance = 0;
+            for _ in line {
+                distance += 1;
+            }
+            return Some(distance);
+        } else {
+            return None;
+        }
+    }
 
     pub fn exit(&mut self) {
         self.exit = true;

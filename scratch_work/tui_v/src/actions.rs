@@ -48,8 +48,35 @@ impl App {
         ActionResult::Success(GameAction::Wait(subject_eid.clone()), SuccessType::Normal)
     }
 
+    pub fn ranged_dodge(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> bool {
+        let attacker_dodge = self.entity_dodge(subject_eid);
+
+        let mut defender_dodge = self.entity_dodge(object_eid);
+        if let Some(distance_between_ents) = self.distance_from_ent_to_ent(subject_eid, object_eid)
+        {
+            if let Some(equi) = self.components.equipments.get(subject_eid) {
+                let wep_dist = equi.ranged_weapon.ideal_range();
+                let min_dist = wep_dist / 2;
+                let max_dist = wep_dist * 2;
+
+                if (distance_between_ents < min_dist) || (distance_between_ents > max_dist) {
+                    defender_dodge += distance_between_ents as i64;
+                }
+                defender_dodge += distance_between_ents as i64;
+
+                if attacker_dodge > defender_dodge {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
     pub fn ranged_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
-        let mut base_damage = 0;
+        let attacker_damage = self.attacker_ranged_damage(subject_eid);
+        let defender_defense = self.entity_defense(object_eid);
+        let defender_didnt_dodge = self.ranged_dodge(subject_eid, object_eid);
         if let Some(equi) = self.components.equipments.get_mut(subject_eid) {
             let enough_ammo = match equi.ranged_weapon {
                 RangedWeapon::Lųk => {
@@ -86,28 +113,29 @@ impl App {
                 }
             };
             if enough_ammo {
-                base_damage = base_damage + equi.ranged_weapon.damage();
                 if let Some(defender_health) = self.components.healths.get_mut(object_eid) {
-                    defender_health.current_health -= base_damage;
-                    return ActionResult::Success(
-                        GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-                        SuccessType::WithValueAndRangedWeapon(
-                            base_damage,
-                            equi.ranged_weapon.clone(),
-                        ),
-                    );
+                    if defender_didnt_dodge {
+                        defender_health.current_health -= attacker_damage;
+                        return ActionResult::Success(
+                            GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+                            SuccessType::WithValueAndRangedWeapon(
+                                attacker_damage,
+                                equi.ranged_weapon.clone(),
+                            ),
+                        );
+                    }
                 }
+            } else {
+                return ActionResult::Failure(
+                    GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
+                    FailType::NoAmmo,
+                );
             }
-
-            return ActionResult::Failure(
-                GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-                FailType::NoAmmo,
-            );
         }
 
         return ActionResult::Failure(
             GameAction::RangedAttack(subject_eid.clone(), object_eid.clone()),
-            FailType::NoAmmo,
+            FailType::Normal,
         );
     }
 
@@ -122,6 +150,18 @@ impl App {
                     attacker_damage += self.small_rng.gen_range(0..wepik.damage());
                 }
             }
+        }
+
+        attacker_damage
+    }
+    pub fn attacker_ranged_damage(&mut self, subject_eid: &EntityID) -> i64 {
+        let mut attacker_damage = 1;
+        if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
+            attacker_damage += self.small_rng.gen_range(0..(attacker_stats.strength / 3))
+                + self.small_rng.gen_range(0..(attacker_stats.speed / 2));
+        }
+        if let Some(equi) = self.components.equipments.get(subject_eid) {
+            attacker_damage += self.small_rng.gen_range(0..equi.ranged_weapon.damage());
         }
 
         attacker_damage
@@ -148,8 +188,9 @@ impl App {
 
     pub fn bump_attack(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> ActionResult {
         let attacker_damage = self.attacker_melee_damage(subject_eid);
-        let attacker_dodge = self.entity_dodge(subject_eid);
         let defender_defense = self.entity_defense(object_eid);
+        let attacker_dodge = self.entity_dodge(subject_eid);
+
         let defender_dodge = self.entity_dodge(object_eid);
 
         if attacker_dodge >= defender_dodge {
