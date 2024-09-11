@@ -26,6 +26,7 @@ impl Blockable for EntityType {
         match &self {
             EntityType::Human => true, // Default behavior, all entities block movement
             EntityType::Item(_) => false, // Default behavior, all itesm dont block movement
+            EntityType::Animal(_) => true,
         }
     }
 

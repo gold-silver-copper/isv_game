@@ -130,6 +130,7 @@ impl App {
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
         self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
+        self.spawn_animal_at(&AnimalType::Kos, &(2, 2));
 
         self.reload_ui();
     }
@@ -384,6 +385,7 @@ impl App {
 
                     match item_type {
                         EntityType::Human => (),
+                        EntityType::Animal(_) => (),
                         EntityType::Item(itemik) => match itemik {
                             ItemType::Weapon(_) => weapons.push(itemik.item_name()),
 
@@ -426,7 +428,7 @@ impl App {
                 format! {"[{RANGED_ATTACK}]-oddaljena ataka  [{INVENTORY_MENU}]-rukzak  [{WAIT_KEY}]-čekati  [{CURSOR_UP}{CURSOR_LEFT}{CURSOR_DOWN}{CURSOR_RIGHT} + {CURSOR_UP_LEFT}{CURSOR_UP_RIGHT}{CURSOR_DOWN_LEFT}{CURSOR_DOWN_RIGHT}]-dvigati sę  [{QUIT_BACK}]-vyjdti iz igry"}
             }
             InputState::Inventory => {
-                format! {"[{CURSOR_LEFT}/{CURSOR_RIGHT}]-měnjati menju  [{CURSOR_UP}/{CURSOR_DOWN}]-izbirati věć  [{DROP_UNEQUIP_ACTION}]-odkladati/opustiti  [{PICKUP_EQUIP_ACTION}]-podbirati/equipirovati [{INVENTORY_MENU}]-zakryti rukzak"}
+                format! {"[{CURSOR_LEFT}/{CURSOR_RIGHT}]-měnjati menju  [{CURSOR_UP}/{CURSOR_DOWN}]-izbirati věć  [{DROP_UNEQUIP_ACTION}]-odkladati/opustiti  [{PICKUP_EQUIP_ACTION}]-podbirati/equipirovati/jesti [{INVENTORY_MENU}]-zakryti rukzak"}
             }
             InputState::RangedAttack => {
                 format! {"[{CURSOR_RIGHT}]-atakovati  [{CURSOR_LEFT}]-měnjati orųžje  [{CURSOR_UP}/{CURSOR_DOWN}]-izbirati vråga  [{RANGED_ATTACK}]-izključiti režim oddaljenoj ataky",}
@@ -544,6 +546,7 @@ impl App {
                 .expect("ent type must have");
             let itname = match typik {
                 EntityType::Human => self.get_entity_name(itik),
+                EntityType::Animal(anim) => format!("{anim}"),
                 EntityType::Item(itemik) => itemik.item_name(),
             };
             itemnamevec.push(itname);
@@ -596,6 +599,7 @@ impl App {
                 let booptype = self.get_ent_type(boop);
                 match booptype {
                     EntityType::Human => {}
+                    EntityType::Animal(_) => {}
                     EntityType::Item(x) => {
                         evec.push(boop.clone());
                     }

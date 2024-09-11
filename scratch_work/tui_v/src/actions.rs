@@ -643,12 +643,18 @@ impl App {
                         );
                         format!("{pronoun} {verbik} sę {}", object.0)
                     } else {
-                        let object = ISV::decline_noun(
-                            &self.get_entity_name(&obj),
-                            &Case::Acc,
-                            &Number::Singular,
-                        );
-                        format!("{pronoun} {verbik} {}", object.0)
+                        let obj_nom = self.get_entity_name(&obj);
+
+                        if obj_nom.ends_with("y") {
+                            format!("{pronoun} {verbik} {}", obj_nom)
+                        } else {
+                            let object = ISV::decline_noun(
+                                &self.get_entity_name(&obj),
+                                &Case::Acc,
+                                &Number::Singular,
+                            );
+                            format!("{pronoun} {verbik} {}", object.0)
+                        }
                     }
                 }
                 GameAction::UnEquip(subj, obj) => {

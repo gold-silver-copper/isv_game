@@ -7,6 +7,17 @@ pub trait ItemTrait {
     fn item_name(&self) -> String;
 }
 
+impl ItemTrait for AnimalType {
+    fn item_symbol(&self) -> String {
+        let nameik = self.item_name();
+        let a = first_char(&nameik);
+        String::from(a)
+    }
+    fn item_name(&self) -> String {
+        format!("{self}")
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum BodyPart {
     Head,
@@ -44,7 +55,7 @@ impl Armor for Clothing {
             Clothing::Košulja => BodyPart::Torso,    // Shirt
             Clothing::Riza => BodyPart::TorsoOver,   // Cassock/Robe
             Clothing::Sandaly => BodyPart::FeetOver, // Sandals
-            Clothing::Škarpetka | Clothing::Ponožka => BodyPart::Feet, // Socks
+            Clothing::Škarpetky | Clothing::Ponožky => BodyPart::Feet, // Socks
             Clothing::Šlěm => BodyPart::Head,        // Helmet
             Clothing::Suknja | Clothing::Frak => BodyPart::Legs, // Dress/Tailcoat
             Clothing::Koljčuga => BodyPart::Torso,   // Chainmail
@@ -72,7 +83,7 @@ impl Armor for Clothing {
             Clothing::Košulja => 2,  // Light protection from a shirt
             Clothing::Riza => 5,     // Moderate defense from a cassock/robe
             Clothing::Sandaly => 1,  // Minimal protection for feet
-            Clothing::Škarpetka | Clothing::Ponožka => 0, // No defense from socks
+            Clothing::Škarpetky | Clothing::Ponožky => 0, // No defense from socks
             Clothing::Šlěm => 10,    // Strong protection from a helmet
             Clothing::Šapka => 2,    // Light defense from a cap
             Clothing::Klobuk => 2,   // Light defense from a hat
@@ -127,6 +138,7 @@ impl Weapon {
     pub fn handedness(&self) -> i32 {
         match self {
             Weapon::Meč => 1,
+            Weapon::Ščit => 1,
             Weapon::Bulava => 1,
             Weapon::Žezlo => 1,
             Weapon::Posoh => 2,
@@ -149,6 +161,7 @@ impl Weapon {
         match self {
             Weapon::Meč => 5,
             Weapon::Bulava => 4,
+            Weapon::Ščit => 15,
             Weapon::Žezlo => 3,
             Weapon::Posoh => 7,
             Weapon::Kopje => 8,
@@ -177,6 +190,7 @@ impl WeaponTrait for Weapon {
         match self {
             Weapon::Meč => 20,
             Weapon::Bulava => 20,
+            Weapon::Ščit => 1,
             Weapon::Žezlo => 15,
             Weapon::Posoh => 10,
             Weapon::Kopje => 20,
@@ -198,6 +212,7 @@ impl WeaponTrait for Weapon {
         match self {
             Weapon::Meč => DamageType::Sharp,
             Weapon::Bulava => DamageType::Blunt,
+            Weapon::Ščit => DamageType::Blunt,
             Weapon::Žezlo => DamageType::Blunt,
             Weapon::Posoh => DamageType::Blunt,
             Weapon::Kopje => DamageType::Sharp,

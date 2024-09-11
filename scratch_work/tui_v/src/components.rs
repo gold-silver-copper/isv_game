@@ -77,6 +77,9 @@ impl App {
                     "czlovek".into()
                 }
             }
+            EntityType::Animal(anim) => {
+                format!("{anim}")
+            }
             EntityType::Item(itemik) => itemik.item_name(),
         };
 
@@ -108,6 +111,35 @@ impl App {
         self.set_ent_position(&eid, point);
 
         eid
+    }
+    pub fn spawn_animal_at(&mut self, animal_type: &AnimalType, point: &MyPoint) -> EntityID {
+        let eid = self.get_unique_eid();
+        self.components.positions.insert(eid.clone(), point.clone());
+        self.components
+            .ent_types
+            .insert(eid.clone(), EntityType::Animal(animal_type.clone()));
+
+        self.components
+            .healths
+            .insert(eid.clone(), Health::default());
+
+        self.components.stats.insert(
+            eid.clone(),
+            Stats {
+                strength: 1,
+                speed: 1,
+                intelligence: 1,
+            },
+        );
+
+        let voxik = self
+            .game_map
+            .get_mut_voxel_at(point)
+            .expect("cant spawn ent in empty voxel");
+
+        voxik.entity_set.push(eid.clone());
+
+        eid.clone()
     }
     pub fn spawn_human_at(&mut self, point: &MyPoint) -> EntityID {
         let eid = self.get_unique_eid();

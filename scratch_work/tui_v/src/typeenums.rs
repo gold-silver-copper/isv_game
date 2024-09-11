@@ -4,12 +4,35 @@ use crate::*;
 pub enum EntityType {
     Human,
     Item(ItemType),
+    Animal(AnimalType),
+}
+
+#[derive(Display, PartialEq, Clone)]
+pub enum AnimalType {
+    Los,
+
+    Jelenj,
+    Krava,
+    Pes,
+    Tigr,
+    Gad,
+    Jaščer,
+    Iguana,
+    Vųž,
+    Žȯlv,
+    Sova,
+    Vrabec,
+    Vran,
+    Gavran,
+    Kos,
+    Gųsę,
 }
 
 impl EntityType {
     pub fn is_attackable(&self) -> bool {
         match self {
             EntityType::Human => true,
+            EntityType::Animal(_) => true,
             EntityType::Item(_) => false,
         }
     }
@@ -241,6 +264,7 @@ pub enum Weapon {
     Sěkyra,
     Bič,
     Sablja,
+    Ščit,
 }
 impl Default for RangedWeapon {
     fn default() -> Self {
@@ -278,8 +302,8 @@ pub enum Clothing {
     Košulja,
     Riza,
     Sandaly,
-    Škarpetka,
-    Ponožka,
+    Škarpetky,
+    Ponožky,
     Šlěm,
     Šapka,
     Klobuk,
@@ -300,39 +324,4 @@ pub enum Clothing {
 
 pub enum Furniture {
     Wall(Material),
-}
-
-#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
-pub enum FishType {
-    Losos,
-    Tunec,
-    Karas,
-}
-
-#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
-pub enum BirdType {
-    Sova,
-    Vrabec,
-    Vran,
-    Gavran,
-    Kos,
-    Gųsę,
-}
-
-#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
-pub enum LizardType {
-    Gad,
-    Jaščer,
-    Iguana,
-    Vųž,
-    Žȯlv,
-}
-
-#[derive(Clone, Debug, Display, PartialEq, EnumIter, EnumCount, FromRepr)]
-pub enum MammalType {
-    Los,
-    Jelenj,
-    Krava,
-    Pes,
-    Tigr,
 }

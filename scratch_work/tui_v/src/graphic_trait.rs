@@ -84,6 +84,7 @@ impl GraphicElement for EntityType {
         match &self {
             EntityType::Human => "@".into(),
             EntityType::Item(x) => x.item_symbol(),
+            EntityType::Animal(x) => x.item_symbol(),
         }
     }
 }
