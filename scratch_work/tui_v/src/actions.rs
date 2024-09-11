@@ -565,7 +565,7 @@ impl App {
                 GameAction::Consume(subj, consum) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
 
-                    let verbik = ISV::l_participle("opustiti", &gender, &Number::Singular);
+                    let verbik = ISV::l_participle("vypiti", &gender, &Number::Singular);
 
                     format!("{pronoun} {verbik} {}", consum)
                 }
@@ -784,6 +784,11 @@ impl App {
                 }
             },
             ActionResult::Failure(ga, reason) => match ga {
+                GameAction::Consume(subj, consum) => {
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
+
+                    format!("{pronoun} ne možeš vypiti  {}", consum)
+                }
                 GameAction::Drop(subj, obj) => {
                     if &subj == &self.local_player_id {
                         let dropped = self.pronoun_for_act_obj(&obj).0;
