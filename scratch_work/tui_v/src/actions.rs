@@ -188,7 +188,6 @@ impl App {
         if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
             attacker_str = attacker_stats.strength.clone();
             attacker_speed = attacker_stats.speed.clone();
-
         }
 
         if let Some(equi) = self.components.equipments.get(subject_eid) {
@@ -239,7 +238,7 @@ impl App {
         if let Some(equi) = self.components.equipments.get(subject_eid) {
             for itemik in &equi.equipped {
                 if let EntityType::Item(ItemType::Weapon(wepik)) = self.get_ent_type(itemik) {
-                  attacker_dodge += wepik.weapon_length();
+                    attacker_dodge += self.small_rng.gen_range(0..=wepik.weapon_length() + 1);
                 }
             }
         }
