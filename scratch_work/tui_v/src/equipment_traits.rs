@@ -56,6 +56,9 @@ impl ItemTrait for ItemType {
             ItemType::Clothing(cloth) => {
                 format!("{cloth}")
             }
+            ItemType::Consumable(cons) => {
+                format!("{cons}")
+            }
 
             ItemType::Ammo(amm) => match amm {
                 Ammo::Kulja(x) | Ammo::Strěla(x) | Ammo::Oščěp(x) | Ammo::Drotik(x) => {

@@ -258,6 +258,13 @@ impl App {
                     subj_id.clone(),
                     ActionResult::Success(GameAction::Death(subj_id), SuccessType::Normal),
                 ),
+                GameAction::Consume(subj_id, consum) => (
+                    subj_id.clone(),
+                    ActionResult::Success(
+                        GameAction::Consume(subj_id, consum),
+                        SuccessType::Normal,
+                    ),
+                ),
             };
 
             if (act_result.0 == self.local_player_id)

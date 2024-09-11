@@ -28,7 +28,7 @@ pub enum FailType {
     AlreadyEquipped,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, PartialEq)]
 pub enum GameAction {
     Wait(Subject),
     PickUp(Subject, DirectObject),
@@ -37,6 +37,7 @@ pub enum GameAction {
     BumpAttack(Subject, DirectObject),
     RangedAttack(Subject, DirectObject),
     Death(Subject),
+    Consume(Subject, Consumable),
 
     Drop(Subject, DirectObject),
 
@@ -406,11 +407,24 @@ impl App {
             FailType::Normal,
         )
     }
+    pub fn consume_consumable(&mut self, subject_eid: &EntityID, item: Consumable) -> ActionResult {
+        match item {
+            Consumable::Pivo => {}
+            Consumable::HealthPotion => {}
+            Consumable::SpeedPotion => {}
+            Consumable::StrengthPotion => {}
+            Consumable::IntPotion => {}
+        }
+        return ActionResult::Failure(
+            GameAction::Consume(subject_eid.clone(), item),
+            FailType::Normal,
+        );
+    }
 
     pub fn equip_item_from_inv(&mut self, subject_eid: &EntityID, item: &EntityID) -> ActionResult {
         if let Some(boop) = self.components.equipments.get_mut(subject_eid) {
             if boop.inventory.contains(item) {
-                let item_type = self.components.ent_types.get(item).unwrap();
+                let item_type = self.components.ent_types.get(item).unwrap().clone();
 
                 if let EntityType::Item(itemik) = item_type {
                     match itemik {
@@ -467,6 +481,10 @@ impl App {
                                 GameAction::Equip(subject_eid.clone(), item.clone()),
                                 FailType::WrongType,
                             );
+                        }
+                        ItemType::Consumable(consum) => {
+                            boop.inventory.remove(item);
+                            return self.consume_consumable(subject_eid, consum);
                         }
                     }
                 }
@@ -544,6 +562,13 @@ impl App {
     pub fn generate_action_result_string(&self, act_resut: ActionResult) -> String {
         let line_text = match act_resut {
             ActionResult::Success(ga, reason) => match ga {
+                GameAction::Consume(subj, consum) => {
+                    let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
+
+                    let verbik = ISV::l_participle("opustiti", &gender, &Number::Singular);
+
+                    format!("{pronoun} {verbik} {}", consum)
+                }
                 GameAction::Drop(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let object = ISV::decline_noun(

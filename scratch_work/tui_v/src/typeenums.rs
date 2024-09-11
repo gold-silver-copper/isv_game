@@ -41,9 +41,18 @@ impl Default for InputState {
 #[derive(Display, PartialEq, Clone)]
 pub enum ItemType {
     Weapon(Weapon),
+    Consumable(Consumable),
 
     Ammo(Ammo),
     Clothing(Clothing),
+}
+#[derive(Display, PartialEq, Clone)]
+pub enum Consumable {
+    HealthPotion,
+    StrengthPotion,
+    IntPotion,
+    SpeedPotion,
+    Pivo,
 }
 
 impl EntityType {
