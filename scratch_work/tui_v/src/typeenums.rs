@@ -71,6 +71,28 @@ pub enum Consumable {
 }
 
 impl Consumable {
+    pub fn consume_verb(&self) -> &'static str {
+        match self {
+            Consumable::Lěkaŕstvo => "vypivati", // To drink (for medicine)
+            Consumable::Hlěb => "sjedati",       // To eat (for bread)
+            Consumable::Pečivo => "sjedati",     // To eat (for baked goods)
+            Consumable::Pŕnik => "sjedati",      // To eat (for gingerbread)
+            Consumable::Polivka | Consumable::Supa => "vypivati", // To drink (for soup)
+            Consumable::Brusnica
+            | Consumable::Morva
+            | Consumable::Malina
+            | Consumable::Kljukva
+            | Consumable::Ježina => "sjedati", // To eat (for berries)
+            Consumable::Rěpa | Consumable::Cvekla | Consumable::Redkȯvka | Consumable::Kapusta => {
+                "sjedati"
+            } // To eat (for vegetables)
+            Consumable::Jablȯko => "sjedati",    // To eat (for apples)
+            Consumable::Vino => "vypivati",      // To drink (for wine)
+            Consumable::Samogon => "vypivati",   // To drink (for strong alcohol)
+            Consumable::Pivo => "vypivati",      // To drink (for beer)
+        }
+    }
+
     pub fn health_effect(&self) -> i32 {
         match self {
             Consumable::Lěkaŕstvo => 20, // Medicine provides the highest health restoration

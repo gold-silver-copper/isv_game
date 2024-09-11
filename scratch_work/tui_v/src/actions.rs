@@ -591,10 +591,17 @@ impl App {
             ActionResult::Success(ga, reason) => match ga {
                 GameAction::Consume(subj, consum) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
+                    let object =
+                        ISV::decline_noun(&format!("{consum}"), &Case::Acc, &Number::Singular);
+                    let verbik = ISV::conjugate_verb(
+                        consum.consume_verb(),
+                        &person,
+                        &Number::Singular,
+                        &gender,
+                        &Tense::Present,
+                    );
 
-                    let verbik = ISV::l_participle("vypiti", &gender, &Number::Singular);
-
-                    format!("{pronoun} {verbik} {}", consum)
+                    format!("{pronoun} {verbik} {}", object.0)
                 }
                 GameAction::Drop(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
