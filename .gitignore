@@ -12,3 +12,5 @@ scratch_work/latin_macroquad/Cargo.lock
 scratch_work/assets/lore
 /scratch_work/tui_v/target
 /scratch_work/isv2/target
+/scratch_work/core_isv/target
+scratch_work/core_isv/Cargo.lock
