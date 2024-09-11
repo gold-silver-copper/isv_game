@@ -48,11 +48,36 @@ pub enum ItemType {
 }
 #[derive(Display, PartialEq, Clone)]
 pub enum Consumable {
-    HealthPotion,
-    StrengthPotion,
-    IntPotion,
-    SpeedPotion,
+    Lěkaŕstvo,
+
     Pivo,
+}
+
+impl Consumable {
+    pub fn health_effect(&self) -> i32 {
+        match self {
+            Consumable::Lěkaŕstvo => 20,
+            Consumable::Pivo => 5,
+        }
+    }
+    pub fn strength_effect(&self) -> i32 {
+        match self {
+            Consumable::Lěkaŕstvo => 0,
+            Consumable::Pivo => 1,
+        }
+    }
+    pub fn int_effect(&self) -> i32 {
+        match self {
+            Consumable::Lěkaŕstvo => 0,
+            Consumable::Pivo => 0,
+        }
+    }
+    pub fn speed_effect(&self) -> i32 {
+        match self {
+            Consumable::Lěkaŕstvo => 0,
+            Consumable::Pivo => 0,
+        }
+    }
 }
 
 impl EntityType {

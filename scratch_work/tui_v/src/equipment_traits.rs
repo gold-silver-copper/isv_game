@@ -82,6 +82,7 @@ impl Weapon {
 }
 pub trait WeaponTrait {
     fn damage(&self) -> i32;
+    fn damage_type(&self) -> DamageType;
 }
 
 impl WeaponTrait for Weapon {
@@ -89,6 +90,12 @@ impl WeaponTrait for Weapon {
         match self {
             Weapon::Meč => 1,
             Weapon::Bulava => 2,
+        }
+    }
+    fn damage_type(&self) -> DamageType {
+        match self {
+            Weapon::Meč => DamageType::Sharp,
+            Weapon::Bulava => DamageType::Blunt,
         }
     }
 }
@@ -110,6 +117,14 @@ impl WeaponTrait for RangedWeapon {
             RangedWeapon::Pråšča => 20,
             RangedWeapon::Drotik => 10,
             RangedWeapon::Oščěp => 40,
+        }
+    }
+    fn damage_type(&self) -> DamageType {
+        match self {
+            RangedWeapon::Lųk => DamageType::Sharp,
+            RangedWeapon::Pråšča => DamageType::Blunt,
+            RangedWeapon::Drotik => DamageType::Sharp,
+            RangedWeapon::Oščěp => DamageType::Sharp,
         }
     }
 }

@@ -408,16 +408,18 @@ impl App {
         )
     }
     pub fn consume_consumable(&mut self, subject_eid: &EntityID, item: Consumable) -> ActionResult {
-        match item {
-            Consumable::Pivo => {}
-            Consumable::HealthPotion => {}
-            Consumable::SpeedPotion => {}
-            Consumable::StrengthPotion => {}
-            Consumable::IntPotion => {}
+        if let Some(hel) = self.components.healths.get_mut(subject_eid) {
+            hel.current_health += item.health_effect();
+            if hel.current_health > hel.max_health {
+                hel.current_health = hel.max_health;
+            }
         }
-        return ActionResult::Failure(
+        if let Some(hel) = self.components.stats.get_mut(subject_eid) {
+            hel.strength += item.strength_effect();
+        }
+        return ActionResult::Success(
             GameAction::Consume(subject_eid.clone(), item),
-            FailType::Normal,
+            SuccessType::Normal,
         );
     }
 
