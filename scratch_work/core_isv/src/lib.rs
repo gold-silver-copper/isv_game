@@ -5,20 +5,25 @@ pub enum DrinkType {
     Samogon((Box<dyn Alcoholizable>)),
 }
 
-pub enum GrainType {
+pub enum Words {
     Pšenica, //wheat
     Jęčmenj, //barley
     Ržito,   //Rye
+    Grozd́je, //grape
+    Jablȯko, //apple
+    Ježina,  //blackbeery
+    Kųpina,  //bramble
 }
 
-pub enum BerryType {
-    Grozd́je,
-    Jablȯko,
-    Ježina,
-    Kųpina,
-}
+pub enum GrainType {}
+
+pub enum BerryType {}
 
 pub trait Alcoholizable {}
+pub trait Tree {}
+pub trait Grass {}
+pub trait Fruit {}
+pub trait Berry {}
 
 impl Alcoholizable for BerryType {}
 impl Alcoholizable for GrainType {}
