@@ -79,6 +79,12 @@ impl Weapon {
             _ => 1,
         }
     }
+    pub fn weapon_length(&self) ->i32 {
+        match self {
+            Weapon::Meč => 4,
+            Weapon::Bulava => 4,
+        }
+    }
 }
 pub trait WeaponTrait {
     fn damage(&self) -> i32;

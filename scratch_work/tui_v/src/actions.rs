@@ -181,16 +181,35 @@ impl App {
     }
 
     pub fn attacker_melee_damage(&mut self, subject_eid: &EntityID) -> i32 {
-        let mut attacker_damage = 1;
+        let mut attacker_str = 0;
+        let mut attacker_speed = 0;
+
+        let mut attacker_damage = 0;
         if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
-            attacker_damage += self.small_rng.gen_range(0..=attacker_stats.strength + 1);
+            attacker_str = attacker_stats.strength.clone();
+            attacker_speed = attacker_stats.speed.clone();
+
         }
+
         if let Some(equi) = self.components.equipments.get(subject_eid) {
             for itemik in &equi.equipped {
                 if let EntityType::Item(ItemType::Weapon(wepik)) = self.get_ent_type(itemik) {
+                    match wepik.damage_type() {
+                        DamageType::Sharp => {
+                            attacker_damage +=
+                                self.small_rng.gen_range(0..=(attacker_speed + 2) / 2);
+                        }
+                        DamageType::Blunt => {
+                            attacker_damage += self.small_rng.gen_range(0..=attacker_str + 1);
+                        }
+                    }
                     attacker_damage += self.small_rng.gen_range(0..=wepik.damage() + 1);
                 }
             }
+        }
+        //attack with fists
+        if attacker_damage == 0 {
+            attacker_damage += self.small_rng.gen_range(0..=attacker_str + 1);
         }
 
         attacker_damage
@@ -216,6 +235,13 @@ impl App {
         if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
             attacker_dodge += self.small_rng.gen_range(0..=attacker_stats.speed + 1)
                 + (attacker_stats.intelligence / 3);
+        }
+        if let Some(equi) = self.components.equipments.get(subject_eid) {
+            for itemik in &equi.equipped {
+                if let EntityType::Item(ItemType::Weapon(wepik)) = self.get_ent_type(itemik) {
+                  attacker_dodge += wepik.weapon_length();
+                }
+            }
         }
         attacker_dodge
     }
