@@ -26,6 +26,35 @@ pub enum AnimalType {
     Gavran,
     Kos,
     Gųsę,
+    Vȯlk,
+    Vȯlkolak,
+    Vȯlkodav,
+}
+
+impl AnimalType {
+    pub fn max_stat(&self) -> i64 {
+        match self {
+            AnimalType::Los => 50,    // Moose (Los) are large and strong animals
+            AnimalType::Jelenj => 45, // Deer (Jelenj) are strong but not as powerful as moose
+            AnimalType::Krava => 40,  // Cow (Krava) is strong, but slower and less agile
+            AnimalType::Pes => 30,    // Dog (Pes) has moderate strength, with agility and speed
+            AnimalType::Vȯlk => 40,
+            AnimalType::Vȯlkolak => 80,
+            AnimalType::Vȯlkodav => 35,
+            AnimalType::Tigr => 60, // Tiger (Tigr) is incredibly strong and agile
+            AnimalType::Gad => 15,  // Reptile (Gad) has limited strength
+            AnimalType::Jaščer => 10, // Lizard (Jaščer) is small and not very strong
+            AnimalType::Iguana => 12, // Iguana has slightly more strength than smaller lizards
+            AnimalType::Vųž => 8,   // Snake (Vųž) is not very strong, but has other abilities
+            AnimalType::Žȯlv => 20, // Tortoise (Žȯlv) is slow but has some physical strength
+            AnimalType::Sova => 10, // Owl (Sova) has low physical strength but good agility
+            AnimalType::Vrabec => 5, // Sparrow (Vrabec) is small and weak
+            AnimalType::Vran => 15, // Crow (Vran) has moderate strength for a bird
+            AnimalType::Gavran => 18, // Raven (Gavran) is stronger than the crow
+            AnimalType::Kos => 8,   // Blackbird (Kos) is small and not strong
+            AnimalType::Gųsę => 25, // Goose (Gųsę) is surprisingly strong for its size
+        }
+    }
 }
 
 impl EntityType {

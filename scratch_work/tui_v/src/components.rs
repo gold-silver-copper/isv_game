@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use crate::*;
 
 #[derive(Default)]
@@ -32,7 +34,6 @@ pub struct Stats {
 //try again
 pub struct Health {
     pub current_health: i32,
-    pub max_health: i32,
 }
 pub struct Name {
     pub first_name: String,
@@ -49,10 +50,7 @@ impl Default for Name {
 
 impl Default for Health {
     fn default() -> Self {
-        Health {
-            current_health: 80,
-            max_health: 100,
-        }
+        Health { current_health: 1 }
     }
 }
 
@@ -114,21 +112,28 @@ impl App {
     }
     pub fn spawn_animal_at(&mut self, animal_type: &AnimalType, point: &MyPoint) -> EntityID {
         let eid = self.get_unique_eid();
+        let maxik = animal_type.max_stat();
+        let strength = self.small_rng.gen_range(1..=maxik + 1);
+        let intik = self.small_rng.gen_range(1..=maxik + 1);
+        let speedik = self.small_rng.gen_range(1..=maxik + 1);
         self.components.positions.insert(eid.clone(), point.clone());
         self.components
             .ent_types
             .insert(eid.clone(), EntityType::Animal(animal_type.clone()));
 
-        self.components
-            .healths
-            .insert(eid.clone(), Health::default());
+        self.components.healths.insert(
+            eid.clone(),
+            Health {
+                current_health: strength as i32 * 10,
+            },
+        );
 
         self.components.stats.insert(
             eid.clone(),
             Stats {
-                strength: 1,
-                speed: 1,
-                intelligence: 1,
+                strength: strength as i32,
+                speed: speedik as i32,
+                intelligence: intik as i32,
             },
         );
 

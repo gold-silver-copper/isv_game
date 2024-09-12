@@ -72,6 +72,12 @@ impl App {
             }
         }
     }
+    pub fn max_health_of_ent(&self, subject_eid: &EntityID) -> i32 {
+        if let Some(stats) = self.components.stats.get(subject_eid) {
+            return (stats.strength * 10);
+        }
+        1
+    }
 
     pub fn ranged_dodge(&mut self, subject_eid: &EntityID, object_eid: &EntityID) -> bool {
         let attacker_dodge = self.entity_dodge(subject_eid);
@@ -230,7 +236,7 @@ impl App {
         attacker_damage
     }
     pub fn entity_dodge(&mut self, subject_eid: &EntityID) -> i32 {
-        let mut attacker_dodge = self.small_rng.gen_range(0..7);
+        let mut attacker_dodge = self.small_rng.gen_range(0..20);
         if let Some(attacker_stats) = self.components.stats.get(subject_eid) {
             attacker_dodge += self.small_rng.gen_range(0..=attacker_stats.speed + 1)
                 + (attacker_stats.intelligence / 3);
@@ -433,10 +439,11 @@ impl App {
         )
     }
     pub fn consume_consumable(&mut self, subject_eid: &EntityID, item: Consumable) -> ActionResult {
+        let max_hel = self.max_health_of_ent(subject_eid);
         if let Some(hel) = self.components.healths.get_mut(subject_eid) {
             hel.current_health += item.health_effect();
-            if hel.current_health > hel.max_health {
-                hel.current_health = hel.max_health;
+            if hel.current_health > max_hel {
+                hel.current_health = max_hel;
             }
         }
         if let Some(hel) = self.components.stats.get_mut(subject_eid) {

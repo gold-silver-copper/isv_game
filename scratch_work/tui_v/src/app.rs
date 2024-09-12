@@ -324,7 +324,7 @@ impl App {
         )
         .split(area);
         let mut cur_hel = 0;
-        let mut max_hel = 1;
+        let max_hel = self.max_health_of_ent(&self.local_player_id);
 
         if let Some(stats) = self.components.stats.get(&self.local_player_id) {
             let stats_string = format!(
@@ -340,7 +340,6 @@ impl App {
         let ent_name = self.get_entity_name(&self.local_player_id);
         if let Some(health) = self.components.healths.get(&self.local_player_id) {
             cur_hel = health.current_health.clone();
-            max_hel = health.max_health.clone();
         }
         let title = App::title_block(&ent_name);
 
