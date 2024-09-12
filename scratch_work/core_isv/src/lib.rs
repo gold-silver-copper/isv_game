@@ -1,23 +1,29 @@
-pub enum DrinkType {
-    Pivo((Box<dyn Alcoholizable>)),
-    Vino((Box<dyn Alcoholizable>)),
-    Vodka((Box<dyn Alcoholizable>)),
-    Samogon((Box<dyn Alcoholizable>)),
-}
+use strum::Display;
 
-pub enum Words {
+#[derive(Display, PartialEq, Clone)]
+pub enum AlcoholicDrink<T: Alcoholizable> {
+    Pivo(T),
+    Vino(T),
+    Vodka(T),
+    Samogon(T),
+}
+#[derive(Display, PartialEq, Clone)]
+pub enum GrainType {
     Pšenica, //wheat
     Jęčmenj, //barley
     Ržito,   //Rye
-    Grozd́je, //grape
-    Jablȯko, //apple
-    Ježina,  //blackbeery
-    Kųpina,  //bramble
 }
-
-pub enum GrainType {}
-
-pub enum BerryType {}
+#[derive(Display, PartialEq, Clone)]
+pub enum BerryType {
+    Grozd́je,
+    Jablȯko,
+    Ježina,
+    Kųpina,
+}
+#[derive(Display, PartialEq, Clone)]
+pub enum RootVegetableType {
+    Kartofelj,
+}
 
 pub trait Alcoholizable {}
 pub trait Tree {}

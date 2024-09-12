@@ -7,9 +7,15 @@ pub enum EntityType {
     Animal(AnimalType),
 }
 
+pub enum Profession {
+    Vęzėnj,
+    Zaključiĺnik,
+    Ubijca,
+}
+
 #[derive(Display, PartialEq, Clone)]
 pub enum AnimalType {
-    Los,
+    Loś,
 
     Jelenj,
     Krava,
@@ -26,6 +32,7 @@ pub enum AnimalType {
     Gavran,
     Kos,
     Gųsę,
+    Gųś,
     Vȯlk,
     Vȯlkolak,
     Vȯlkodav,
@@ -34,7 +41,8 @@ pub enum AnimalType {
 impl AnimalType {
     pub fn max_stat(&self) -> i64 {
         match self {
-            AnimalType::Los => 50,    // Moose (Los) are large and strong animals
+            AnimalType::Loś => 50, // Moose (Los) are large and strong animals
+            AnimalType::Gųś => 20,
             AnimalType::Jelenj => 45, // Deer (Jelenj) are strong but not as powerful as moose
             AnimalType::Krava => 40,  // Cow (Krava) is strong, but slower and less agile
             AnimalType::Pes => 30,    // Dog (Pes) has moderate strength, with agility and speed

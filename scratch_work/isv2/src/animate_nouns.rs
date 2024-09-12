@@ -1,5 +1,5 @@
 pub const ANIMATE_ANIMALS: &[&str] = &["konj"];
-pub const ANIMATE_JOBS: &[&str] = &["sluga", "sudja"];
+pub const ANIMATE_JOBS: &[&str] = &["sluga", "sudja", "vęzėnj", "zaključiĺnik", "ubijca"];
 pub const MALE_NAMES: &[&str] = &[
     "ivan",
     "aleksandr",
