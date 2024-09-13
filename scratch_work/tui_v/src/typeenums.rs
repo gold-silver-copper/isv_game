@@ -8,9 +8,26 @@ pub enum EntityType {
 }
 
 pub enum Profession {
-    Vęzėnj,
-    Zaključiĺnik,
-    Ubijca,
+    Žebrak,       //beggar
+    Prośak,       //beggar
+    Vęzėnj,       //prisoner
+    Zaključiĺnik, //prisoner
+    Ubijca,       //killer
+    Rycaŕ,        //knight
+    Vitęź,        //knight
+    Varvar,       //barbarian
+    Trgovec,
+    Kupec,
+    Rybak,      // fisherman
+    Kovač,      // blacksmith
+    Zemjedělec, // farmer
+    Lovec,      // hunter
+    Mųdrec,     // sage/wizard
+    Čarovnik,   // sorcerer/mage
+    Dezerter,
+
+    Žertvaŕ, // sacrificial priest
+    Volhvaŕ, // sorcerer-priest
 }
 
 #[derive(Display, PartialEq, Clone)]

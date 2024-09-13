@@ -563,12 +563,8 @@ impl App {
             Person::First => "ja".to_string(),
         };
 
-        if let Some(gender) = self.components.genders.get(subj) {
-            (pn, gender.clone(), person)
-        } else {
-            let genik = ISV::guess_gender(&pn);
-            (pn, genik, person)
-        }
+        let genik = ISV::guess_gender(&pn);
+        (pn, genik, person)
     }
     pub fn pronoun_for_act_obj(&self, subj: &EntityID) -> (String, Gender, Person) {
         let person = if subj == &self.local_player_id {
@@ -585,12 +581,8 @@ impl App {
             Person::First => "ja".to_string(),
         };
 
-        if let Some(gender) = self.components.genders.get(subj) {
-            (pn, gender.clone(), person)
-        } else {
-            let genik = ISV::guess_gender(&self.get_entity_name(&subj));
-            (pn, genik, person)
-        }
+        let genik = ISV::guess_gender(&self.get_entity_name(&subj));
+        (pn, genik, person)
     }
 
     pub fn generate_action_result_string(&self, act_resut: ActionResult) -> String {

@@ -8,8 +8,7 @@ pub struct ComponentHolder {
     pub ent_types: HashMap<EntityID, EntityType>,
     pub equipments: HashMap<EntityID, Equipment>,
     pub healths: HashMap<EntityID, Health>,
-    pub genders: HashMap<EntityID, Gender>,
-    pub names: HashMap<EntityID, Name>,
+
     pub stats: HashMap<EntityID, Stats>,
 }
 
@@ -68,13 +67,7 @@ impl App {
         let ent_typ = self.get_ent_type(subj);
 
         let stringik = match ent_typ {
-            EntityType::Human => {
-                if let Some(boop) = self.components.names.get(subj) {
-                    boop.first_name.clone()
-                } else {
-                    "czlovek".into()
-                }
-            }
+            EntityType::Human => "czlovek".into(),
             EntityType::Animal(anim) => {
                 format!("{anim}")
             }
@@ -152,16 +145,14 @@ impl App {
         self.components
             .ent_types
             .insert(eid.clone(), EntityType::Human);
-        self.components
-            .genders
-            .insert(eid.clone(), Gender::Masculine);
+
         self.components
             .equipments
             .insert(eid.clone(), Equipment::default());
         self.components
             .healths
             .insert(eid.clone(), Health::default());
-        self.components.names.insert(eid.clone(), Name::default());
+
         self.components.stats.insert(
             eid.clone(),
             Stats {
@@ -182,13 +173,7 @@ impl App {
     }
     pub fn spawn_player_at(&mut self, point: &MyPoint) -> EntityID {
         let pid = self.spawn_human_at(point);
-        self.components.names.insert(
-            pid.clone(),
-            Name {
-                first_name: "Kisa".into(),
-                last_name: "Milov".into(),
-            },
-        );
+
         let iid = self.create_item(ItemType::Weapon(Weapon::Meč));
         let iid2 = self.create_item(ItemType::Clothing(Clothing::Toga));
         let iid3 = self.create_item(ItemType::Weapon(Weapon::Bulava));
