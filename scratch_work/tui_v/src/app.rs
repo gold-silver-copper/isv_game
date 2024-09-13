@@ -104,8 +104,8 @@ impl App {
 
         self.local_player_id = self.spawn_player_at(&pik);
 
-        let ai_guy = self.spawn_human_at(&(7, 9), Profession::Rybak);
-        let ai_guy = self.spawn_human_at(&(3, 4), Profession::Rybak);
+        let ai_guy = self.spawn_human_at(&(7, 9), Profession::Sluga);
+        let ai_guy = self.spawn_human_at(&(3, 4), Profession::Sluga);
         let ai_guy = self.spawn_human_at(&(7, 7), Profession::Rybak);
         let iid3 = self.create_item(ItemType::Weapon(Weapon::Bulava));
         let iid4 = self.create_item(ItemType::Clothing(Clothing::Helma));

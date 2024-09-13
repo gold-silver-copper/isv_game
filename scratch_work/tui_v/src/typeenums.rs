@@ -30,10 +30,87 @@ pub enum Profession {
     Volhvaŕ, // sorcerer-priest
 }
 
+impl Profession {
+    pub fn random_weapon(&self) -> Vec<Weapon> {
+        match self {
+            Profession::Sluga => vec![Weapon::Lopata, Weapon::Prųt], // basic tools
+            Profession::Žebrak => vec![Weapon::Kyj],                 // weak
+            Profession::Prośak => vec![Weapon::Prųt],                // beggar
+            Profession::Vęzėnj => vec![Weapon::Sŕp],                 // prisoner
+            Profession::Zaključiĺnik => vec![Weapon::Nož],           // prisoner
+            Profession::Ubijca => vec![Weapon::Nož, Weapon::Kyj],    // killer
+            Profession::Rycaŕ => vec![Weapon::Meč, Weapon::Ščit],    // knight
+            Profession::Vitęź => vec![Weapon::Sablja, Weapon::Ščit], // knight
+            Profession::Varvar => vec![Weapon::Sěkyra, Weapon::Kyj], // barbarian
+            Profession::Trgovec => vec![Weapon::Nož],                // merchant
+            Profession::Kupec => vec![Weapon::Nož],                  // merchant
+            Profession::Rybak => vec![Weapon::Sŕp, Weapon::Vidla],   // fisherman
+            Profession::Kovač => vec![Weapon::Sěkyra, Weapon::Meč],  // blacksmith
+            Profession::Zemjedělec => vec![Weapon::Vidla, Weapon::Lopata], // farmer
+            Profession::Lovec => vec![Weapon::Kopje, Weapon::Nož],   // hunter
+            Profession::Mųdrec => vec![Weapon::Žezlo, Weapon::Posoh], // sage/wizard
+            Profession::Čarovnik => vec![Weapon::Posoh, Weapon::Bič], // sorcerer/mage
+            Profession::Dezerter => vec![Weapon::Cěp, Weapon::Lancuh], // deserter
+            Profession::Žertvaŕ => vec![Weapon::Bič, Weapon::Meč],   // sacrificial priest
+            Profession::Volhvaŕ => vec![Weapon::Žezlo, Weapon::Bulava], // sorcerer-priest
+        }
+    }
+    pub fn random_equip(&self) -> Vec<Clothing> {
+        match self {
+            Profession::Sluga => vec![Clothing::Plašč, Clothing::Suknja], // basic
+            Profession::Žebrak => vec![Clothing::Plašč],                  // weak
+            Profession::Prośak => vec![Clothing::Košulja, Clothing::Šal], // beggar
+            Profession::Vęzėnj => vec![Clothing::Pojas, Clothing::Riza],  // prisoner
+            Profession::Zaključiĺnik => vec![Clothing::Toga, Clothing::Pojas], // prisoner
+            Profession::Ubijca => vec![Clothing::Narųčka, Clothing::Helma, Clothing::Pŕstenj], // killer
+            Profession::Rycaŕ => vec![Clothing::Šlěm, Clothing::Koljčuga, Clothing::Pancyŕ], // knight
+            Profession::Vitęź => vec![Clothing::Helma, Clothing::Brȯnja, Clothing::Koljce], // knight
+            Profession::Varvar => vec![Clothing::Kožuh, Clothing::Pojas, Clothing::Helma], // barbarian
+            Profession::Trgovec => vec![Clothing::Frak, Clothing::Našijnik], // merchant
+            Profession::Kupec => vec![Clothing::Frak, Clothing::Ogrlica],    // merchant
+            Profession::Rybak => vec![Clothing::Šapka, Clothing::Košulja],   // fisherman
+            Profession::Kovač => vec![Clothing::Šlěm, Clothing::Narųčka],    // blacksmith
+            Profession::Zemjedělec => vec![Clothing::Plåtno, Clothing::Valenky], // farmer
+            Profession::Lovec => vec![Clothing::Šal, Clothing::Sandaly, Clothing::Kapjušon], // hunter
+            Profession::Mųdrec => vec![Clothing::Toga, Clothing::Monisto, Clothing::Šata], // sage/wizard
+            Profession::Čarovnik => vec![Clothing::Toga, Clothing::Našijnik, Clothing::Vualj], // sorcerer/mage
+            Profession::Dezerter => vec![Clothing::Pojas, Clothing::Plašč], // deserter
+            Profession::Žertvaŕ => vec![Clothing::Monisto, Clothing::Čepec, Clothing::Košulja], // sacrificial priest
+            Profession::Volhvaŕ => vec![Clothing::Šata, Clothing::Našijnik, Clothing::Ogrlica], // sorcerer-priest
+        }
+    }
+
+    pub fn skill_level(&self) -> i64 {
+        match self {
+            Profession::Sluga => 20,        // basic
+            Profession::Žebrak => 10,       // weak
+            Profession::Prośak => 15,       // very weak
+            Profession::Vęzėnj => 25,       // low strength
+            Profession::Zaključiĺnik => 30, // medium-low
+            Profession::Ubijca => 40,       // rather strong
+            Profession::Rycaŕ => 100,       // very strong
+            Profession::Vitęź => 95,        // nearly as strong
+            Profession::Varvar => 80,       // strong
+            Profession::Trgovec => 35,      // moderate
+            Profession::Kupec => 35,        // moderate
+            Profession::Rybak => 20,        // basic
+            Profession::Kovač => 50,        // skilled
+            Profession::Zemjedělec => 25,   // basic to moderate
+            Profession::Lovec => 60,        // experienced
+            Profession::Mųdrec => 70,       // wise and strong
+            Profession::Čarovnik => 85,     // powerful mage
+            Profession::Dezerter => 30,     // untrustworthy but capable
+            Profession::Žertvaŕ => 50,      // experienced priest
+            Profession::Volhvaŕ => 75,      // highly skilled sorcerer-priest
+        }
+    }
+}
+
 #[derive(Display, PartialEq, Clone)]
 pub enum AnimalType {
     Loś,
-
+    Běs,
+    Djavȯl,
     Jelenj,
     Krava,
     Pes,
@@ -60,6 +137,8 @@ impl AnimalType {
         match self {
             AnimalType::Loś => 50, // Moose (Los) are large and strong animals
             AnimalType::Gųś => 20,
+            AnimalType::Djavȯl => 300,
+            AnimalType::Běs => 150,
             AnimalType::Jelenj => 45, // Deer (Jelenj) are strong but not as powerful as moose
             AnimalType::Krava => 40,  // Cow (Krava) is strong, but slower and less agile
             AnimalType::Pes => 30,    // Dog (Pes) has moderate strength, with agility and speed

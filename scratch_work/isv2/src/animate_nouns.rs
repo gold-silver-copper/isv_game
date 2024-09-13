@@ -19,6 +19,8 @@ pub const ANIMATE_ANIMALS: &[&str] = &[
     "vȯlk",
     "vȯlkolak",
     "vȯlkodav",
+    "djavȯl",
+    "běs",
 ];
 
 pub const ANIMATE_JOBS: &[&str] = &[

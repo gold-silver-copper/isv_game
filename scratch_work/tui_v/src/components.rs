@@ -141,24 +141,48 @@ impl App {
     }
     pub fn spawn_human_at(&mut self, point: &MyPoint, profession: Profession) -> EntityID {
         let eid = self.get_unique_eid();
+        let maxik = profession.skill_level();
+        let strength = self.small_rng.gen_range(1..=maxik + 1);
+        let intik = self.small_rng.gen_range(1..=maxik + 1);
+        let speedik = self.small_rng.gen_range(1..=maxik + 1);
+        let equipik = profession.random_equip();
+        let wepik = profession.random_weapon();
         self.components.positions.insert(eid.clone(), point.clone());
         self.components
             .ent_types
             .insert(eid.clone(), EntityType::Human(profession));
 
-        self.components
-            .equipments
-            .insert(eid.clone(), Equipment::default());
-        self.components
-            .healths
-            .insert(eid.clone(), Health::default());
+        let mut equi = Equipment::default();
+
+        for wep in wepik {
+            if self.small_rng.gen_bool(0.3) {
+                equi.equipped
+                    .insert(self.create_item(ItemType::Weapon(wep)));
+            }
+        }
+
+        for arm in equipik {
+            if self.small_rng.gen_bool(0.3) {
+                equi.equipped
+                    .insert(self.create_item(ItemType::Clothing(arm)));
+            }
+        }
+
+        self.components.equipments.insert(eid.clone(), equi);
+
+        self.components.healths.insert(
+            eid.clone(),
+            Health {
+                current_health: strength as i32 * 10,
+            },
+        );
 
         self.components.stats.insert(
             eid.clone(),
             Stats {
-                strength: 1,
-                speed: 1,
-                intelligence: 1,
+                strength: strength as i32,
+                speed: speedik as i32,
+                intelligence: intik as i32,
             },
         );
 
