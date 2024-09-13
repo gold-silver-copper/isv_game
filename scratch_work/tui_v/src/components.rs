@@ -67,7 +67,7 @@ impl App {
         let ent_typ = self.get_ent_type(subj);
 
         let stringik = match ent_typ {
-            EntityType::Human => "czlovek".into(),
+            EntityType::Human(pro) => format!("{pro}"),
             EntityType::Animal(anim) => {
                 format!("{anim}")
             }
@@ -139,12 +139,12 @@ impl App {
 
         eid.clone()
     }
-    pub fn spawn_human_at(&mut self, point: &MyPoint) -> EntityID {
+    pub fn spawn_human_at(&mut self, point: &MyPoint, profession: Profession) -> EntityID {
         let eid = self.get_unique_eid();
         self.components.positions.insert(eid.clone(), point.clone());
         self.components
             .ent_types
-            .insert(eid.clone(), EntityType::Human);
+            .insert(eid.clone(), EntityType::Human(profession));
 
         self.components
             .equipments
@@ -172,7 +172,7 @@ impl App {
         eid.clone()
     }
     pub fn spawn_player_at(&mut self, point: &MyPoint) -> EntityID {
-        let pid = self.spawn_human_at(point);
+        let pid = self.spawn_human_at(point, Profession::Rybak);
 
         let iid = self.create_item(ItemType::Weapon(Weapon::Meč));
         let iid2 = self.create_item(ItemType::Clothing(Clothing::Toga));

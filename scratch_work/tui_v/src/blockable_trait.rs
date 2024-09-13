@@ -24,7 +24,7 @@ impl Blockable for Furniture {
 impl Blockable for EntityType {
     fn blocks_movement(&self) -> bool {
         match &self {
-            EntityType::Human => true, // Default behavior, all entities block movement
+            EntityType::Human(_) => true, // Default behavior, all entities block movement
             EntityType::Item(_) => false, // Default behavior, all itesm dont block movement
             EntityType::Animal(_) => true,
         }

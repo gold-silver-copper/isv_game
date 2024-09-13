@@ -104,9 +104,9 @@ impl App {
 
         self.local_player_id = self.spawn_player_at(&pik);
 
-        let ai_guy = self.spawn_human_at(&(7, 9));
-        let ai_guy = self.spawn_human_at(&(3, 4));
-        let ai_guy = self.spawn_human_at(&(7, 7));
+        let ai_guy = self.spawn_human_at(&(7, 9), Profession::Rybak);
+        let ai_guy = self.spawn_human_at(&(3, 4), Profession::Rybak);
+        let ai_guy = self.spawn_human_at(&(7, 7), Profession::Rybak);
         let iid3 = self.create_item(ItemType::Weapon(Weapon::Bulava));
         let iid4 = self.create_item(ItemType::Clothing(Clothing::Helma));
         let iid5 = self.create_item(ItemType::Clothing(Clothing::Toga));
@@ -179,8 +179,11 @@ impl App {
         let mut conscious_ents = Vec::new();
 
         for boop in &self.components.ent_types {
-            if (boop.1 == &EntityType::Human) && (boop.0 != &self.local_player_id) {
-                conscious_ents.push(boop.0.clone());
+            if (boop.0 != &self.local_player_id) {
+                match boop.1 {
+                    EntityType::Human(_) => conscious_ents.push(boop.0.clone()),
+                    _ => (),
+                }
             }
         }
 
@@ -383,7 +386,7 @@ impl App {
                         .expect("EVERY ITEM MUST HAVE AN ENTITY TYPE");
 
                     match item_type {
-                        EntityType::Human => (),
+                        EntityType::Human(_) => (),
                         EntityType::Animal(_) => (),
                         EntityType::Item(itemik) => match itemik {
                             ItemType::Weapon(_) => weapons.push(itemik.item_name()),
@@ -544,7 +547,7 @@ impl App {
                 .get(itik)
                 .expect("ent type must have");
             let itname = match typik {
-                EntityType::Human => self.get_entity_name(itik),
+                EntityType::Human(_) => self.get_entity_name(itik),
                 EntityType::Animal(anim) => format!("{anim}"),
                 EntityType::Item(itemik) => itemik.item_name(),
             };
@@ -597,7 +600,7 @@ impl App {
             for boop in ent_vox.entity_set.iter() {
                 let booptype = self.get_ent_type(boop);
                 match booptype {
-                    EntityType::Human => {}
+                    EntityType::Human(_) => {}
                     EntityType::Animal(_) => {}
                     EntityType::Item(x) => {
                         evec.push(boop.clone());

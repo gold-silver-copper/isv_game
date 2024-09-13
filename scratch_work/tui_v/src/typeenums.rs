@@ -2,12 +2,13 @@ use crate::*;
 
 #[derive(Display, PartialEq, Clone)]
 pub enum EntityType {
-    Human,
+    Human(Profession),
     Item(ItemType),
     Animal(AnimalType),
 }
-
+#[derive(Display, PartialEq, Clone)]
 pub enum Profession {
+    Sluga,
     Žebrak,       //beggar
     Prośak,       //beggar
     Vęzėnj,       //prisoner
@@ -25,7 +26,6 @@ pub enum Profession {
     Mųdrec,     // sage/wizard
     Čarovnik,   // sorcerer/mage
     Dezerter,
-
     Žertvaŕ, // sacrificial priest
     Volhvaŕ, // sorcerer-priest
 }
@@ -85,7 +85,7 @@ impl AnimalType {
 impl EntityType {
     pub fn is_attackable(&self) -> bool {
         match self {
-            EntityType::Human => true,
+            EntityType::Human(_) => true,
             EntityType::Animal(_) => true,
             EntityType::Item(_) => false,
         }

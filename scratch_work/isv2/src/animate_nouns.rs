@@ -1,5 +1,49 @@
-pub const ANIMATE_ANIMALS: &[&str] = &["konj"];
-pub const ANIMATE_JOBS: &[&str] = &["sluga", "sudja", "vęzėnj", "zaključiĺnik", "ubijca"];
+pub const ANIMATE_ANIMALS: &[&str] = &[
+    "loś",
+    "jelenj",
+    "krava",
+    "pes",
+    "tigr",
+    "gad",
+    "jaščer",
+    "iguana",
+    "vųž",
+    "žȯlv",
+    "sova",
+    "vrabec",
+    "vran",
+    "gavran",
+    "kos",
+    "gųsę",
+    "gųś",
+    "vȯlk",
+    "vȯlkolak",
+    "vȯlkodav",
+];
+
+pub const ANIMATE_JOBS: &[&str] = &[
+    "sluga",
+    "žebrak",
+    "prośak",
+    "vęzėnj",
+    "zaključiĺnik",
+    "ubijca",
+    "rycaŕ",
+    "vitęź",
+    "varvar",
+    "trgovec",
+    "kupec",
+    "rybak",
+    "kovač",
+    "zemjedělec",
+    "lovec",
+    "mųdrec",
+    "čarovnik",
+    "dezerter",
+    "žertvaŕ",
+    "volhvaŕ",
+];
+
 pub const MALE_NAMES: &[&str] = &[
     "ivan",
     "aleksandr",
