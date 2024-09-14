@@ -1,4 +1,6 @@
 use crate::*;
+use noise::utils::*;
+use noise::*;
 
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
@@ -6,48 +8,32 @@ pub struct GameMap {
 
 impl Default for GameMap {
     fn default() -> Self {
+        let basicmulti = Billow::<Perlin>::default();
+        let meow = PlaneMapBuilder::new(basicmulti).build();
+
         let mut batchvec = Vec::new();
         for x in 0..MAP_SIZE {
             for y in 0..MAP_SIZE {
-                let val = x as f32 / 8.0;
-                let floor = if val > 0.2 {
-                    GRAVEL_FLOOR
-                } else if val > 0.0 {
-                    GRAVEL_FLOOR
-                } else if val > -0.9 {
-                    GRAVEL_FLOOR
+                let val = meow.get_value(x as usize, y as usize);
+                let floor = if val > 0.0 {
+                    GOLD_FLOOR
+                } else if val > -0.5 {
+                    SILVER_FLOOR
                 } else {
-                    GRAVEL_FLOOR //water
+                    COPPER_FLOOR //water
                 };
-
-                if x == 15 && y > 8 {
-                    //Some(WALL_FURNITURE),
-                    batchvec.push(Voxel {
-                        floor: Some(floor),
-                        furniture: Some(WOOD_WALL),
-                        roof: None,
-                        entity_set: Vec::new(),
-                        voxel_pos: (x, y),
-                    });
-                } else if x < 15 && y > 8 {
-                    //Some(WALL_FURNITURE),
-                    batchvec.push(Voxel {
-                        floor: Some(floor),
-                        furniture: None,
-                        roof: Some(TEGULA_ROOF), //should have roof here
-                        entity_set: Vec::new(),
-                        voxel_pos: (x, y),
-                    });
+                let wall = if val > 0.3 {
+                    Some(WOOD_WALL)
                 } else {
-                    //Some(WALL_FURNITURE),
-                    batchvec.push(Voxel {
-                        floor: Some(floor),
-                        furniture: None,
-                        roof: None,
-                        entity_set: Vec::new(),
-                        voxel_pos: (x, y),
-                    });
-                }
+                    None //water
+                };
+                batchvec.push(Voxel {
+                    floor: Some(floor),
+                    furniture: wall,
+                    roof: None,
+                    entity_set: Vec::new(),
+                    voxel_pos: (x, y),
+                });
             }
         }
 
@@ -180,7 +166,11 @@ impl GameMap {
                     } else if seen_tiles.contains(&bp) {
                         lv.to_graphic(false, ent_types)
                     } else {
-                        (" ".into(), Color::Black, Color::Black)
+                        (
+                            " ".into(),
+                            ratatui::style::Color::Black,
+                            ratatui::style::Color::Black,
+                        )
                     };
 
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;

@@ -33,11 +33,15 @@ pub const RANGED_ATTACK: char = 'f';
 //pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);
 
 pub const BASIC_WOOD_MATERIAL: Material = Material::Wood(Tree::Glinos);
-pub const BASIC_METAL_MATERIAL: Material = Material::Metal(Metal::Gold);
+pub const GOLD_METAL_MATERIAL: Material = Material::Metal(Metal::Gold);
+pub const SILVER_METAL_MATERIAL: Material = Material::Metal(Metal::Silver);
+pub const COPPER_METAL_MATERIAL: Material = Material::Metal(Metal::Copper);
 
 pub const WOOD_WALL: Furniture = Furniture::Wall(BASIC_WOOD_MATERIAL);
-pub const TEGULA_ROOF: Roof = Roof::Tegula(BASIC_METAL_MATERIAL);
-pub const GRAVEL_FLOOR: Floor = Floor::Gravel(BASIC_METAL_MATERIAL);
+pub const TEGULA_ROOF: Roof = Roof::Tegula(GOLD_METAL_MATERIAL);
+pub const GOLD_FLOOR: Floor = Floor::Gravel(GOLD_METAL_MATERIAL);
+pub const SILVER_FLOOR: Floor = Floor::Gravel(SILVER_METAL_MATERIAL);
+pub const COPPER_FLOOR: Floor = Floor::Gravel(COPPER_METAL_MATERIAL);
 
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (String, RatColor, RatColor);

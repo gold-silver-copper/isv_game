@@ -48,6 +48,8 @@ pub enum Tree {
 #[derive(Clone, Debug, PartialEq)]
 pub enum Metal {
     Gold,
+    Silver,
+    Copper,
 }
 
 pub enum Furniture {
