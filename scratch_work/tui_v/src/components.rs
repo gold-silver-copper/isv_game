@@ -210,9 +210,9 @@ impl App {
             .equipments
             .get_mut(&pid)
             .expect("MUST HAVE QUEIP");
-        player_equip.arrows = 100;
+        player_equip.arrows = 200;
         player_equip.bullets = 20;
-        player_equip.javelins = 30;
+        player_equip.javelins = 300;
         player_equip.equipped.insert(iid);
         player_equip.inventory.insert(iid2);
         player_equip.inventory.insert(iid3);

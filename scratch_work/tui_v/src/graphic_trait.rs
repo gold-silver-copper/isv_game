@@ -59,7 +59,9 @@ impl GraphicElement for Furniture {
 impl GraphicElement for EntityType {
     fn fg_color(&self) -> RatColor {
         match &self {
-            _ => RatColor::White,
+            EntityType::Human(prof) => prof.color(),
+            EntityType::Item(itemik) => RatColor::Cyan,
+            EntityType::Animal(animalik) => animalik.color(),
         }
     }
     fn bg_color(&self) -> RatColor {

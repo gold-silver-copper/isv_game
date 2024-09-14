@@ -6,7 +6,7 @@ pub enum EntityType {
     Item(ItemType),
     Animal(AnimalType),
 }
-#[derive(Display, PartialEq, Clone)]
+#[derive(Display, PartialEq, Clone, EnumIter)]
 pub enum Profession {
     Sluga,
     Žebrak,       //beggar
@@ -106,7 +106,7 @@ impl Profession {
     }
 }
 
-#[derive(Display, PartialEq, Clone)]
+#[derive(Display, PartialEq, Clone, EnumIter)]
 pub enum AnimalType {
     Loś,
     Běs,
@@ -320,7 +320,7 @@ impl EntityType {
         match self {
             _ => {
                 let head_noun = format!("{}", self).to_lowercase();
-                //println!("{}",head_noun);
+
                 ComplexNoun {
                     head_noun,
                     ..ComplexNoun::default()
@@ -330,7 +330,7 @@ impl EntityType {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Display)]
+#[derive(Clone, Debug, PartialEq, Display, EnumIter)]
 pub enum Weapon {
     Meč,
     Bulava,
@@ -363,14 +363,14 @@ pub enum RangedWeapon {
     Oščěp,
     Drotik,
 }
-#[derive(Clone, Debug, PartialEq, Display)]
+#[derive(Clone, Debug, PartialEq, Display, EnumIter)]
 pub enum Ammo {
     Kulja(i32),
     Oščěp(i32),
     Strěla(i32),
     Drotik(i32),
 }
-#[derive(Clone, Debug, PartialEq, Display)]
+#[derive(Clone, Debug, PartialEq, Display, EnumIter)]
 pub enum Clothing {
     Toga,
     Helma,

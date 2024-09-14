@@ -18,4 +18,6 @@ interslavic-rs = { path = "../isv2" }
 pathfinding = "4.11.0"
 bracket-pathfinding = "0.8.7"
 noise = "0.9.0"
+
+
 #botanical-latin = "0.0.7"

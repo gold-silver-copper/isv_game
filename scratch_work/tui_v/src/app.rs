@@ -109,33 +109,32 @@ impl App {
 
         self.local_player_id = self.spawn_player_at(&pik);
 
-        let ai_guy = self.spawn_human_at(&(7, 9), Profession::Sluga);
-        let ai_guy = self.spawn_human_at(&(3, 4), Profession::Sluga);
-        let ai_guy = self.spawn_human_at(&(7, 7), Profession::Rybak);
-        let iid3 = self.create_item(ItemType::Weapon(Weapon::Bulava));
-        let iid4 = self.create_item(ItemType::Clothing(Clothing::Helma));
-        let iid5 = self.create_item(ItemType::Clothing(Clothing::Toga));
+        for x in 20..200 {
+            for y in 20..200 {
+                if self.small_rng.gen_bool(0.02) {
+                    for meow in Profession::iter() {
+                        if self.small_rng.gen_bool(0.02) {
+                            self.spawn_human_at(&(x, y), meow);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        for x in 10..MAP_SIZE {
+            for y in 10..MAP_SIZE {
+                if self.small_rng.gen_bool(0.02) {
+                    for meow in AnimalType::iter() {
+                        if self.small_rng.gen_bool(0.02) {
+                            self.spawn_animal_at(&meow, &(x, y));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
-        let ai_equip = self
-            .components
-            .equipments
-            .get_mut(&ai_guy)
-            .expect("MUST HAVE QUEIP");
-        ai_equip.equipped.insert(iid3);
-        ai_equip.equipped.insert(iid4);
-        ai_equip.equipped.insert(iid5);
-        ai_equip.arrows += 30;
         self.spawn_item_at(&(5, 6), ItemType::Ammo(Ammo::Drotik(50)));
-        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Meč));
-        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Meč));
-        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Meč));
-        self.spawn_item_at(&(5, 8), ItemType::Weapon(Weapon::Meč));
-        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
-        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
-        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Helma));
-        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
-        self.spawn_item_at(&(5, 9), ItemType::Clothing(Clothing::Toga));
-        self.spawn_animal_at(&AnimalType::Kos, &(2, 2));
 
         self.reload_ui();
     }
@@ -254,7 +253,24 @@ impl App {
                         }
                     }
                 }
-            } else {
+            } /*else {
+                  if self.small_rng.gen_bool(0.3) {
+                      self.action_vec
+                          .push(GameAction::Go(meow, CardinalDirection::West));
+                  } else if self.small_rng.gen_bool(0.3) {
+                      self.action_vec
+                          .push(GameAction::Go(meow, CardinalDirection::East));
+                  } else if self.small_rng.gen_bool(0.3) {
+                      self.action_vec
+                          .push(GameAction::Go(meow, CardinalDirection::South));
+                  } else if self.small_rng.gen_bool(0.3) {
+                      self.action_vec
+                          .push(GameAction::Go(meow, CardinalDirection::North));
+                  }
+              } */
+        }
+        for meow in stupid_ents {
+            if ents_visible_from_player.contains(&meow) {
                 if self.small_rng.gen_bool(0.3) {
                     self.action_vec
                         .push(GameAction::Go(meow, CardinalDirection::West));
@@ -268,21 +284,6 @@ impl App {
                     self.action_vec
                         .push(GameAction::Go(meow, CardinalDirection::North));
                 }
-            }
-        }
-        for meow in stupid_ents {
-            if self.small_rng.gen_bool(0.3) {
-                self.action_vec
-                    .push(GameAction::Go(meow, CardinalDirection::West));
-            } else if self.small_rng.gen_bool(0.3) {
-                self.action_vec
-                    .push(GameAction::Go(meow, CardinalDirection::East));
-            } else if self.small_rng.gen_bool(0.3) {
-                self.action_vec
-                    .push(GameAction::Go(meow, CardinalDirection::South));
-            } else if self.small_rng.gen_bool(0.3) {
-                self.action_vec
-                    .push(GameAction::Go(meow, CardinalDirection::North));
             }
         }
     }
@@ -312,7 +313,6 @@ impl App {
                 if let Some(sel_len) = self.item_list_state.selected_mut() {
                     if ((*sel_len >= boopik) && (boopik > 0)) {
                         *sel_len = boopik - 1;
-                        println!("boopik {boopik}");
                     }
                 }
             }
@@ -326,8 +326,6 @@ impl App {
         self.action_vec = Vec::new();
 
         for act in a_map {
-            //println!("moving");
-
             let act_result = match act {
                 GameAction::Go(subj_id, cd) => {
                     (subj_id.clone(), self.handle_movement(&subj_id, &cd))

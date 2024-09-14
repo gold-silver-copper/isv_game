@@ -22,7 +22,7 @@ impl Default for GameMap {
                 } else {
                     Floor::Sand
                 };
-                let wall = if val > 0.95 {
+                let wall = if val > 0.50 {
                     Some(Furniture::Tree)
                 } else {
                     None //water
@@ -144,9 +144,6 @@ impl GameMap {
                 FOV_RANGE,
                 self,
             );
-
-            //    println!("FOV IS {:#?}",fov);
-            //
 
             for lv in local_voxels {
                 let relative_point_x = lv.voxel_pos.0 - bottom_left_of_game_screen.0;

@@ -311,7 +311,6 @@ impl App {
         let xyik = cd.to_xyz();
         if let Some(e_pos) = self.components.positions.get_mut(subject_eid) {
             let destination = (e_pos.0 + xyik.0, e_pos.1 + xyik.1);
-            // println!("epos got");
 
             if let Some(dest_vox) = self.game_map.get_mut_voxel_at(&destination) {
                 //check for bump attack
@@ -327,7 +326,6 @@ impl App {
 
                 //no bump attack, then check if something blocks movement
                 if !dest_vox.blocks_movement(&self.components.ent_types) {
-                    // println!("dest no block");
                     dest_vox.entity_set.push(subject_eid.clone());
 
                     if let Some(origin_vox) = self.game_map.get_mut_voxel_at(e_pos) {
