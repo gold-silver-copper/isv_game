@@ -14,13 +14,19 @@ pub trait GraphicElement {
 impl GraphicElement for Floor {
     fn symbol(&self) -> String {
         match &self {
-            Floor::Gravel(_) => ".".into(),
+            Floor::Gravel => ".".into(),
+            Floor::Dirt => " ".into(),
+            Floor::Grass => "\"".into(),
+            Floor::Sand => ".".into(),
         }
     }
 
     fn fg_color(&self) -> RatColor {
         match &self {
-            Floor::Gravel(ear) => ear.color(),
+            Floor::Sand => RatColor::Rgb(234, 208, 168),
+            Floor::Dirt => RatColor::Rgb(107, 84, 40),
+            Floor::Gravel => RatColor::Rgb(97, 84, 65),
+            Floor::Grass => RatColor::Rgb(19, 109, 21),
         }
     }
 
@@ -33,39 +39,20 @@ impl GraphicElement for Floor {
 impl GraphicElement for Furniture {
     fn symbol(&self) -> String {
         match &self {
-            Furniture::Wall(_) => "#".into(),
+            Furniture::Wall => "#".into(),
+            Furniture::Tree => "♣".into(),
         }
     }
 
     fn fg_color(&self) -> RatColor {
         match &self {
-            Furniture::Wall(sm) => sm.color(),
+            Furniture::Wall => RatColor::Rgb(139, 105, 20),
+            Furniture::Tree => RatColor::Rgb(205, 170, 125),
         }
     }
 
     fn bg_color(&self) -> RatColor {
         dim(self.fg_color(), 0.8)
-    }
-}
-
-// Implementing the trait for Roof
-impl GraphicElement for Roof {
-    fn symbol(&self) -> String {
-        match &self {
-            Roof::Tegula(_) => "^".into(),
-        }
-    }
-
-    fn fg_color(&self) -> RatColor {
-        match &self {
-            Roof::Tegula(sm) => dim(sm.color(), 1.3),
-        }
-    }
-
-    fn bg_color(&self) -> RatColor {
-        match &self {
-            Roof::Tegula(sm) => sm.color(),
-        }
     }
 }
 

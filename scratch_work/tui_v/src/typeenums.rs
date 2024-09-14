@@ -25,19 +25,11 @@ impl Default for InputState {
     }
 }
 
-pub enum Material {
-    Metal(Metal),
-    Wood(Tree),
-}
-
-// tegula imbrex
-#[derive(Display)]
-pub enum Roof {
-    Tegula(Material),
-}
-
 pub enum Floor {
-    Gravel(Material),
+    Gravel,
+    Sand,
+    Dirt,
+    Grass,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -45,13 +37,7 @@ pub enum Tree {
     Glinos, //Maple Tree
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub enum Metal {
-    Gold,
-    Silver,
-    Copper,
-}
-
 pub enum Furniture {
-    Wall(Material),
+    Wall,
+    Tree,
 }

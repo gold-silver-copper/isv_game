@@ -2,7 +2,7 @@ use crate::*;
 #[derive()]
 pub struct Voxel {
     pub floor: Option<Floor>,
-    pub roof: Option<Roof>,
+
     pub furniture: Option<Furniture>,
     pub entity_set: Vec<EntityID>,
     pub voxel_pos: MyPoint,
@@ -36,10 +36,7 @@ impl Voxel {
             }
             plus_furn
         } else {
-            let mut plus_roof: GraphicTriple = match &self.roof {
-                Some(roof) => (roof.symbol(), roof.fg_color(), roof.bg_color()),
-                None => plus_furn,
-            };
+            let mut plus_roof = plus_furn;
 
             plus_roof.1 = dim(plus_roof.1, 0.3);
             plus_roof.2 = dim(plus_roof.2, 0.5);

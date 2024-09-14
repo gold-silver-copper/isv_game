@@ -53,7 +53,8 @@ pub use app::*;
 
 mod gamemap;
 pub use gamemap::*;
-
+mod complexplanet;
+pub use complexplanet::*;
 mod typedefs;
 pub use typedefs::*;
 mod items_creatures;

@@ -8,15 +8,15 @@ pub trait Blockable {
 impl Blockable for Furniture {
     fn blocks_movement(&self) -> bool {
         match &self {
-            Furniture::Wall(_) => true,
-            _ => false,
+            Furniture::Wall => true,
+            Furniture::Tree => true,
         }
     }
 
     fn blocks_vision(&self) -> bool {
         match &self {
-            Furniture::Wall(_) => true,
-            _ => false,
+            Furniture::Wall => true,
+            Furniture::Tree => true,
         }
     }
 }

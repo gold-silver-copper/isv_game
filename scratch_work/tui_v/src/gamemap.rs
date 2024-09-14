@@ -1,6 +1,10 @@
 use crate::*;
 use noise::utils::*;
 use noise::*;
+use noise::{
+    core::perlin::{perlin_2d, perlin_3d, perlin_4d},
+    permutationtable::PermutationTable,
+};
 
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
@@ -8,29 +12,30 @@ pub struct GameMap {
 
 impl Default for GameMap {
     fn default() -> Self {
-        let basicmulti = Billow::<Perlin>::default();
-        let meow = PlaneMapBuilder::new(basicmulti).build();
+        let meow = gen_world();
 
         let mut batchvec = Vec::new();
         for x in 0..MAP_SIZE {
             for y in 0..MAP_SIZE {
                 let val = meow.get_value(x as usize, y as usize);
                 let floor = if val > 0.0 {
-                    GOLD_FLOOR
+                    Floor::Grass
                 } else if val > -0.5 {
-                    SILVER_FLOOR
+                    Floor::Dirt
+                } else if val > -0.7 {
+                    Floor::Gravel //water
                 } else {
-                    COPPER_FLOOR //water
+                    Floor::Sand
                 };
-                let wall = if val > 0.3 {
-                    Some(WOOD_WALL)
+                let wall = if val > 0.1 {
+                    Some(Furniture::Tree)
                 } else {
                     None //water
                 };
                 batchvec.push(Voxel {
                     floor: Some(floor),
                     furniture: wall,
-                    roof: None,
+
                     entity_set: Vec::new(),
                     voxel_pos: (x, y),
                 });

@@ -13,7 +13,7 @@ pub type InstrumentObject = EntityID;
 
 pub const LOCAL_RANGE: CoordinateUnit = 100;
 pub const FOV_RANGE: CoordinateUnit = 20;
-pub const MAP_SIZE: CoordinateUnit = 100;
+pub const MAP_SIZE: CoordinateUnit = 1000;
 
 pub const CURSOR_UP: char = 'w';
 pub const CURSOR_UP_LEFT: char = 'q';
@@ -31,17 +31,6 @@ pub const QUIT_BACK: char = ']';
 pub const RANGED_ATTACK: char = 'f';
 
 //pub const WALL_FURNITURE: Furniture = Furniture::Wall(Tree::Glinos);
-
-pub const BASIC_WOOD_MATERIAL: Material = Material::Wood(Tree::Glinos);
-pub const GOLD_METAL_MATERIAL: Material = Material::Metal(Metal::Gold);
-pub const SILVER_METAL_MATERIAL: Material = Material::Metal(Metal::Silver);
-pub const COPPER_METAL_MATERIAL: Material = Material::Metal(Metal::Copper);
-
-pub const WOOD_WALL: Furniture = Furniture::Wall(BASIC_WOOD_MATERIAL);
-pub const TEGULA_ROOF: Roof = Roof::Tegula(GOLD_METAL_MATERIAL);
-pub const GOLD_FLOOR: Floor = Floor::Gravel(GOLD_METAL_MATERIAL);
-pub const SILVER_FLOOR: Floor = Floor::Gravel(SILVER_METAL_MATERIAL);
-pub const COPPER_FLOOR: Floor = Floor::Gravel(COPPER_METAL_MATERIAL);
 
 pub type MyPoint = (CoordinateUnit, CoordinateUnit);
 pub type GraphicTriple = (String, RatColor, RatColor);
