@@ -105,7 +105,7 @@ impl App {
     }
 
     pub fn init(&mut self) {
-        let pik = (5, 5);
+        let pik = (100, 100);
 
         self.local_player_id = self.spawn_player_at(&pik);
 
