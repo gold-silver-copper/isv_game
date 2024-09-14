@@ -109,8 +109,8 @@ impl App {
 
         self.local_player_id = self.spawn_player_at(&pik);
 
-        for x in 20..200 {
-            for y in 20..200 {
+        for x in 20..MAP_SIZE {
+            for y in 20..MAP_SIZE {
                 if self.small_rng.gen_bool(0.02) {
                     for meow in Profession::iter() {
                         if self.small_rng.gen_bool(0.02) {
@@ -121,12 +121,47 @@ impl App {
                 }
             }
         }
-        for x in 10..MAP_SIZE {
-            for y in 10..MAP_SIZE {
+        for x in 0..MAP_SIZE {
+            for y in 0..MAP_SIZE {
                 if self.small_rng.gen_bool(0.02) {
                     for meow in AnimalType::iter() {
                         if self.small_rng.gen_bool(0.02) {
                             self.spawn_animal_at(&meow, &(x, y));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        for x in 0..MAP_SIZE {
+            for y in 0..MAP_SIZE {
+                if self.small_rng.gen_bool(0.02) {
+                    for meow in Consumable::iter() {
+                        if self.small_rng.gen_bool(0.02) {
+                            self.spawn_item_at(&(x, y), ItemType::Consumable(meow));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        for x in 0..MAP_SIZE {
+            for y in 0..MAP_SIZE {
+                if self.small_rng.gen_bool(0.02) {
+                    for meow in Ammo::iter() {
+                        if self.small_rng.gen_bool(0.02) {
+                            let amountik = self.small_rng.gen_range(1..50);
+                            match meow {
+                                Ammo::Kulja(_) => self
+                                    .spawn_item_at(&(x, y), ItemType::Ammo(Ammo::Kulja(amountik))),
+                                Ammo::Strěla(_) => self
+                                    .spawn_item_at(&(x, y), ItemType::Ammo(Ammo::Strěla(amountik))),
+                                Ammo::Oščěp(_) => self
+                                    .spawn_item_at(&(x, y), ItemType::Ammo(Ammo::Oščěp(amountik))),
+                                Ammo::Drotik(_) => self
+                                    .spawn_item_at(&(x, y), ItemType::Ammo(Ammo::Drotik(amountik))),
+                            };
+
                             break;
                         }
                     }

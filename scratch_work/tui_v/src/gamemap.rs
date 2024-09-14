@@ -22,7 +22,7 @@ impl Default for GameMap {
                 } else {
                     Floor::Sand
                 };
-                let wall = if val > 0.50 {
+                let wall = if (val > 0.50) && (val < 0.60) {
                     Some(Furniture::Tree)
                 } else {
                     None //water

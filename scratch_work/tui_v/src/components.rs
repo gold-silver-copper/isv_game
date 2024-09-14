@@ -196,7 +196,7 @@ impl App {
         eid.clone()
     }
     pub fn spawn_player_at(&mut self, point: &MyPoint) -> EntityID {
-        let pid = self.spawn_human_at(point, Profession::Rybak);
+        let pid = self.spawn_human_at(point, Profession::Rycaŕ);
 
         let iid = self.create_item(ItemType::Weapon(Weapon::Meč));
         let iid2 = self.create_item(ItemType::Clothing(Clothing::Toga));

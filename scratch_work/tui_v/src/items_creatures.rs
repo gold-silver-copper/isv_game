@@ -179,7 +179,7 @@ pub enum ItemType {
     Ammo(Ammo),
     Clothing(Clothing),
 }
-#[derive(Display, PartialEq, Clone)]
+#[derive(Display, PartialEq, Clone, EnumIter)]
 pub enum Consumable {
     Lěkaŕstvo,
     Hlěb,
