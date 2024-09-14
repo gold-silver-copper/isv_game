@@ -1,10 +1,4 @@
 use crate::*;
-use noise::utils::*;
-use noise::*;
-use noise::{
-    core::perlin::{perlin_2d, perlin_3d, perlin_4d},
-    permutationtable::PermutationTable,
-};
 
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
@@ -18,16 +12,16 @@ impl Default for GameMap {
         for x in 0..MAP_SIZE {
             for y in 0..MAP_SIZE {
                 let val = meow.get_value(x as usize, y as usize);
-                let floor = if val > 0.0 {
+                let floor = if val > -0.3 {
                     Floor::Grass
-                } else if val > -0.5 {
+                } else if val > -0.6 {
                     Floor::Dirt
-                } else if val > -0.7 {
+                } else if val > -0.8 {
                     Floor::Gravel //water
                 } else {
                     Floor::Sand
                 };
-                let wall = if val > 0.1 {
+                let wall = if val > 0.95 {
                     Some(Furniture::Tree)
                 } else {
                     None //water
