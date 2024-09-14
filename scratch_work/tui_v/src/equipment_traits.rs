@@ -1,6 +1,4 @@
-use crate::first_char;
-use crate::typeenums::*;
-use crate::CoordinateUnit;
+use crate::*;
 
 pub trait ItemTrait {
     fn item_symbol(&self) -> String;

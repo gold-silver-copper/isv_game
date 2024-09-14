@@ -56,7 +56,8 @@ pub use gamemap::*;
 
 mod typedefs;
 pub use typedefs::*;
-
+mod items_creatures;
+pub use items_creatures::*;
 mod voxel;
 pub use voxel::*;
 

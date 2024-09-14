@@ -15,6 +15,7 @@ pub struct App {
     pub game_map: GameMap,
     pub action_vec: ActionVec,
     pub local_player_id: EntityID,
+    pub seen_tiles: HashSet<BracketPoint>,
     pub small_rng: SmallRng,
 }
 impl Default for App {
@@ -31,6 +32,7 @@ impl Default for App {
             game_map: GameMap::default(),
             action_vec: ActionVec::default(),
             local_player_id: 0,
+            seen_tiles: HashSet::new(),
             small_rng: SmallRng::seed_from_u64(1),
         }
     }
@@ -40,6 +42,7 @@ impl App {
     pub fn run(&mut self, terminal: &mut tui::Tui) -> Result<()> {
         self.init();
         while !self.exit {
+            self.update_seen_tiles();
             terminal.draw(|frame| self.render_frame(frame))?;
             self.handle_events().wrap_err("handle events failed")?;
             if !self.action_vec.is_empty() {
@@ -611,6 +614,21 @@ impl App {
 
         evec
     }
+    pub fn update_seen_tiles(&mut self) {
+        if let Some(my_pos) = self.components.positions.get(&self.local_player_id) {
+            let fov = field_of_view_set(
+                BracketPoint {
+                    x: my_pos.0,
+                    y: my_pos.1,
+                },
+                FOV_RANGE,
+                &self.game_map,
+            );
+            for pointik in fov {
+                self.seen_tiles.insert(pointik);
+            }
+        }
+    }
 
     pub fn generate_visible_ents_from_ent(&self, eid: &EntityID) -> Vec<EntityID> {
         let ent_pos = self.components.positions.get(eid).unwrap_or(&(0, 0));
@@ -671,6 +689,7 @@ impl App {
             &area,
             &self.components.ent_types,
             highlighted_ranged_line,
+            &self.seen_tiles,
         );
 
         let mut render_lines = Vec::new();

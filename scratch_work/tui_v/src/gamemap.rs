@@ -123,6 +123,7 @@ impl GameMap {
         render_rect: &Rect,
         ent_types: &HashMap<EntityID, EntityType>,
         highlighted_line: Option<BresenhamInclusive>,
+        seen_tiles: &HashSet<BracketPoint>,
     ) -> RenderPacket {
         {
             let render_width = render_rect.width;
@@ -176,8 +177,10 @@ impl GameMap {
 
                     let boop = if fov.contains(&bp) {
                         lv.to_graphic(true, ent_types)
-                    } else {
+                    } else if seen_tiles.contains(&bp) {
                         lv.to_graphic(false, ent_types)
+                    } else {
+                        (" ".into(), Color::Black, Color::Black)
                     };
 
                     voxel_grid[relative_point_y as usize][relative_point_x as usize] = boop;
