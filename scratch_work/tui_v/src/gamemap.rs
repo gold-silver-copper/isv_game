@@ -1,7 +1,8 @@
 use crate::*;
-
+use pathfinding::prelude::bfs;
 pub struct GameMap {
     pub voxeltile_grid: RTree<Voxel>,
+    pub ent_types_copy: HashMap<EntityID, EntityType>,
 }
 
 impl Default for GameMap {
@@ -40,6 +41,7 @@ impl Default for GameMap {
 
         GameMap {
             voxeltile_grid: newtree,
+            ent_types_copy: HashMap::new(),
         }
     }
 }
@@ -106,7 +108,7 @@ impl GameMap {
         &self,
         ent_pos_comp: &MyPoint,
         render_rect: &Rect,
-        ent_types: &HashMap<EntityID, EntityType>,
+
         highlighted_line: Option<BresenhamInclusive>,
         seen_tiles: &HashSet<BracketPoint>,
     ) -> RenderPacket {
@@ -161,9 +163,9 @@ impl GameMap {
                     };
 
                     let boop = if fov.contains(&bp) {
-                        lv.to_graphic(true, ent_types)
+                        lv.to_graphic(true, &self.ent_types_copy)
                     } else if seen_tiles.contains(&bp) {
-                        lv.to_graphic(false, ent_types)
+                        lv.to_graphic(false, &self.ent_types_copy)
                     } else {
                         (
                             " ".into(),

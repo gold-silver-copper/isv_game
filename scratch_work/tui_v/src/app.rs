@@ -1,5 +1,7 @@
 use std::collections::VecDeque;
 
+use rand::Rng;
+
 use crate::*;
 // ANCHOR: app
 
@@ -180,23 +182,113 @@ impl App {
 
     pub fn handle_ai(&mut self) {
         let mut conscious_ents = Vec::new();
+        let mut stupid_ents = Vec::new();
+        let ents_visible_from_player = self.generate_visible_ents_from_ent(&self.local_player_id);
+        let lp_pos = self
+            .components
+            .positions
+            .get(&self.local_player_id)
+            .unwrap_or(&(0, 0))
+            .clone();
 
         for boop in &self.components.ent_types {
             if (boop.0 != &self.local_player_id) {
                 match boop.1 {
                     EntityType::Human(_) => conscious_ents.push(boop.0.clone()),
+                    EntityType::Animal(_) => stupid_ents.push(boop.0.clone()),
                     _ => (),
                 }
             }
         }
 
         for meow in conscious_ents {
-            self.action_vec
-                .push(GameAction::Go(meow, CardinalDirection::West));
+            if ents_visible_from_player.contains(&meow) {
+                if let Some(ent_pos) = self.components.positions.get(&meow) {
+                    let x_dif = ent_pos.0 - lp_pos.0;
+                    let y_dif = ent_pos.1 - lp_pos.1;
+
+                    if (x_dif >= 0) {
+                        if self.small_rng.gen_bool(0.8) {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::West));
+                        } else if self.small_rng.gen_bool(0.8) {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::SouthWest));
+                        } else {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::NorthWest));
+                        }
+                    } else if (x_dif < 0) {
+                        if self.small_rng.gen_bool(0.8) {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::East));
+                        } else if self.small_rng.gen_bool(0.8) {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::SouthEast));
+                        } else {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::NorthEast));
+                        }
+                    }
+                    if (y_dif >= 0) {
+                        if self.small_rng.gen_bool(0.8) {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::South));
+                        } else if self.small_rng.gen_bool(0.8) {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::SouthWest));
+                        } else {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::SouthEast));
+                        }
+                    } else if (y_dif < 0) {
+                        if self.small_rng.gen_bool(0.8) {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::North));
+                        } else if self.small_rng.gen_bool(0.8) {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::NorthEast));
+                        } else {
+                            self.action_vec
+                                .push(GameAction::Go(meow, CardinalDirection::NorthWest));
+                        }
+                    }
+                }
+            } else {
+                if self.small_rng.gen_bool(0.3) {
+                    self.action_vec
+                        .push(GameAction::Go(meow, CardinalDirection::West));
+                } else if self.small_rng.gen_bool(0.3) {
+                    self.action_vec
+                        .push(GameAction::Go(meow, CardinalDirection::East));
+                } else if self.small_rng.gen_bool(0.3) {
+                    self.action_vec
+                        .push(GameAction::Go(meow, CardinalDirection::South));
+                } else if self.small_rng.gen_bool(0.3) {
+                    self.action_vec
+                        .push(GameAction::Go(meow, CardinalDirection::North));
+                }
+            }
+        }
+        for meow in stupid_ents {
+            if self.small_rng.gen_bool(0.3) {
+                self.action_vec
+                    .push(GameAction::Go(meow, CardinalDirection::West));
+            } else if self.small_rng.gen_bool(0.3) {
+                self.action_vec
+                    .push(GameAction::Go(meow, CardinalDirection::East));
+            } else if self.small_rng.gen_bool(0.3) {
+                self.action_vec
+                    .push(GameAction::Go(meow, CardinalDirection::South));
+            } else if self.small_rng.gen_bool(0.3) {
+                self.action_vec
+                    .push(GameAction::Go(meow, CardinalDirection::North));
+            }
         }
     }
 
     pub fn reload_ui(&mut self) {
+        self.game_map.ent_types_copy = self.components.ent_types.clone();
         match self.input_state {
             InputState::Inventory => {
                 let boopik = match self.selected_menu {
@@ -687,7 +779,6 @@ impl App {
         let client_graphics = self.game_map.create_client_render_packet_for_entity(
             &client_pos,
             &area,
-            &self.components.ent_types,
             highlighted_ranged_line,
             &self.seen_tiles,
         );
