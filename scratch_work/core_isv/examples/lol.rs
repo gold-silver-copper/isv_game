@@ -1,7 +1,7 @@
 use core_isv::*;
 
 fn main() {
-    // Grains for bread and beer
+    /*// Grains for bread and beer
     let wheat = Wheat;
     let barley = Barley;
 
@@ -27,5 +27,5 @@ fn main() {
     let maple = Maple;
 
     println!("{}", oak.use_for_wooden_bowl());
-    println!("{}", maple.use_for_wooden_bowl());
+    println!("{}", maple.use_for_wooden_bowl()); */
 }
