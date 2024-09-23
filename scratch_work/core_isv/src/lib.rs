@@ -37,7 +37,9 @@ pub enum SolidMaterial {
 
 pub enum Plant {
     Apple,
-    Nut,
+    Walnut,
+    Wheat,
+    Rye,
 }
 pub enum LeafType {
     Broad,
@@ -71,7 +73,8 @@ impl Plant {
     fn fruit_production(&self) -> FruitType {
         match self {
             Plant::Apple => FruitType::Fruit,
-            Plant::Nut => FruitType::Nut,
+            Plant::Walnut => FruitType::Nut,
+            _ => FruitType::Seed,
         }
     }
 }
