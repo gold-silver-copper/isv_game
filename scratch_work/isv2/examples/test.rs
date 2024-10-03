@@ -2,6 +2,7 @@ use interslavic_rs::*;
 
 fn main() {
     let mut inflector = ISV::default();
+    //if you do not initialize the dictionary, animate nouns will not be inflected correctly, nor will words with irregular stems
     inflector.initialize_dictionary("isv_words.csv");
     let guessed_noun = inflector.decline_noun("hibiscus", &Case::Gen, &Number::Singular);
     println!("{:#?}", guessed_noun.0);
@@ -103,6 +104,10 @@ fn main() {
     println!("{:#?}", lik);
 
     println!("{:#?}", ISVUTILS::string_without_last_n("hello", 2));
+    let guessed_noun = inflector.decline_noun("sluga", &Case::Ins, &Number::Singular);
+    println!("{:#?}", guessed_noun.0);
 
+    //println!("{:#?}", inflector.feminine_nouns);
+    // println!("{:#?}", inflector.neuter_nouns);
     //Output: "hibiscorum"
 }

@@ -10,6 +10,9 @@ use irregular_verbs::*;
 #[derive(Debug, Clone, Default)]
 pub struct ISV {
     pub animate_nouns: Vec<String>,
+    pub nonanimate_nouns: Vec<String>,
+    pub feminine_nouns: Vec<String>,
+    pub neuter_nouns: Vec<String>,
 }
 
 pub struct ISVUTILS {}
@@ -340,7 +343,7 @@ impl ISV {
 impl ISV {
     pub fn decline_noun(&self, word: &str, case: &Case, number: &Number) -> Noun {
         let word = word.to_lowercase();
-        let gender = ISV::guess_gender(&word);
+        let gender = self.guess_gender(&word);
         let word_is_animate = self.noun_is_animate(&word);
         let word_stem_is_soft = ISV::stem_of_noun_is_soft(&word);
         let word_stem = ISV::get_noun_stem(&word, number);
@@ -389,7 +392,16 @@ impl ISV {
         self.animate_nouns.contains(&word.to_string())
     }
 
-    pub fn guess_gender(word: &str) -> Gender {
+    pub fn guess_gender(&self, word: &str) -> Gender {
+        let word_string = word.to_string();
+        if self.animate_nouns.contains(&word_string) || self.nonanimate_nouns.contains(&word_string)
+        {
+            return Gender::Masculine;
+        } else if self.feminine_nouns.contains(&word_string) {
+            return Gender::Feminine;
+        } else if self.neuter_nouns.contains(&word_string) {
+            return Gender::Neuter;
+        }
         let last_one = ISV::last_n_chars(word, 1);
 
         if ISV::is_ost_class(word) || (last_one == "a") || (last_one == "i") {

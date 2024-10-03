@@ -43,18 +43,31 @@ impl ISV {
 
         // Create a vector to hold words that are m.anim
         let mut m_anim_words: Vec<String> = Vec::new();
+        let mut m_nonanim_words: Vec<String> = Vec::new();
+        let mut f_words: Vec<String> = Vec::new();
+        let mut n_words: Vec<String> = Vec::new();
 
         // Iterate through the records
         for result in csv_reader.deserialize() {
             let record: WordEntry = result.unwrap();
-
-            // Check if the partOfSpeech is "m.anim"
-            if record.part_of_speech.contains("m.anim.") {
-                m_anim_words.push(record.isv.to_lowercase());
+            if !record.part_of_speech.contains("v.") {
+                // Check if the partOfSpeech is "m.anim"
+                if record.part_of_speech.contains("m.anim.") {
+                    m_anim_words.push(record.isv.to_lowercase());
+                } else if record.part_of_speech.contains("m.") {
+                    m_nonanim_words.push(record.isv.to_lowercase());
+                } else if record.part_of_speech.contains("f.") {
+                    f_words.push(record.isv.to_lowercase());
+                } else if record.part_of_speech.contains("n.") {
+                    n_words.push(record.isv.to_lowercase());
+                }
             }
         }
         println!("{:#?}", m_anim_words);
 
         self.animate_nouns = m_anim_words;
+        self.nonanimate_nouns = m_nonanim_words;
+        self.feminine_nouns = f_words;
+        self.neuter_nouns = n_words;
     }
 }
