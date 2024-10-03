@@ -1,5 +1,3 @@
-extern crate noise;
-
 use noise::{core::worley::ReturnType, utils::*, *};
 
 /// This example demonstrates how to use the noise-rs library to generate

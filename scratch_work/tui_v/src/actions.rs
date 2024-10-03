@@ -561,7 +561,7 @@ impl App {
             Person::First => "ja".to_string(),
         };
 
-        let genik = ISV::guess_gender(&pn);
+        let genik = self.inflector.guess_gender(&pn);
         (pn, genik, person)
     }
     pub fn pronoun_for_act_obj(&self, subj: &EntityID) -> (String, Gender, Person) {
@@ -574,12 +574,14 @@ impl App {
         let pn = match person {
             Person::Second => "tę".to_string(),
             Person::Third => {
-                ISV::decline_noun(&self.get_entity_name(&subj), &Case::Acc, &Number::Singular).0
+                self.inflector
+                    .decline_noun(&self.get_entity_name(&subj), &Case::Acc, &Number::Singular)
+                    .0
             }
             Person::First => "ja".to_string(),
         };
 
-        let genik = ISV::guess_gender(&self.get_entity_name(&subj));
+        let genik = self.inflector.guess_gender(&self.get_entity_name(&subj));
         (pn, genik, person)
     }
 
@@ -588,9 +590,12 @@ impl App {
             ActionResult::Success(ga, reason) => match ga {
                 GameAction::Consume(subj, consum) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let object =
-                        ISV::decline_noun(&format!("{consum}"), &Case::Acc, &Number::Singular);
-                    let verbik = ISV::conjugate_verb(
+                    let object = self.inflector.decline_noun(
+                        &format!("{consum}"),
+                        &Case::Acc,
+                        &Number::Singular,
+                    );
+                    let verbik = self.inflector.conjugate_verb(
                         consum.consume_verb(),
                         &person,
                         &Number::Singular,
@@ -602,12 +607,14 @@ impl App {
                 }
                 GameAction::Drop(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let object = ISV::decline_noun(
+                    let object = self.inflector.decline_noun(
                         &self.get_entity_name(&obj),
                         &Case::Acc,
                         &Number::Singular,
                     );
-                    let verbik = ISV::l_participle("opustiti", &gender, &Number::Singular);
+                    let verbik =
+                        self.inflector
+                            .l_participle("opustiti", &gender, &Number::Singular);
 
                     format!("{pronoun} {verbik} {}", object.0)
                 }
@@ -624,7 +631,7 @@ impl App {
                         },
                         _ => "equipirovati",
                     };
-                    let verbik = ISV::conjugate_verb(
+                    let verbik = self.inflector.conjugate_verb(
                         equip_verb,
                         &person,
                         &Number::Singular,
@@ -633,7 +640,7 @@ impl App {
                     );
 
                     if equip_verb == "orųžati" {
-                        let object = ISV::decline_noun(
+                        let object = self.inflector.decline_noun(
                             &self.get_entity_name(&obj),
                             &Case::Ins,
                             &Number::Singular,
@@ -645,7 +652,7 @@ impl App {
                         if obj_nom.ends_with("y") {
                             format!("{pronoun} {verbik} {}", obj_nom)
                         } else {
-                            let object = ISV::decline_noun(
+                            let object = self.inflector.decline_noun(
                                 &self.get_entity_name(&obj),
                                 &Case::Acc,
                                 &Number::Singular,
@@ -656,12 +663,12 @@ impl App {
                 }
                 GameAction::UnEquip(subj, obj) => {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                    let object = ISV::decline_noun(
+                    let object = self.inflector.decline_noun(
                         &self.get_entity_name(&obj),
                         &Case::Acc,
                         &Number::Singular,
                     );
-                    let verbik = ISV::conjugate_verb(
+                    let verbik = self.inflector.conjugate_verb(
                         "odkladati",
                         &person,
                         &Number::Singular,
@@ -682,9 +689,12 @@ impl App {
                         } else {
                             Number::Singular
                         };
-                        let object =
-                            ISV::decline_noun(&self.get_entity_name(&obj), &Case::Acc, &number);
-                        let verbik = ISV::conjugate_verb(
+                        let object = self.inflector.decline_noun(
+                            &self.get_entity_name(&obj),
+                            &Case::Acc,
+                            &number,
+                        );
+                        let verbik = self.inflector.conjugate_verb(
                             "podbirati",
                             &person,
                             &Number::Singular,
@@ -696,12 +706,12 @@ impl App {
                     }
                     _ => {
                         let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
-                        let object = ISV::decline_noun(
+                        let object = self.inflector.decline_noun(
                             &self.get_entity_name(&obj),
                             &Case::Acc,
                             &Number::Singular,
                         );
-                        let verbik = ISV::conjugate_verb(
+                        let verbik = self.inflector.conjugate_verb(
                             "podbirati",
                             &person,
                             &Number::Singular,
@@ -716,7 +726,9 @@ impl App {
                     if &subj == &self.local_player_id {
                         let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
 
-                        let verbik = ISV::l_participle("počekati", &gender, &Number::Singular);
+                        let verbik =
+                            self.inflector
+                                .l_participle("počekati", &gender, &Number::Singular);
 
                         format!("{pronoun} {verbik}")
                     } else {
@@ -727,7 +739,7 @@ impl App {
                     let (pronoun, gender, person) = self.pronoun_for_act_subj(&subj);
                     let extra_string = match reason {
                         SuccessType::WithValue(val) => {
-                            let verbik = ISV::conjugate_verb(
+                            let verbik = self.inflector.conjugate_verb(
                                 "nanositi",
                                 &person,
                                 &Number::Singular,
@@ -740,7 +752,7 @@ impl App {
                     };
                     let object = self.pronoun_for_act_obj(&obj);
 
-                    let verbik = ISV::conjugate_verb(
+                    let verbik = self.inflector.conjugate_verb(
                         "atakovati",
                         &person,
                         &Number::Singular,
@@ -756,7 +768,7 @@ impl App {
 
                     match reason {
                         SuccessType::WithValueAndRangedWeapon(val, inst) => {
-                            let nanositi = ISV::conjugate_verb(
+                            let nanositi = self.inflector.conjugate_verb(
                                 "nanositi",
                                 &person,
                                 &Number::Singular,
@@ -772,25 +784,27 @@ impl App {
 
                             let instik = match inst {
                                 RangedWeapon::Lųk | RangedWeapon::Pråšča => {
-                                    ISV::decline_noun(
-                                        &format!("{}", inst),
-                                        &Case::Ins,
-                                        &Number::Singular,
-                                    )
-                                    .0
+                                    self.inflector
+                                        .decline_noun(
+                                            &format!("{}", inst),
+                                            &Case::Ins,
+                                            &Number::Singular,
+                                        )
+                                        .0
                                 }
 
                                 RangedWeapon::Oščěp | RangedWeapon::Drotik => {
-                                    ISV::decline_noun(
-                                        &format!("{}", inst),
-                                        &Case::Acc,
-                                        &Number::Singular,
-                                    )
-                                    .0
+                                    self.inflector
+                                        .decline_noun(
+                                            &format!("{}", inst),
+                                            &Case::Acc,
+                                            &Number::Singular,
+                                        )
+                                        .0
                                 }
                             };
 
-                            let verbik = ISV::conjugate_verb(
+                            let verbik = self.inflector.conjugate_verb(
                                 attack_verb,
                                 &person,
                                 &Number::Singular,
@@ -803,7 +817,7 @@ impl App {
                             )
                         }
                         _ => {
-                            let verbik = ISV::conjugate_verb(
+                            let verbik = self.inflector.conjugate_verb(
                                 "atakovati",
                                 &person,
                                 &Number::Singular,

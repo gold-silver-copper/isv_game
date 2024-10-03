@@ -6,6 +6,7 @@ use crate::*;
 // ANCHOR: app
 
 pub struct App {
+    pub inflector: ISV,
     pub entity_counter: i64,
     pub components: ComponentHolder,
     pub input_state: InputState,
@@ -22,7 +23,10 @@ pub struct App {
 }
 impl Default for App {
     fn default() -> Self {
+        let mut inflector = ISV::default();
+        inflector.initialize_dictionary("isv_words.csv");
         App {
+            inflector,
             entity_counter: 0,
             components: ComponentHolder::default(),
             input_state: InputState::default(),

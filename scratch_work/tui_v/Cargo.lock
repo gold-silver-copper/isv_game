@@ -346,8 +346,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "interslavic-rs"
-version = "0.2.0"
+name = "interslavic"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7557cc3f4e9595c2cea6732032bc87fa893aaa7cceb910de4b753174594d787"
 dependencies = [
  "csv",
  "serde",
@@ -893,7 +895,7 @@ version = "0.1.0"
 dependencies = [
  "bracket-pathfinding",
  "color-eyre",
- "interslavic-rs",
+ "interslavic",
  "noise",
  "pathfinding",
  "rand",

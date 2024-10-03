@@ -5,7 +5,7 @@ pub use color_eyre::{
 };
 // ANCHOR_END: new-imports
 pub use bracket_pathfinding::prelude::{Point as BracketPoint, Rect as BracketRect, *};
-pub use interslavic_rs::*;
+pub use interslavic::*;
 use rand::{
     distributions::{Distribution, Uniform},
     rngs::SmallRng,
