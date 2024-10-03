@@ -1,7 +1,7 @@
 use crate::*;
 use csv::ReaderBuilder;
 use serde::Deserialize;
-use std::error::Error;
+
 use std::fs::File;
 use std::io::BufReader;
 
@@ -50,6 +50,8 @@ impl ISV {
         // Iterate through the records
         for result in csv_reader.deserialize() {
             let record: WordEntry = result.unwrap();
+
+            //make sure its not a verb
             if !record.part_of_speech.contains("v.") {
                 // Check if the partOfSpeech is "m.anim"
                 if record.part_of_speech.contains("m.anim.") {
